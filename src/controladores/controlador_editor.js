@@ -1,4 +1,6 @@
 import { ResultadoConsulta } from '../modelos/resultado_consulta';
+import { InfoTabla } from '../modelos/info_tabla';
+import { InfoColumna } from '../modelos/info_columna';
 
 const PALABRAS_SQL = [
   'SELECT', 'FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'HAVING',
@@ -69,6 +71,27 @@ export class ControladorEditor {
     const ultima = texto.split(/\s+/).pop().toUpperCase();
     if (ultima.length < 1) return [];
     return PALABRAS_SQL.filter(p => p.startsWith(ultima) && p !== ultima).slice(0, 4);
+  }
+
+  obtenerEsquema() {
+    if (!this.#db) return [];
+    try {
+      const res = this.#db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+      if (!res.length) return [];
+      return res[0].values.map(([nombre]) => {
+        const info = this.#db.exec(`PRAGMA table_info("${nombre}")`);
+        const columnas = info.length
+          ? info[0].values.map(fila => new InfoColumna({ nombre: fila[1], tipo: fila[2], esPrimaria: fila[5] === 1 }))
+          : [];
+        return new InfoTabla({ nombre, columnas });
+      });
+    } catch {
+      return [];
+    }
+  }
+
+  obtenerDatosTabla(nombre) {
+    return this.ejecutarConsulta(`SELECT * FROM "${nombre}" LIMIT 50`);
   }
 
   destruir() {

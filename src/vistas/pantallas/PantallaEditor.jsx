@@ -3,6 +3,7 @@ import { ControladorEditor } from '../../controladores/controlador_editor';
 import CaritaEstado from '../editor/CaritaEstado';
 import AutocompletadorSQL from '../editor/AutocompletadorSQL';
 import PanelResultados from '../editor/PanelResultados';
+import DrawerExplorador from '../editor/DrawerExplorador';
 
 export default function PantallaEditor({ ejercicio, onVolver }) {
   const [consulta, setConsulta] = useState('');
@@ -12,7 +13,8 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   const [cargando, setCargando] = useState(true);
   const [mostrarPista, setMostrarPista] = useState(false);
   const [indicePista, setIndicePista] = useState(0);
-  const [panelDatos, setPanelDatos] = useState(false);
+  const [drawerAbierto, setDrawerAbierto] = useState(false);
+  const [tablas, setTablas] = useState([]);
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
@@ -23,7 +25,10 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
     import('sql.js').then(mod => {
       const SqlJs = mod.default ?? mod;
-      ctrl.iniciar(ejercicio, SqlJs).then(() => setCargando(false));
+      ctrl.iniciar(ejercicio, SqlJs).then(() => {
+        setTablas(ctrl.obtenerEsquema());
+        setCargando(false);
+      });
     });
 
     return () => ctrl.destruir();
@@ -73,7 +78,8 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   }
 
   return (
-    <div className="h-screen bg-[#0d1117] flex flex-col font-mono">
+    <div className="h-screen bg-[#0d1117] flex flex-col font-mono overflow-hidden">
+
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#161b22] flex-shrink-0">
         <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
@@ -81,45 +87,35 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
         </button>
         <div className="flex-1 mx-4 min-w-0">
           {ejercicio
-            ? <p className="text-[#e6edf3] text-sm truncate">{ejercicio.titulo}</p>
-            : <p className="text-[#8b949e] text-sm">Práctica libre</p>
+            ? <p className="text-[#e6edf3] text-sm truncate font-sans">{ejercicio.titulo}</p>
+            : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
           }
         </div>
-        <CaritaEstado estado={estado} />
+        <div className="flex items-center gap-3">
+          <CaritaEstado estado={estado} />
+          <button
+            onClick={() => setDrawerAbierto(true)}
+            className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+          >
+            🗄️
+          </button>
+        </div>
       </div>
 
       {/* Enunciado */}
       {ejercicio && (
         <div className="px-4 py-3 bg-[#161b22] border-b border-[#30363d] flex-shrink-0">
-          <p className="text-[#e6edf3] text-sm">{ejercicio.enunciado}</p>
+          <p className="text-[#e6edf3] text-sm font-sans">{ejercicio.enunciado}</p>
           {mostrarPista && (
-            <p className="text-[#d29922] text-xs mt-2">
+            <p className="text-[#d29922] text-xs mt-2 font-sans">
               💡 {ejercicio.pistas[indicePista]}
             </p>
           )}
-          <div className="flex gap-3 mt-2">
-            {ejercicio.pistas?.length > 0 && (
-              <button onClick={siguientePista} className="text-[#8b949e] hover:text-[#d29922] text-xs transition-colors">
-                {mostrarPista && indicePista < ejercicio.pistas.length - 1 ? 'Otra pista' : mostrarPista ? 'Sin más pistas' : 'Pista'}
-              </button>
-            )}
-            <button
-              onClick={() => setPanelDatos(v => !v)}
-              className="text-[#8b949e] hover:text-[#388bfd] text-xs transition-colors"
-            >
-              {panelDatos ? 'Ocultar tabla' : 'Ver tabla'}
+          {ejercicio.pistas?.length > 0 && (
+            <button onClick={siguientePista} className="text-[#8b949e] hover:text-[#d29922] text-xs mt-2 transition-colors font-sans">
+              {mostrarPista && indicePista < ejercicio.pistas.length - 1 ? 'Otra pista' : mostrarPista ? 'Sin más pistas' : '💡 Pista'}
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Panel de datos colapsable */}
-      {panelDatos && ejercicio && (
-        <div className="border-b border-[#30363d] bg-[#0d1117] px-4 py-3 flex-shrink-0 max-h-40 overflow-auto">
-          <p className="text-[#388bfd] text-xs mb-2 font-sans">Esquema de la tabla</p>
-          <pre className="text-[#8b949e] text-xs leading-5 whitespace-pre-wrap">
-            {ejercicio.esquemaSQL.trim()}
-          </pre>
+          )}
         </div>
       )}
 
@@ -140,9 +136,9 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
         {/* Autocompletado */}
         <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
 
-        {/* Barra inferior del editor */}
+        {/* Barra inferior */}
         <div className="flex items-center justify-between px-4 py-2 border-t border-[#30363d] bg-[#161b22] flex-shrink-0">
-          <p className="text-[#484f58] text-xs">Ctrl+Enter para ejecutar</p>
+          <p className="text-[#484f58] text-xs font-sans">Ctrl+Enter para ejecutar</p>
           <button
             onClick={ejecutar}
             disabled={!consulta.trim()}
@@ -162,6 +158,14 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
           <PanelResultados resultado={resultado} />
         </div>
       </div>
+
+      {/* Drawer explorador */}
+      <DrawerExplorador
+        tablas={tablas}
+        onObtenerDatos={(nombre) => controlador.current.obtenerDatosTabla(nombre)}
+        abierto={drawerAbierto}
+        onCerrar={() => setDrawerAbierto(false)}
+      />
     </div>
   );
 }
