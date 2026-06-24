@@ -201,3 +201,18 @@ class GestorPreguntas { }
 - Desarrollar en la rama de feature designada para cada sesión
 - Hacer commit con mensajes descriptivos en español
 - Push a la rama de desarrollo al terminar cada cambio
+
+### Flujo obligatorio para que Vercel despliegue
+
+Vercel está conectado al repositorio de GitHub y despliega automáticamente cada vez que detecta un push a `main`. Por eso, después de cada cambio:
+
+```
+git push origin <rama-feature>
+git checkout main
+git merge <rama-feature>
+git push origin main
+```
+
+- El sitio se sirve desde `main` (Vercel apunta a `main`)
+- NUNCA dejar cambios solo en la rama de desarrollo sin mergear a `main`
+- SIEMPRE hacer el merge y push a `main` al terminar cada cambio
