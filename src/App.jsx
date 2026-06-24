@@ -1,50 +1,58 @@
-import { useState } from 'react'
-import SetupScreen from './screens/SetupScreen'
-import ProjectsScreen from './screens/ProjectsScreen'
-import ChatScreen from './screens/ChatScreen'
+import { useState } from 'react';
+import PantallaAreas from './vistas/pantallas/PantallaAreas';
+import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
+import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
+import PantallaEditor from './vistas/pantallas/PantallaEditor';
 
 export default function App() {
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('claude_api_key') || '')
-  const [view, setView] = useState('projects')
-  const [selectedProject, setSelectedProject] = useState(null)
-  const [selectedChat, setSelectedChat] = useState(null)
+  const [pantalla, setPantalla] = useState('areas');
+  const [areaActual, setAreaActual] = useState(null);
+  const [nivelActual, setNivelActual] = useState(null);
+  const [ejercicioActual, setEjercicioActual] = useState(null);
 
-  const handleSaveKey = (key) => {
-    localStorage.setItem('claude_api_key', key)
-    setApiKey(key)
-  }
+  const irANiveles = (area) => {
+    setAreaActual(area);
+    setPantalla('niveles');
+  };
 
-  const openChat = (project, chat) => {
-    setSelectedProject(project)
-    setSelectedChat(chat)
-    setView('chat')
-  }
+  const irAEjercicios = (nivel) => {
+    setNivelActual(nivel);
+    setPantalla('ejercicios');
+  };
 
-  const backToProjects = () => {
-    setView('projects')
-    setSelectedChat(null)
-  }
+  const irAEditor = (ejercicio) => {
+    setEjercicioActual(ejercicio);
+    setPantalla('editor');
+  };
 
-  if (!apiKey) {
-    return <SetupScreen onSave={handleSaveKey} />
-  }
-
-  if (view === 'chat' && selectedChat) {
+  if (pantalla === 'editor') {
     return (
-      <ChatScreen
-        apiKey={apiKey}
-        project={selectedProject}
-        chat={selectedChat}
-        onBack={backToProjects}
-        onUpdateChat={(updated) => setSelectedChat(updated)}
+      <PantallaEditor
+        ejercicio={ejercicioActual}
+        onVolver={() => setPantalla('ejercicios')}
       />
-    )
+    );
   }
 
-  return (
-    <ProjectsScreen
-      onOpenChat={openChat}
-      onChangeKey={() => setApiKey('')}
-    />
-  )
+  if (pantalla === 'ejercicios') {
+    return (
+      <PantallaEjercicios
+        nivel={nivelActual}
+        onSeleccionar={irAEditor}
+        onVolver={() => setPantalla('niveles')}
+      />
+    );
+  }
+
+  if (pantalla === 'niveles') {
+    return (
+      <PantallaNiveles
+        area={areaActual}
+        onSeleccionar={irAEjercicios}
+        onVolver={() => setPantalla('areas')}
+      />
+    );
+  }
+
+  return <PantallaAreas onSeleccionar={irANiveles} />;
 }
