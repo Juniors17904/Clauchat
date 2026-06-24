@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ControladorEditor } from '../../controladores/controlador_editor';
+import { obtenerBaseDatos } from '../../datos/bases_datos';
 import CaritaEstado from '../editor/CaritaEstado';
 import AutocompletadorSQL from '../editor/AutocompletadorSQL';
 import PanelResultados from '../editor/PanelResultados';
@@ -25,7 +26,8 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
     import('sql.js').then(mod => {
       const SqlJs = mod.default ?? mod;
-      ctrl.iniciar(ejercicio, SqlJs).then(() => {
+      const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
+      ctrl.iniciar(ejercicio, baseDatos, SqlJs).then(() => {
         setTablas(ctrl.obtenerEsquema());
         setCargando(false);
       });

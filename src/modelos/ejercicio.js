@@ -3,16 +3,16 @@ export class Ejercicio {
   #titulo;
   #enunciado;
   #nivelId;
-  #esquemaSQL;
+  #baseDatosId;
   #consultaEsperada;
   #pistas;
 
-  constructor({ id, titulo, enunciado, nivelId, esquemaSQL, consultaEsperada, pistas = [] }) {
+  constructor({ id, titulo, enunciado, nivelId, baseDatosId, consultaEsperada, pistas = [] }) {
     this.#id = id;
     this.#titulo = titulo;
     this.#enunciado = enunciado;
     this.#nivelId = nivelId;
-    this.#esquemaSQL = esquemaSQL;
+    this.#baseDatosId = baseDatosId;
     this.#consultaEsperada = consultaEsperada;
     this.#pistas = pistas;
   }
@@ -21,7 +21,7 @@ export class Ejercicio {
   get titulo() { return this.#titulo; }
   get enunciado() { return this.#enunciado; }
   get nivelId() { return this.#nivelId; }
-  get esquemaSQL() { return this.#esquemaSQL; }
+  get baseDatosId() { return this.#baseDatosId; }
   get consultaEsperada() { return this.#consultaEsperada; }
   get pistas() { return [...this.#pistas]; }
 }

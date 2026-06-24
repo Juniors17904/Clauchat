@@ -21,12 +21,12 @@ export class ControladorEditor {
     this.#ejercicio = null;
   }
 
-  async iniciar(ejercicio, SqlJs) {
+  async iniciar(ejercicio, baseDatos, SqlJs) {
     this.#ejercicio = ejercicio;
     const SQL = await SqlJs({ locateFile: () => '/sql-wasm.wasm' });
     this.#db = new SQL.Database();
-    if (ejercicio?.esquemaSQL) {
-      this.#db.run(ejercicio.esquemaSQL);
+    if (baseDatos?.esquemaSQL) {
+      this.#db.run(baseDatos.esquemaSQL);
     }
   }
 
