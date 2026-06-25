@@ -9,6 +9,12 @@ const MARGEN = 28;
 const ESCALA_MIN = 0.1;
 const ESCALA_MAX = 3;
 
+const CROW_FORK = 14;
+const CROW_TICK = 7;
+const CROW_SPREAD = 7;
+const ONE_INNER = 6;
+const ONE_OUTER = 14;
+
 const CATEGORIAS = [
   { fondo: '#0d2e6a', borde: '#1f6feb', etiqueta: 'Base' },
   { fondo: '#0e3a1a', borde: '#1a7f37', etiqueta: 'Principal' },
@@ -122,20 +128,20 @@ function calcularDimCanvas(posiciones) {
 
 function simboloCrowFoot(x, y, dx, dy) {
   const px = -dy, py = dx;
-  const fx = x + dx * 12, fy = y + dy * 12;
-  const tx = x + dx * 19, ty = y + dy * 19;
+  const forkX = x + dx * CROW_FORK, forkY = y + dy * CROW_FORK;
+  const tickX = x + dx * CROW_TICK, tickY = y + dy * CROW_TICK;
   return [
-    `M ${fx} ${fy} L ${x} ${y}`,
-    `M ${fx} ${fy} L ${x + px * 7} ${y + py * 7}`,
-    `M ${fx} ${fy} L ${x - px * 7} ${y - py * 7}`,
-    `M ${tx - px * 7} ${ty - py * 7} L ${tx + px * 7} ${ty + py * 7}`,
+    `M ${forkX} ${forkY} L ${x} ${y}`,
+    `M ${forkX} ${forkY} L ${x + px * CROW_SPREAD} ${y + py * CROW_SPREAD}`,
+    `M ${forkX} ${forkY} L ${x - px * CROW_SPREAD} ${y - py * CROW_SPREAD}`,
+    `M ${tickX - px * 7} ${tickY - py * 7} L ${tickX + px * 7} ${tickY + py * 7}`,
   ].join(' ');
 }
 
 function simboloOne(x, y, dx, dy) {
   const px = -dy, py = dx;
-  const t1x = x + dx * 8, t1y = y + dy * 8;
-  const t2x = x + dx * 15, t2y = y + dy * 15;
+  const t1x = x + dx * ONE_INNER, t1y = y + dy * ONE_INNER;
+  const t2x = x + dx * ONE_OUTER, t2y = y + dy * ONE_OUTER;
   return [
     `M ${t1x - px * 7} ${t1y - py * 7} L ${t1x + px * 7} ${t1y + py * 7}`,
     `M ${t2x - px * 7} ${t2y - py * 7} L ${t2x + px * 7} ${t2y + py * 7}`,
@@ -159,10 +165,11 @@ function generarRelaciones(tablas, posiciones) {
       const cxO = origen.x + TABLA_ANCHO / 2;
       const cxD = destino.x + TABLA_ANCHO / 2;
 
-      let x1, y1, x2, y2, cp1x, cp1y, cp2x, cp2y;
-      let d1x, d1y, d2x, d2y;
+      let x1, y1, x2, y2, d1x, d1y, d2x, d2y;
+      let esHorizontal;
 
       if (Math.abs(cxO - cxD) > 20) {
+        esHorizontal = true;
         if (cxO < cxD) {
           x1 = origen.x + TABLA_ANCHO; y1 = yFk;
           x2 = destino.x; y2 = yDst;
@@ -172,10 +179,8 @@ function generarRelaciones(tablas, posiciones) {
           x2 = destino.x + TABLA_ANCHO; y2 = yDst;
           d1x = -1; d1y = 0; d2x = 1; d2y = 0;
         }
-        const t = Math.min(80, Math.abs(x2 - x1) * 0.4);
-        cp1x = x1 + d1x * t; cp1y = y1;
-        cp2x = x2 + d2x * t; cp2y = y2;
       } else {
+        esHorizontal = false;
         if (origen.y < destino.y) {
           x1 = origen.x + TABLA_ANCHO * 0.5; y1 = origen.y + origen.alto;
           x2 = destino.x + TABLA_ANCHO * 0.5; y2 = destino.y;
@@ -185,16 +190,29 @@ function generarRelaciones(tablas, posiciones) {
           x2 = destino.x + TABLA_ANCHO * 0.5; y2 = destino.y + destino.alto;
           d1x = 0; d1y = -1; d2x = 0; d2y = 1;
         }
-        const t = Math.abs(y2 - y1) * 0.4;
-        cp1x = x1; cp1y = y1 + d1y * t;
-        cp2x = x2; cp2y = y2 + d2y * t;
       }
 
-      const mx = 0.125 * x1 + 0.375 * cp1x + 0.375 * cp2x + 0.125 * x2;
-      const my = 0.125 * y1 + 0.375 * cp1y + 0.375 * cp2y + 0.125 * y2;
+      // El bezier corre ENTRE los símbolos: empieza en el fork del crow's foot
+      // y termina en el tick externo del símbolo "uno", sin pisar los adornos
+      const bx1 = x1 + d1x * CROW_FORK, by1 = y1 + d1y * CROW_FORK;
+      const bx2 = x2 + d2x * ONE_OUTER, by2 = y2 + d2y * ONE_OUTER;
+
+      let bcp1x, bcp1y, bcp2x, bcp2y;
+      if (esHorizontal) {
+        const t = Math.min(80, Math.abs(bx2 - bx1) * 0.4);
+        bcp1x = bx1 + d1x * t; bcp1y = by1;
+        bcp2x = bx2 + d2x * t; bcp2y = by2;
+      } else {
+        const t = Math.abs(by2 - by1) * 0.4;
+        bcp1x = bx1; bcp1y = by1 + d1y * t;
+        bcp2x = bx2; bcp2y = by2 + d2y * t;
+      }
+
+      const mx = 0.125 * bx1 + 0.375 * bcp1x + 0.375 * bcp2x + 0.125 * bx2;
+      const my = 0.125 * by1 + 0.375 * bcp1y + 0.375 * bcp2y + 0.125 * by2;
 
       rels.push({
-        bezier: `M ${x1} ${y1} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`,
+        bezier: `M ${bx1} ${by1} C ${bcp1x} ${bcp1y}, ${bcp2x} ${bcp2y}, ${bx2} ${by2}`,
         footOrigen: simboloCrowFoot(x1, y1, d1x, d1y),
         footDestino: simboloOne(x2, y2, d2x, d2y),
         mx, my,
@@ -429,12 +447,14 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
 
           <div style={{ marginBottom: 8 }}>
             <svg width="130" height="22">
-              <path d="M 12 11 L 0 11 M 12 11 L 0 5 M 12 11 L 0 17 M 19 4 L 19 18" stroke="#58a6ff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              <text x="25" y="15" fontSize="9" fill="#6e7681" fontFamily="sans-serif">muchos (N)</text>
+              {/* Fork at x=14, three feet to table at x=0, tick at x=7 (between fork and table) */}
+              <path d="M 14 11 L 0 11 M 14 11 L 0 5 M 14 11 L 0 17 M 7 4 L 7 18" stroke="#58a6ff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <text x="20" y="15" fontSize="9" fill="#6e7681" fontFamily="sans-serif">muchos (N)</text>
             </svg>
             <svg width="130" height="20" style={{ marginTop: 2 }}>
-              <path d="M 7 3 L 7 17 M 13 3 L 13 17" stroke="#58a6ff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              <text x="25" y="14" fontSize="9" fill="#6e7681" fontFamily="sans-serif">uno (1)</text>
+              {/* Inner tick at x=6, outer tick at x=14 (bezier ends here) */}
+              <path d="M 6 3 L 6 17 M 14 3 L 14 17" stroke="#58a6ff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <text x="20" y="14" fontSize="9" fill="#6e7681" fontFamily="sans-serif">uno (1)</text>
             </svg>
           </div>
 
