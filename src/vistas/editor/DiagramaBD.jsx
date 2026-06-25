@@ -232,6 +232,9 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
     arrastrando: false, pinchActivo: false,
     inicioX: 0, inicioY: 0,
     distanciaInicial: 0, escalaInicial: 1,
+    pinchCentroX: 0, pinchCentroY: 0,
+    trasladoInicialX: 0, trasladoInicialY: 0,
+    escalaActual: 1, trasladoActual: { x: 40, y: 40 },
   });
 
   const posiciones = useMemo(() => computarPosiciones(tablas), [tablas]);
@@ -260,14 +263,25 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const nueva = Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, estado.escalaInicial * (dist / estado.distanciaInicial)));
-        setEscala(nueva);
+        const nuevaEscala = Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, estado.escalaInicial * (dist / estado.distanciaInicial)));
+        // Zoom hacia el centro del pellizco: el punto bajo los dedos queda fijo
+        const canvasX = (estado.pinchCentroX - estado.trasladoInicialX) / estado.escalaInicial;
+        const canvasY = (estado.pinchCentroY - estado.trasladoInicialY) / estado.escalaInicial;
+        setEscala(nuevaEscala);
+        setTraslado({ x: estado.pinchCentroX - canvasX * nuevaEscala, y: estado.pinchCentroY - canvasY * nuevaEscala });
       }
     };
 
     const onWheel = (e) => {
       e.preventDefault();
-      setEscala(prev => Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, prev * (e.deltaY < 0 ? 1.1 : 0.9))));
+      const { escalaActual, trasladoActual } = r.current;
+      const factor = e.deltaY < 0 ? 1.1 : 0.9;
+      const nuevaEscala = Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, escalaActual * factor));
+      // Zoom hacia el cursor del ratón
+      const canvasX = (e.clientX - trasladoActual.x) / escalaActual;
+      const canvasY = (e.clientY - trasladoActual.y) / escalaActual;
+      setEscala(nuevaEscala);
+      setTraslado({ x: e.clientX - canvasX * nuevaEscala, y: e.clientY - canvasY * nuevaEscala });
     };
 
     el.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -303,9 +317,17 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       estado.distanciaInicial = Math.sqrt(dx * dx + dy * dy);
       estado.escalaInicial = escala;
+      estado.trasladoInicialX = traslado.x;
+      estado.trasladoInicialY = traslado.y;
+      estado.pinchCentroX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      estado.pinchCentroY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
     }
   };
   const onTouchEnd = () => { r.current.arrastrando = false; r.current.pinchActivo = false; };
+
+  // Sincronizar al ref para que los handlers nativos (wheel) lean valores siempre frescos
+  r.current.escalaActual = escala;
+  r.current.trasladoActual = traslado;
 
   const fecha = new Date().toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
 
