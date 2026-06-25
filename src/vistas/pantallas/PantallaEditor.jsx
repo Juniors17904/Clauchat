@@ -176,6 +176,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
         tablas={tablas}
         abierto={diagramaAbierto}
         onCerrar={() => setDiagramaAbierto(false)}
+        nombreBD={ejercicio?.baseDatosId ? (obtenerBaseDatos(ejercicio.baseDatosId)?.nombre ?? '') : ''}
       />
 
       {/* Drawer explorador */}

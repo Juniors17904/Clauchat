@@ -1,36 +1,82 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 
-const TABLA_ANCHO = 158;
+const TABLA_ANCHO = 172;
 const CABECERA_ALTO = 30;
-const FILA_ALTO = 38;
-const SEP_X = 72;
-const SEP_Y = 44;
-const COLS_GRILLA = 3;
-const MARGEN = 20;
-const ESCALA_MIN = 0.15;
+const FILA_ALTO = 40;
+const SEP_X = 100;
+const SEP_Y = 50;
+const MARGEN = 28;
+const ESCALA_MIN = 0.1;
 const ESCALA_MAX = 3;
 
-const PALETA = [
-  '#1f6feb', '#8250df', '#1a7f37', '#9a6700', '#cf222e',
-  '#0550ae', '#6639ba', '#116329', '#953800',
+const CATEGORIAS = [
+  { fondo: '#0d2e6a', borde: '#1f6feb', etiqueta: 'Base' },
+  { fondo: '#0e3a1a', borde: '#1a7f37', etiqueta: 'Principal' },
+  { fondo: '#3d2a00', borde: '#9a6700', etiqueta: 'Operacional' },
+  { fondo: '#2a1a4a', borde: '#8250df', etiqueta: 'Transaccional' },
 ];
 
 function alturaTabla(tabla) {
   return CABECERA_ALTO + tabla.columnas.length * FILA_ALTO;
 }
 
-function computarPosiciones(tablas) {
-  const pos = {};
-  const numCols = Math.min(COLS_GRILLA, tablas.length);
-  const yPorColumna = Array(numCols).fill(MARGEN);
-  tablas.forEach((tabla, i) => {
-    const col = i % numCols;
-    const x = MARGEN + col * (TABLA_ANCHO + SEP_X);
-    const y = yPorColumna[col];
-    const alto = alturaTabla(tabla);
-    pos[tabla.nombre] = { x, y, alto };
-    yPorColumna[col] += alto + SEP_Y;
+function calcularNiveles(tablas) {
+  const nombres = new Set(tablas.map(t => t.nombre));
+  const niveles = {};
+  const deps = {};
+
+  tablas.forEach(t => {
+    niveles[t.nombre] = 0;
+    deps[t.nombre] = new Set();
   });
+
+  tablas.forEach(t => {
+    t.columnas.forEach(col => {
+      if (col.esForanea && col.referenciaTabla && col.referenciaTabla !== t.nombre && nombres.has(col.referenciaTabla)) {
+        deps[t.nombre].add(col.referenciaTabla);
+      }
+    });
+  });
+
+  let changed = true;
+  let iter = 0;
+  while (changed && iter++ < 50) {
+    changed = false;
+    tablas.forEach(t => {
+      if (deps[t.nombre].size > 0) {
+        const maxDep = Math.max(...[...deps[t.nombre]].map(d => niveles[d] ?? 0));
+        if (maxDep + 1 > niveles[t.nombre]) {
+          niveles[t.nombre] = maxDep + 1;
+          changed = true;
+        }
+      }
+    });
+  }
+
+  return niveles;
+}
+
+function computarPosiciones(tablas) {
+  const niveles = calcularNiveles(tablas);
+  const grupos = {};
+
+  tablas.forEach(t => {
+    const n = niveles[t.nombre];
+    if (!grupos[n]) grupos[n] = [];
+    grupos[n].push(t);
+  });
+
+  const pos = {};
+  Object.keys(grupos).map(Number).sort((a, b) => a - b).forEach(nivel => {
+    const x = MARGEN + nivel * (TABLA_ANCHO + SEP_X);
+    let y = MARGEN;
+    grupos[nivel].forEach(t => {
+      const alto = alturaTabla(t);
+      pos[t.nombre] = { x, y, alto, nivel };
+      y += alto + SEP_Y;
+    });
+  });
+
   return pos;
 }
 
@@ -40,14 +86,38 @@ function calcularDimCanvas(posiciones) {
     maxX = Math.max(maxX, p.x + TABLA_ANCHO + MARGEN);
     maxY = Math.max(maxY, p.y + p.alto + MARGEN);
   });
-  return { w: maxX, h: maxY };
+  return { w: Math.max(maxX, 200), h: Math.max(maxY, 200) };
 }
 
-function generarLineas(tablas, posiciones) {
-  const lineas = [];
+function simboloCrowFoot(x, y, dx, dy) {
+  const px = -dy, py = dx;
+  const fx = x + dx * 12, fy = y + dy * 12;
+  const tx = x + dx * 19, ty = y + dy * 19;
+  return [
+    `M ${fx} ${fy} L ${x} ${y}`,
+    `M ${fx} ${fy} L ${x + px * 7} ${y + py * 7}`,
+    `M ${fx} ${fy} L ${x - px * 7} ${y - py * 7}`,
+    `M ${tx - px * 7} ${ty - py * 7} L ${tx + px * 7} ${ty + py * 7}`,
+  ].join(' ');
+}
+
+function simboloOne(x, y, dx, dy) {
+  const px = -dy, py = dx;
+  const t1x = x + dx * 8, t1y = y + dy * 8;
+  const t2x = x + dx * 15, t2y = y + dy * 15;
+  return [
+    `M ${t1x - px * 7} ${t1y - py * 7} L ${t1x + px * 7} ${t1y + py * 7}`,
+    `M ${t2x - px * 7} ${t2y - py * 7} L ${t2x + px * 7} ${t2y + py * 7}`,
+  ].join(' ');
+}
+
+function generarRelaciones(tablas, posiciones) {
+  const rels = [];
+
   tablas.forEach(tabla => {
     const origen = posiciones[tabla.nombre];
     if (!origen) return;
+
     tabla.columnas.forEach((col, ci) => {
       if (!col.esForanea || !col.referenciaTabla) return;
       const destino = posiciones[col.referenciaTabla];
@@ -59,38 +129,52 @@ function generarLineas(tablas, posiciones) {
       const cxD = destino.x + TABLA_ANCHO / 2;
 
       let x1, y1, x2, y2, cp1x, cp1y, cp2x, cp2y;
+      let d1x, d1y, d2x, d2y;
 
       if (Math.abs(cxO - cxD) > 20) {
         if (cxO < cxD) {
           x1 = origen.x + TABLA_ANCHO; y1 = yFk;
           x2 = destino.x; y2 = yDst;
+          d1x = 1; d1y = 0; d2x = -1; d2y = 0;
         } else {
           x1 = origen.x; y1 = yFk;
           x2 = destino.x + TABLA_ANCHO; y2 = yDst;
+          d1x = -1; d1y = 0; d2x = 1; d2y = 0;
         }
-        const t = Math.min(60, Math.abs(x2 - x1) * 0.45);
-        cp1x = x1 + (x2 > x1 ? t : -t); cp1y = y1;
-        cp2x = x2 + (x2 > x1 ? -t : t); cp2y = y2;
+        const t = Math.min(80, Math.abs(x2 - x1) * 0.4);
+        cp1x = x1 + d1x * t; cp1y = y1;
+        cp2x = x2 + d2x * t; cp2y = y2;
       } else {
         if (origen.y < destino.y) {
           x1 = origen.x + TABLA_ANCHO * 0.5; y1 = origen.y + origen.alto;
           x2 = destino.x + TABLA_ANCHO * 0.5; y2 = destino.y;
+          d1x = 0; d1y = 1; d2x = 0; d2y = -1;
         } else {
           x1 = origen.x + TABLA_ANCHO * 0.5; y1 = origen.y;
           x2 = destino.x + TABLA_ANCHO * 0.5; y2 = destino.y + destino.alto;
+          d1x = 0; d1y = -1; d2x = 0; d2y = 1;
         }
-        const t = Math.abs(y2 - y1) * 0.45;
-        cp1x = x1; cp1y = y1 + (y2 > y1 ? t : -t);
-        cp2x = x2; cp2y = y2 + (y2 > y1 ? -t : t);
+        const t = Math.abs(y2 - y1) * 0.4;
+        cp1x = x1; cp1y = y1 + d1y * t;
+        cp2x = x2; cp2y = y2 + d2y * t;
       }
 
-      lineas.push({ x1, y1, cp1x, cp1y, cp2x, cp2y, x2, y2 });
+      const mx = 0.125 * x1 + 0.375 * cp1x + 0.375 * cp2x + 0.125 * x2;
+      const my = 0.125 * y1 + 0.375 * cp1y + 0.375 * cp2y + 0.125 * y2;
+
+      rels.push({
+        bezier: `M ${x1} ${y1} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`,
+        footOrigen: simboloCrowFoot(x1, y1, d1x, d1y),
+        footDestino: simboloOne(x2, y2, d2x, d2y),
+        mx, my,
+      });
     });
   });
-  return lineas;
+
+  return rels;
 }
 
-export default function DiagramaBD({ tablas, abierto, onCerrar }) {
+export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' }) {
   const [traslado, setTraslado] = useState({ x: 20, y: 20 });
   const [escala, setEscala] = useState(1);
 
@@ -103,7 +187,7 @@ export default function DiagramaBD({ tablas, abierto, onCerrar }) {
 
   const posiciones = useMemo(() => computarPosiciones(tablas), [tablas]);
   const dim = useMemo(() => calcularDimCanvas(posiciones), [posiciones]);
-  const lineas = useMemo(() => generarLineas(tablas, posiciones), [tablas, posiciones]);
+  const relaciones = useMemo(() => generarRelaciones(tablas, posiciones), [tablas, posiciones]);
 
   useEffect(() => {
     if (!abierto || !contenedorRef.current) return;
@@ -120,20 +204,21 @@ export default function DiagramaBD({ tablas, abierto, onCerrar }) {
 
     const onTouchMove = (e) => {
       e.preventDefault();
-      const s = r.current;
-      if (e.touches.length === 1 && s.arrastrando) {
-        setTraslado({ x: e.touches[0].clientX - s.inicioX, y: e.touches[0].clientY - s.inicioY });
-      } else if (e.touches.length === 2 && s.pinchActivo) {
+      const estado = r.current;
+      if (e.touches.length === 1 && estado.arrastrando) {
+        setTraslado({ x: e.touches[0].clientX - estado.inicioX, y: e.touches[0].clientY - estado.inicioY });
+      } else if (e.touches.length === 2 && estado.pinchActivo) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        setEscala(Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, s.escalaInicial * (dist / s.distanciaInicial))));
+        const nueva = Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, estado.escalaInicial * (dist / estado.distanciaInicial)));
+        setEscala(nueva);
       }
     };
 
     const onWheel = (e) => {
       e.preventDefault();
-      setEscala(s => Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, s * (e.deltaY < 0 ? 1.1 : 0.9))));
+      setEscala(prev => Math.min(ESCALA_MAX, Math.max(ESCALA_MIN, prev * (e.deltaY < 0 ? 1.1 : 0.9))));
     };
 
     el.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -158,32 +243,42 @@ export default function DiagramaBD({ tablas, abierto, onCerrar }) {
   const onMouseUp = () => { r.current.arrastrando = false; };
 
   const onTouchStart = (e) => {
-    const s = r.current;
+    const estado = r.current;
     if (e.touches.length === 1) {
-      s.arrastrando = true; s.pinchActivo = false;
-      s.inicioX = e.touches[0].clientX - traslado.x;
-      s.inicioY = e.touches[0].clientY - traslado.y;
+      estado.arrastrando = true; estado.pinchActivo = false;
+      estado.inicioX = e.touches[0].clientX - traslado.x;
+      estado.inicioY = e.touches[0].clientY - traslado.y;
     } else if (e.touches.length === 2) {
-      s.arrastrando = false; s.pinchActivo = true;
+      estado.arrastrando = false; estado.pinchActivo = true;
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
-      s.distanciaInicial = Math.sqrt(dx * dx + dy * dy);
-      s.escalaInicial = escala;
+      estado.distanciaInicial = Math.sqrt(dx * dx + dy * dy);
+      estado.escalaInicial = escala;
     }
   };
   const onTouchEnd = () => { r.current.arrastrando = false; r.current.pinchActivo = false; };
 
+  const fecha = new Date().toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
+
   return (
     <div className="fixed inset-0 z-40 bg-[#0d1117] flex flex-col">
 
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d] flex-shrink-0 bg-[#161b22]">
-        <p className="text-white font-medium text-sm font-sans">📊 Diagrama de tablas</p>
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] flex-shrink-0 bg-[#161b22]">
+        <div>
+          <p className="text-white font-semibold text-sm font-sans">
+            📊 {nombreBD || 'Diagrama ER'}
+          </p>
+          <p className="text-[#484f58] text-[10px] font-sans mt-0.5">
+            SQLab · v1.0 · {fecha}
+          </p>
+        </div>
         <button onClick={onCerrar} className="text-[#8b949e] hover:text-white text-xl leading-none transition-colors">×</button>
       </div>
 
       <div
         ref={contenedorRef}
         className="flex-1 overflow-hidden select-none cursor-grab active:cursor-grabbing"
+        style={{ position: 'relative' }}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -206,72 +301,120 @@ export default function DiagramaBD({ tablas, abierto, onCerrar }) {
             height={dim.h}
             style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', overflow: 'visible' }}
           >
-            <defs>
-              <marker id="punta" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-                <polygon points="0 0, 7 3.5, 0 7" fill="#388bfd" fillOpacity="0.7" />
-              </marker>
-            </defs>
-            {lineas.map((l, i) => (
-              <path
-                key={i}
-                d={`M ${l.x1} ${l.y1} C ${l.cp1x} ${l.cp1y}, ${l.cp2x} ${l.cp2y}, ${l.x2} ${l.y2}`}
-                fill="none"
-                stroke="#388bfd"
-                strokeWidth="1.5"
-                strokeOpacity="0.55"
-                markerEnd="url(#punta)"
-              />
+            {relaciones.map((rel, i) => (
+              <g key={i}>
+                <path d={rel.bezier} fill="none" stroke="#388bfd" strokeWidth="1.5" strokeOpacity="0.4" />
+                <path d={rel.footOrigen} fill="none" stroke="#58a6ff" strokeWidth="1.5" strokeOpacity="0.85" strokeLinecap="round" />
+                <path d={rel.footDestino} fill="none" stroke="#58a6ff" strokeWidth="1.5" strokeOpacity="0.85" strokeLinecap="round" />
+                <rect x={rel.mx - 13} y={rel.my - 8} width={26} height={14} rx={3} fill="#0d1117" fillOpacity="0.9" />
+                <text x={rel.mx} y={rel.my + 3.5} textAnchor="middle" fill="#58a6ff" fontSize="9" fontFamily="monospace" fontWeight="600">1:N</text>
+              </g>
             ))}
           </svg>
 
-          {tablas.map((tabla, i) => {
+          {tablas.map((tabla) => {
             const p = posiciones[tabla.nombre];
-            const color = PALETA[i % PALETA.length];
             if (!p) return null;
+            const cat = CATEGORIAS[Math.min(p.nivel, CATEGORIAS.length - 1)];
             return (
               <div
                 key={tabla.nombre}
                 style={{
-                  position: 'absolute', left: p.x, top: p.y,
+                  position: 'absolute',
+                  left: p.x,
+                  top: p.y,
                   width: TABLA_ANCHO,
-                  border: `1px solid ${color}`,
+                  border: `1px solid ${cat.borde}`,
                   borderRadius: 8,
                   overflow: 'hidden',
-                  background: '#161b22',
+                  background: '#0d1117',
                 }}
               >
-                <div style={{ background: color, padding: '6px 12px' }}>
-                  <p style={{ color: 'white', fontWeight: 700, fontSize: 11, letterSpacing: '0.05em', fontFamily: 'sans-serif' }}>
+                <div style={{ background: cat.fondo, borderBottom: `1px solid ${cat.borde}66`, padding: '5px 10px' }}>
+                  <p style={{ color: 'white', fontWeight: 700, fontSize: 11, fontFamily: 'sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: '0.03em' }}>
                     {tabla.nombre}
                   </p>
                 </div>
                 {tabla.columnas.map(col => (
                   <div
                     key={col.nombre}
-                    style={{ height: FILA_ALTO, borderTop: '1px solid #21262d', padding: '0 8px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+                    style={{ height: FILA_ALTO, borderTop: '1px solid #21262d', padding: '0 8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 1 }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                      {col.esPrimaria && (
-                        <span style={{ color: '#d29922', fontSize: 9, fontWeight: 700, flexShrink: 0 }}>PK</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      {col.esPrimaria && col.esForanea && (
+                        <span style={{ color: '#8250df', fontSize: 8, fontWeight: 700, flexShrink: 0, fontFamily: 'sans-serif' }}>PF</span>
                       )}
-                      {col.esForanea && (
-                        <span style={{ color: '#388bfd', fontSize: 9, fontWeight: 700, flexShrink: 0 }}>FK</span>
+                      {col.esPrimaria && !col.esForanea && (
+                        <span style={{ color: '#d29922', fontSize: 8, fontWeight: 700, flexShrink: 0, fontFamily: 'sans-serif' }}>PK</span>
+                      )}
+                      {col.esForanea && !col.esPrimaria && (
+                        <span style={{ color: '#388bfd', fontSize: 8, fontWeight: 700, flexShrink: 0, fontFamily: 'sans-serif' }}>FK</span>
                       )}
                       {!col.esPrimaria && !col.esForanea && (
-                        <span style={{ color: 'transparent', fontSize: 9, flexShrink: 0 }}>··</span>
+                        <span style={{ color: 'transparent', fontSize: 8, flexShrink: 0, userSelect: 'none' }}>··</span>
                       )}
-                      <span style={{ color: '#e6edf3', fontSize: 11, fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <span style={{ color: '#e6edf3', fontSize: 10, fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                         {col.nombre}
                       </span>
                     </div>
-                    <div style={{ paddingLeft: 20 }}>
-                      <span style={{ color: '#484f58', fontSize: 10, fontFamily: 'monospace' }}>{col.tipo}</span>
+                    <div style={{ paddingLeft: 18 }}>
+                      <span style={{ color: '#6e7681', fontSize: 9, fontFamily: 'monospace', background: '#161b22', padding: '0px 3px', borderRadius: 2 }}>
+                        {col.tipo || 'TEXT'}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
             );
           })}
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 12,
+            right: 12,
+            background: '#161b22',
+            border: '1px solid #30363d',
+            borderRadius: 8,
+            padding: '10px 12px',
+            pointerEvents: 'none',
+            zIndex: 10,
+            minWidth: 140,
+          }}
+        >
+          <p style={{ color: '#8b949e', fontWeight: 700, fontSize: 9, fontFamily: 'sans-serif', letterSpacing: '0.08em', marginBottom: 7 }}>LEYENDA</p>
+
+          <div style={{ display: 'flex', gap: 10, marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: '#d29922', fontSize: 8, fontWeight: 700, fontFamily: 'sans-serif' }}>PK</span>
+              <span style={{ color: '#6e7681', fontSize: 9, fontFamily: 'sans-serif' }}>Primaria</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: '#388bfd', fontSize: 8, fontWeight: 700, fontFamily: 'sans-serif' }}>FK</span>
+              <span style={{ color: '#6e7681', fontSize: 9, fontFamily: 'sans-serif' }}>Foránea</span>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 8 }}>
+            <svg width="130" height="22">
+              <path d="M 12 11 L 0 11 M 12 11 L 0 5 M 12 11 L 0 17 M 19 4 L 19 18" stroke="#58a6ff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <text x="25" y="15" fontSize="9" fill="#6e7681" fontFamily="sans-serif">muchos (N)</text>
+            </svg>
+            <svg width="130" height="20" style={{ marginTop: 2 }}>
+              <path d="M 7 3 L 7 17 M 13 3 L 13 17" stroke="#58a6ff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <text x="25" y="14" fontSize="9" fill="#6e7681" fontFamily="sans-serif">uno (1)</text>
+            </svg>
+          </div>
+
+          <div style={{ borderTop: '1px solid #21262d', paddingTop: 7 }}>
+            {CATEGORIAS.map((cat, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: i < CATEGORIAS.length - 1 ? 4 : 0 }}>
+                <div style={{ width: 8, height: 8, borderRadius: 2, background: cat.borde, flexShrink: 0 }} />
+                <span style={{ color: '#6e7681', fontSize: 9, fontFamily: 'sans-serif' }}>{cat.etiqueta}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
