@@ -4,7 +4,7 @@ const TABLA_ANCHO = 172;
 const CABECERA_ALTO = 30;
 const FILA_ALTO = 40;
 const SEP_X = 100;
-const SEP_Y = 50;
+const SEP_Y = 64;
 const MARGEN = 28;
 const ESCALA_MIN = 0.1;
 const ESCALA_MAX = 3;
@@ -56,6 +56,14 @@ function calcularNiveles(tablas) {
   return niveles;
 }
 
+function baricentro(tabla, posTemp) {
+  const ys = tabla.columnas
+    .filter(col => col.esForanea && col.referenciaTabla && posTemp[col.referenciaTabla] !== undefined)
+    .map(col => posTemp[col.referenciaTabla].y);
+  if (ys.length === 0) return posTemp[tabla.nombre]?.y ?? 0;
+  return ys.reduce((s, y) => s + y, 0) / ys.length;
+}
+
 function computarPosiciones(tablas) {
   const niveles = calcularNiveles(tablas);
   const grupos = {};
@@ -66,8 +74,31 @@ function computarPosiciones(tablas) {
     grupos[n].push(t);
   });
 
+  const nivelesOrdenados = Object.keys(grupos).map(Number).sort((a, b) => a - b);
+  const posTemp = {};
+
+  const asignarY = () => {
+    nivelesOrdenados.forEach(nivel => {
+      let y = MARGEN;
+      grupos[nivel].forEach(t => {
+        posTemp[t.nombre] = { y };
+        y += alturaTabla(t) + SEP_Y;
+      });
+    });
+  };
+
+  asignarY();
+
+  for (let iter = 0; iter < 4; iter++) {
+    nivelesOrdenados.forEach((nivel, li) => {
+      if (li === 0) return;
+      grupos[nivel] = [...grupos[nivel]].sort((a, b) => baricentro(a, posTemp) - baricentro(b, posTemp));
+    });
+    asignarY();
+  }
+
   const pos = {};
-  Object.keys(grupos).map(Number).sort((a, b) => a - b).forEach(nivel => {
+  nivelesOrdenados.forEach(nivel => {
     const x = MARGEN + nivel * (TABLA_ANCHO + SEP_X);
     let y = MARGEN;
     grupos[nivel].forEach(t => {
@@ -192,9 +223,9 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
   useEffect(() => {
     if (!abierto || !contenedorRef.current) return;
     const { clientWidth, clientHeight } = contenedorRef.current;
-    const eFit = Math.min((clientWidth - 40) / dim.w, (clientHeight - 40) / dim.h, 1);
+    const eFit = Math.min((clientWidth - 80) / dim.w, (clientHeight - 80) / dim.h, 1);
     setEscala(Math.max(ESCALA_MIN, eFit));
-    setTraslado({ x: 20, y: 20 });
+    setTraslado({ x: 40, y: 40 });
   }, [abierto, dim.w, dim.h]);
 
   useEffect(() => {
@@ -306,8 +337,8 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
                 <path d={rel.bezier} fill="none" stroke="#388bfd" strokeWidth="1.5" strokeOpacity="0.4" />
                 <path d={rel.footOrigen} fill="none" stroke="#58a6ff" strokeWidth="1.5" strokeOpacity="0.85" strokeLinecap="round" />
                 <path d={rel.footDestino} fill="none" stroke="#58a6ff" strokeWidth="1.5" strokeOpacity="0.85" strokeLinecap="round" />
-                <rect x={rel.mx - 13} y={rel.my - 8} width={26} height={14} rx={3} fill="#0d1117" fillOpacity="0.9" />
-                <text x={rel.mx} y={rel.my + 3.5} textAnchor="middle" fill="#58a6ff" fontSize="9" fontFamily="monospace" fontWeight="600">1:N</text>
+                <rect x={rel.mx - 16} y={rel.my - 10} width={32} height={18} rx={4} fill="#0d1117" fillOpacity="0.88" />
+                <text x={rel.mx} y={rel.my + 5} textAnchor="middle" fill="#58a6ff" fontSize="12" fontFamily="monospace" fontWeight="700">1:N</text>
               </g>
             ))}
           </svg>
