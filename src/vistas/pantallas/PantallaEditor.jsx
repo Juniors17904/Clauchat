@@ -5,6 +5,7 @@ import CaritaEstado from '../editor/CaritaEstado';
 import AutocompletadorSQL from '../editor/AutocompletadorSQL';
 import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
+import DiagramaBD from '../editor/DiagramaBD';
 
 export default function PantallaEditor({ ejercicio, onVolver }) {
   const [consulta, setConsulta] = useState('');
@@ -15,6 +16,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   const [mostrarPista, setMostrarPista] = useState(false);
   const [indicePista, setIndicePista] = useState(0);
   const [drawerAbierto, setDrawerAbierto] = useState(false);
+  const [diagramaAbierto, setDiagramaAbierto] = useState(false);
   const [tablas, setTablas] = useState([]);
 
   const controlador = useRef(new ControladorEditor());
@@ -96,8 +98,16 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
         <div className="flex items-center gap-3">
           <CaritaEstado estado={estado} />
           <button
+            onClick={() => setDiagramaAbierto(true)}
+            className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+            title="Ver diagrama"
+          >
+            📊
+          </button>
+          <button
             onClick={() => setDrawerAbierto(true)}
             className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+            title="Explorar tablas"
           >
             🗄️
           </button>
@@ -160,6 +170,13 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
           <PanelResultados resultado={resultado} />
         </div>
       </div>
+
+      {/* Diagrama de tablas */}
+      <DiagramaBD
+        tablas={tablas}
+        abierto={diagramaAbierto}
+        onCerrar={() => setDiagramaAbierto(false)}
+      />
 
       {/* Drawer explorador */}
       <DrawerExplorador

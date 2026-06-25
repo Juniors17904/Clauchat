@@ -80,8 +80,19 @@ export class ControladorEditor {
       if (!res.length) return [];
       return res[0].values.map(([nombre]) => {
         const info = this.#db.exec(`PRAGMA table_info("${nombre}")`);
+        const fkRes = this.#db.exec(`PRAGMA foreign_key_list("${nombre}")`);
+        const fkMap = {};
+        if (fkRes.length) {
+          fkRes[0].values.forEach(fk => { fkMap[fk[3]] = fk[2]; });
+        }
         const columnas = info.length
-          ? info[0].values.map(fila => new InfoColumna({ nombre: fila[1], tipo: fila[2], esPrimaria: fila[5] === 1 }))
+          ? info[0].values.map(fila => new InfoColumna({
+              nombre: fila[1],
+              tipo: fila[2],
+              esPrimaria: fila[5] === 1,
+              esForanea: !!fkMap[fila[1]],
+              referenciaTabla: fkMap[fila[1]] || null,
+            }))
           : [];
         return new InfoTabla({ nombre, columnas });
       });
