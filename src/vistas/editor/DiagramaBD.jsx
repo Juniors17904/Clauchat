@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 
 const TABLA_ANCHO = 172;
 const CABECERA_ALTO = 30;
@@ -241,7 +241,7 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
   const dim = useMemo(() => calcularDimCanvas(posiciones), [posiciones]);
   const relaciones = useMemo(() => generarRelaciones(tablas, posiciones), [tablas, posiciones]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!abierto || !contenedorRef.current) return;
     const { clientWidth, clientHeight } = contenedorRef.current;
     const eFit = Math.min((clientWidth - 80) / dim.w, (clientHeight - 80) / dim.h, 1);
