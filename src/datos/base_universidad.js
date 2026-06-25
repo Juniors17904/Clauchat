@@ -1,11 +1,17 @@
 import { BaseDatos } from '../modelos/base_datos';
 
-export const BASE_UNIVERSIDAD = new BaseDatos({
-  id: 'universidad',
-  nombre: 'Universidad',
-  descripcion: 'Estudiantes, carreras, profesores, cursos y matrículas',
-  icono: '🏫',
-  esquemaSQL: `
+export class BaseDatosUniversidad extends BaseDatos {
+  constructor() {
+    super({
+      id: 'universidad',
+      nombre: 'Universidad',
+      descripcion: 'Estudiantes, carreras, profesores, cursos y matrículas',
+      icono: '🏫',
+    });
+  }
+
+  get esquemaSQL() {
+    return `
 CREATE TABLE facultades (
   id INTEGER PRIMARY KEY,
   nombre TEXT NOT NULL,
@@ -301,5 +307,6 @@ INSERT INTO pagos VALUES
 (38,8,150000,'2024-09-01','Certificado de notas'),
 (39,10,250000,'2023-08-08','Derecho a examen'),
 (40,14,150000,'2022-09-03','Certificado de notas');
-`,
-});
+`;
+  }
+}

@@ -1,21 +1,15 @@
-export class NivelEstudio {
-  #id;
-  #nombre;
-  #descripcion;
+import { EntidadCatalogo } from './entidad_catalogo';
+
+export class NivelEstudio extends EntidadCatalogo {
   #orden;
   #areaId;
 
   constructor({ id, nombre, descripcion, orden, areaId }) {
-    this.#id = id;
-    this.#nombre = nombre;
-    this.#descripcion = descripcion;
+    super({ id, nombre, descripcion });
     this.#orden = orden;
     this.#areaId = areaId;
   }
 
-  get id() { return this.#id; }
-  get nombre() { return this.#nombre; }
-  get descripcion() { return this.#descripcion; }
   get orden() { return this.#orden; }
   get areaId() { return this.#areaId; }
 }

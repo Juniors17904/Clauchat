@@ -196,6 +196,16 @@ class GestorPreguntas { }
 
 ---
 
+## Jerarquía de clases actual
+
+| Superclase        | Subclases                                                        | Propósito                              |
+|-------------------|------------------------------------------------------------------|----------------------------------------|
+| EntidadCatalogo   | AreaEstudio, NivelEstudio                                        | Entidades con id, nombre, descripcion  |
+| BaseDatos         | BaseDatosUniversidad, BaseDatosDeportes, BaseDatosHospital       | Bases de datos con esquemaSQL override |
+| ControladorBase   | ControladorEditor                                                | Controladores con iniciar() y destruir() |
+
+---
+
 ## Ramas y flujo de trabajo
 
 - Desarrollar en la rama de feature designada para cada sesión
@@ -204,15 +214,15 @@ class GestorPreguntas { }
 
 ### Flujo obligatorio para que Vercel despliegue
 
-Vercel está conectado al repositorio de GitHub y despliega automáticamente cada vez que detecta un push a `main`. Por eso, después de cada cambio:
+Vercel está conectado al repositorio de GitHub y despliega automáticamente cada vez que detecta un push a `master`. Por eso, después de cada cambio:
 
 ```
 git push origin <rama-feature>
-git checkout main
+git checkout master
 git merge <rama-feature>
-git push origin main
+git push origin master
 ```
 
-- El sitio se sirve desde `main` (Vercel apunta a `main`)
-- NUNCA dejar cambios solo en la rama de desarrollo sin mergear a `main`
-- SIEMPRE hacer el merge y push a `main` al terminar cada cambio
+- El sitio se sirve desde `master` (Vercel apunta a `master`)
+- NUNCA dejar cambios solo en la rama de desarrollo sin mergear a `master`
+- SIEMPRE hacer el merge y push a `master` al terminar cada cambio

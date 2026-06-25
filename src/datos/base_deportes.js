@@ -1,11 +1,17 @@
 import { BaseDatos } from '../modelos/base_datos';
 
-export const BASE_DEPORTES = new BaseDatos({
-  id: 'deportes',
-  nombre: 'Deportes',
-  descripcion: 'Equipos, jugadores, partidos, goles y transferencias',
-  icono: '⚽',
-  esquemaSQL: `
+export class BaseDatosDeportes extends BaseDatos {
+  constructor() {
+    super({
+      id: 'deportes',
+      nombre: 'Deportes',
+      descripcion: 'Equipos, jugadores, partidos, goles y transferencias',
+      icono: '⚽',
+    });
+  }
+
+  get esquemaSQL() {
+    return `
 CREATE TABLE deportes (
   id INTEGER PRIMARY KEY,
   nombre TEXT NOT NULL,
@@ -304,5 +310,6 @@ INSERT INTO patrocinadores VALUES
 (18,'Wyscout','Tecnología',15,150000,'2023-07-01'),
 (19,'Movistar','Telecomunicaciones',11,250000,'2022-01-01'),
 (20,'Samsung','Tecnología',10,15000000,'2021-07-01');
-`,
-});
+`;
+  }
+}

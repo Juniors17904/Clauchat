@@ -1,3 +1,4 @@
+import { ControladorBase } from './controlador_base';
 import { ResultadoConsulta } from '../modelos/resultado_consulta';
 import { InfoTabla } from '../modelos/info_tabla';
 import { InfoColumna } from '../modelos/info_columna';
@@ -12,11 +13,12 @@ const PALABRAS_SQL = [
   'PRIMARY KEY', 'FOREIGN KEY', 'REFERENCES', 'ASC', 'DESC',
 ];
 
-export class ControladorEditor {
+export class ControladorEditor extends ControladorBase {
   #db;
   #ejercicio;
 
   constructor() {
+    super();
     this.#db = null;
     this.#ejercicio = null;
   }

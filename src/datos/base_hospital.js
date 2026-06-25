@@ -1,11 +1,17 @@
 import { BaseDatos } from '../modelos/base_datos';
 
-export const BASE_HOSPITAL = new BaseDatos({
-  id: 'hospital',
-  nombre: 'Hospital',
-  descripcion: 'Pacientes, médicos, consultas, hospitalizaciones y recetas',
-  icono: '🏥',
-  esquemaSQL: `
+export class BaseDatosHospital extends BaseDatos {
+  constructor() {
+    super({
+      id: 'hospital',
+      nombre: 'Hospital',
+      descripcion: 'Pacientes, médicos, consultas, hospitalizaciones y recetas',
+      icono: '🏥',
+    });
+  }
+
+  get esquemaSQL() {
+    return `
 CREATE TABLE especialidades (
   id INTEGER PRIMARY KEY,
   nombre TEXT NOT NULL,
@@ -364,5 +370,6 @@ INSERT INTO recetas VALUES
 (38,30,12,'1mg','1 vez al noche',30),
 (39,30,21,'100mg','1 vez al día',90),
 (40,31,23,'5mg','1 vez al día',90);
-`,
-});
+`;
+  }
+}
