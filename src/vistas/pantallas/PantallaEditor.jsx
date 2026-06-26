@@ -79,9 +79,6 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente }) {
   const ejecutar = () => {
     const res = controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
-    if (ejercicio) {
-      setEstado(controlador.current.verificarCorreccion(res) ? 'feliz' : 'triste');
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -186,7 +183,7 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente }) {
       </div>
 
       {/* Banner de éxito */}
-      {estado === 'feliz' && (
+      {estado === 'feliz' && resultado !== null && (
         <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d2117] border-t border-[#238636] flex-shrink-0">
           <p className="text-[#3fb950] text-sm font-sans">¡Correcto!</p>
           <button

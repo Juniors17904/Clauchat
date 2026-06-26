@@ -50,10 +50,13 @@ export class ControladorEditor extends ControladorBase {
 
   evaluarEstado(consulta) {
     const texto = consulta.trim();
-    if (!texto) return 'neutral';
-    const palabrasSQL = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE'];
-    const tieneEstructura = palabrasSQL.some(p => texto.toUpperCase().includes(p));
-    return tieneEstructura ? 'pensando' : 'neutral';
+    if (!texto || !this.#db) return 'neutral';
+    const res = this.ejecutarConsulta(texto);
+    if (res.error) return 'pensando';
+    if (this.#ejercicio) {
+      return this.verificarCorreccion(res) ? 'feliz' : 'pensando';
+    }
+    return 'pensando';
   }
 
   verificarCorreccion(resultado) {
