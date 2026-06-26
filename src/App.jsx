@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
+import PantallaTemas from './vistas/pantallas/PantallaTemas';
 import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
@@ -11,6 +12,7 @@ export default function App() {
   const [pantalla, setPantalla] = useState('areas');
   const [areaActual, setAreaActual] = useState(null);
   const [nivelActual, setNivelActual] = useState(null);
+  const [temaActual, setTemaActual] = useState(null);
   const [ejercicioActual, setEjercicioActual] = useState(null);
   const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
   const ctrlPerfil = useRef(new ControladorPerfil());
@@ -30,9 +32,15 @@ export default function App() {
     window.history.pushState({ pantalla: 'niveles' }, '');
   };
 
-  const irAEjercicios = (nivel) => {
+  const irATemas = (nivel) => {
     setNivelActual(nivel);
-    const mezclados = [...EJERCICIOS.filter(e => e.nivelId === nivel.id)]
+    setPantalla('temas');
+    window.history.pushState({ pantalla: 'temas' }, '');
+  };
+
+  const irAEjercicios = (tema) => {
+    setTemaActual(tema);
+    const mezclados = [...EJERCICIOS.filter(e => e.temaId === tema.id)]
       .sort(() => Math.random() - 0.5);
     setEjerciciosOrdenados(mezclados);
     setPantalla('ejercicios');
@@ -74,8 +82,18 @@ export default function App() {
         nivel={nivelActual}
         ejercicios={ejerciciosOrdenados}
         onSeleccionar={irAEditor}
-        onVolver={() => setPantalla('niveles')}
+        onVolver={() => setPantalla('temas')}
         controladorPerfil={ctrlPerfil.current}
+      />
+    );
+  }
+
+  if (pantalla === 'temas') {
+    return (
+      <PantallaTemas
+        nivel={nivelActual}
+        onSeleccionar={irAEjercicios}
+        onVolver={() => setPantalla('niveles')}
       />
     );
   }
@@ -84,7 +102,7 @@ export default function App() {
     return (
       <PantallaNiveles
         area={areaActual}
-        onSeleccionar={irAEjercicios}
+        onSeleccionar={irATemas}
         onVolver={() => setPantalla('areas')}
       />
     );
