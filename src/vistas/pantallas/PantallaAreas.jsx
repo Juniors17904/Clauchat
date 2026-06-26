@@ -1,12 +1,29 @@
+import { useState } from 'react';
 import { AREAS } from '../../datos/areas';
+import DrawerPerfil from './DrawerPerfil';
 
-export default function PantallaAreas({ onSeleccionar }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil }) {
+  const [perfilAbierto, setPerfilAbierto] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center px-4">
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl font-bold text-white tracking-tight">SQLab</h1>
+      <div className="mb-10 text-center relative">
+        <button
+          onClick={() => setPerfilAbierto(true)}
+          className="absolute -right-16 top-0 text-[#8b949e] hover:text-white transition-colors text-xl"
+          title="Ver perfil"
+        >
+          👤
+        </button>
+        <h1 className="text-3xl font-bold text-white tracking-tight">Sqlaboratorio</h1>
         <p className="text-[#8b949e] mt-2 text-sm">Elige un área de estudio</p>
       </div>
+
+      <DrawerPerfil
+        controlador={controladorPerfil}
+        abierto={perfilAbierto}
+        onCerrar={() => setPerfilAbierto(false)}
+      />
 
       <div className="w-full max-w-sm space-y-3">
         {AREAS.map(area => (
