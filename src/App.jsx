@@ -3,6 +3,7 @@ import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
+import { EJERCICIOS } from './datos/ejercicios';
 
 export default function App() {
   const [pantalla, setPantalla] = useState('areas');
@@ -38,10 +39,15 @@ export default function App() {
   };
 
   if (pantalla === 'editor') {
+    const ejerciciosDelNivel = EJERCICIOS.filter(e => e.nivelId === nivelActual?.id);
+    const indiceActual = ejerciciosDelNivel.findIndex(e => e.id === ejercicioActual?.id);
+    const siguienteEjercicio = ejerciciosDelNivel[indiceActual + 1] ?? null;
+
     return (
       <PantallaEditor
         ejercicio={ejercicioActual}
         onVolver={() => setPantalla('ejercicios')}
+        onSiguiente={siguienteEjercicio ? () => irAEditor(siguienteEjercicio) : null}
       />
     );
   }

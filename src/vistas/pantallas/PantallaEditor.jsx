@@ -7,7 +7,7 @@ import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 
-export default function PantallaEditor({ ejercicio, onVolver }) {
+export default function PantallaEditor({ ejercicio, onVolver, onSiguiente }) {
   const [consulta, setConsulta] = useState('');
   const [resultado, setResultado] = useState(null);
   const [estado, setEstado] = useState('neutral');
@@ -28,6 +28,12 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   useEffect(() => {
     const ctrl = controlador.current;
     setCargando(true);
+    setConsulta('');
+    setResultado(null);
+    setEstado('neutral');
+    setSugerencias([]);
+    setMostrarPista(false);
+    setIndicePista(0);
 
     import('sql.js').then(mod => {
       const SqlJs = mod.default ?? mod;
@@ -73,6 +79,9 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   const ejecutar = () => {
     const res = controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
+    if (ejercicio) {
+      setEstado(controlador.current.verificarCorreccion(res) ? 'feliz' : 'triste');
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -175,6 +184,19 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
           </button>
         </div>
       </div>
+
+      {/* Banner de éxito */}
+      {estado === 'feliz' && (
+        <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d2117] border-t border-[#238636] flex-shrink-0">
+          <p className="text-[#3fb950] text-sm font-sans">¡Correcto!</p>
+          <button
+            onClick={onSiguiente ?? onVolver}
+            className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-md transition-colors font-sans"
+          >
+            {onSiguiente ? 'Siguiente ejercicio →' : 'Volver a ejercicios'}
+          </button>
+        </div>
+      )}
 
       {/* Panel de resultados */}
       <div className={`${resultado ? 'flex-[60]' : 'flex-none'} border-t border-[#30363d] bg-[#161b22] min-h-0 flex flex-col`}>

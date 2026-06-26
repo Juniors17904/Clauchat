@@ -51,21 +51,30 @@ export class ControladorEditor extends ControladorBase {
   evaluarEstado(consulta) {
     const texto = consulta.trim();
     if (!texto) return 'neutral';
-
     const palabrasSQL = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE'];
     const tieneEstructura = palabrasSQL.some(p => texto.toUpperCase().includes(p));
+    return tieneEstructura ? 'pensando' : 'neutral';
+  }
 
-    if (!tieneEstructura) return 'pensando';
-
-    if (this.#ejercicio) {
-      const esperada = this.#ejercicio.consultaEsperada.trim().toUpperCase();
-      const actual = texto.toUpperCase();
-      if (actual === esperada) return 'feliz';
-      if (esperada.startsWith(actual.slice(0, 6))) return 'pensando';
-      return 'triste';
+  verificarCorreccion(resultado) {
+    if (!this.#ejercicio?.consultaEsperada || !this.#db) return false;
+    if (resultado.error) return false;
+    try {
+      const esperados = this.#db.exec(this.#ejercicio.consultaEsperada.trim());
+      const colsEsp = esperados.length ? esperados[0].columns : [];
+      const filasEsp = esperados.length ? esperados[0].values : [];
+      const colsAct = resultado.columnas ?? [];
+      const filasAct = resultado.filas ?? [];
+      if (colsEsp.length !== colsAct.length) return false;
+      if (filasEsp.length !== filasAct.length) return false;
+      const mismasCols = colsEsp.every((c, i) => c.toLowerCase() === colsAct[i]?.toLowerCase());
+      if (!mismasCols) return false;
+      return filasEsp.every((fila, i) =>
+        fila.every((val, j) => String(val ?? '') === String(filasAct[i]?.[j] ?? ''))
+      );
+    } catch {
+      return false;
     }
-
-    return 'pensando';
   }
 
   sugerirAutocompletado(texto) {
