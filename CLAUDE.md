@@ -196,6 +196,26 @@ class GestorPreguntas { }
 
 ---
 
+## Diseño visual
+
+- El estilo es similar a **Visual Studio Code**: fondo oscuro `#0d1117`, paneles `#161b22`, bordes `#30363d`, texto principal `#e6edf3`, texto secundario `#8b949e`
+- Fuente monoespaciada (`font-mono`) para el editor SQL y datos; `font-sans` para textos de UI
+- Sin modales grandes ni popups intrusivos — preferir **banners discretos** dentro de la misma pantalla
+- Animaciones mínimas y funcionales, nunca decorativas
+
+---
+
+## Flujo de ejercicios
+
+- El alumno **debe acertar** para poder avanzar al siguiente ejercicio
+- La validación compara los **resultados** de la consulta (filas y columnas), no el texto SQL
+- Al acertar: mostrar banner discreto de éxito con botón "Siguiente ejercicio"
+- Al ser el último ejercicio del nivel: mostrar banner con botón "Volver a ejercicios"
+- El **progreso se guarda en `localStorage`**: qué ejercicios completó el alumno por nivel
+- Clase responsable del progreso: `GestorProgreso` en `gestor_progreso.js`
+
+---
+
 ## Jerarquía de clases actual
 
 | Superclase        | Subclases                                                        | Propósito                              |
