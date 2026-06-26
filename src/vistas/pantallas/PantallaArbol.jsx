@@ -18,7 +18,7 @@ export default function PantallaArbol({ onVolver }) {
   const [nivelAbierto, setNivelAbierto] = useState(null);
   const [temaAbierto, setTemaAbierto] = useState(null);
 
-  const sqlNiveles = NIVELES.filter(n => n.areaId === 'sql');
+  const sqlNiveles = NIVELES.filter(n => n.areaId === 'bases-de-datos');
   const totalEjercicios = EJERCICIOS.length;
   const totalTemas = TEMAS.length;
   const temasConEjercicios = TEMAS.filter(t => EJERCICIOS.some(e => e.temaId === t.id)).length;
