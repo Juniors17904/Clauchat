@@ -12,11 +12,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png'],
       manifest: {
-        name: 'Claude Chat',
-        short_name: 'Claude',
-        description: 'Chat con Claude AI',
-        theme_color: '#1a1a1a',
-        background_color: '#1a1a1a',
+        name: 'SQLab',
+        short_name: 'SQLab',
+        description: 'Aprende SQL desde básico hasta nivel senior',
+        version: '0.2.0',
+        theme_color: '#0d1117',
+        background_color: '#0d1117',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
