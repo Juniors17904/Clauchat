@@ -52,21 +52,9 @@ export default function DrawerExplorador({ tablas, onObtenerDatos, abierto, onCe
                     <span className="text-[#e6edf3] text-sm font-medium">{tabla.nombre}</span>
                   </button>
 
-                  {/* Columnas + datos: solo si está activa */}
+                  {/* Datos: solo si está activa */}
                   {activa && (
                     <>
-                      <div className="bg-[#0d1117] px-4 py-2 border-b border-[#21262d]">
-                        {tabla.columnas.map(col => (
-                          <div key={col.nombre} className="flex items-center justify-between py-1">
-                            <div className="flex items-center gap-1.5">
-                              {col.esPrimaria && <span className="text-[#d29922] text-xs">🔑</span>}
-                              <span className="text-[#e6edf3] text-xs font-mono">{col.nombre}</span>
-                            </div>
-                            <span className="text-[#484f58] text-xs font-mono">{col.tipo}</span>
-                          </div>
-                        ))}
-                      </div>
-
                       {datosTabla && (
                         <div className="border-b border-[#30363d]">
                           <p className="text-[#388bfd] text-xs px-4 py-2 font-sans bg-[#1c2128]">
