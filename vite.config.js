@@ -16,6 +16,7 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        globIgnores: ['**/*.wasm', '**/*.data'],
       },
       manifest: {
         name: 'Sqlaboratorio',
