@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AREAS } from '../../datos/areas';
 import DrawerPerfil from './DrawerPerfil';
 
-export default function PantallaAreas({ onSeleccionar, controladorPerfil }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol }) {
   const [perfilAbierto, setPerfilAbierto] = useState(false);
 
   return (
@@ -23,6 +23,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil }) {
         controlador={controladorPerfil}
         abierto={perfilAbierto}
         onCerrar={() => setPerfilAbierto(false)}
+        onVerArbol={onVerArbol}
       />
 
       <div className="w-full max-w-sm space-y-3">

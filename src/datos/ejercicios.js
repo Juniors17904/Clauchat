@@ -1,13 +1,12 @@
 import { Ejercicio } from '../modelos/ejercicio';
 
 export const EJERCICIOS = [
-  // ── NIVEL 1 — Fundamentos ─────────────────────────────────────────────
+  // ── NIVEL 1 · TEMA 1 — SELECT, FROM ─────────────────────────────────────
   new Ejercicio({
-    id: 'univ-n1-01',
+    id: 'n1-t1-01',
     titulo: 'Todos los estudiantes',
     enunciado: 'Obtén el nombre, apellido y promedio de todos los estudiantes.',
-    nivelId: 'nivel1',
-    baseDatosId: 'universidad',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT nombre, apellido, promedio FROM estudiantes',
     pistas: [
       'Usa SELECT para elegir columnas específicas',
@@ -16,11 +15,68 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'dep-n1-01',
+    id: 'n1-t1-02',
+    titulo: 'Equipos de fútbol',
+    enunciado: 'Obtén el nombre y ciudad de todos los equipos.',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre, ciudad FROM equipos',
+    pistas: [
+      'La tabla se llama equipos',
+      'Selecciona las columnas nombre y ciudad',
+      'No necesitas WHERE ni ORDER BY',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t1-03',
+    titulo: 'Lista de médicos',
+    enunciado: 'Obtén el nombre y apellido de todos los médicos.',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT nombre, apellido FROM medicos',
+    pistas: [
+      'La tabla se llama medicos',
+      'Solo necesitas dos columnas: nombre y apellido',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t1-04',
+    titulo: 'Carreras universitarias',
+    enunciado: 'Obtén el nombre y la duración en años de todas las carreras.',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre, duracion_anios FROM carreras',
+    pistas: [
+      'La tabla se llama carreras',
+      'La columna de duración se llama duracion_anios',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t1-05',
+    titulo: 'Datos de jugadores',
+    enunciado: 'Obtén el nombre, apellido y posición de todos los jugadores.',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre, apellido, posicion FROM jugadores',
+    pistas: [
+      'La tabla se llama jugadores',
+      'Selecciona tres columnas: nombre, apellido, posicion',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t1-06',
+    titulo: 'Medicamentos disponibles',
+    enunciado: 'Obtén el nombre y precio de todos los medicamentos.',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT nombre, precio FROM medicamentos',
+    pistas: [
+      'La tabla se llama medicamentos',
+      'Selecciona las columnas nombre y precio',
+    ],
+  }),
+
+  // ── NIVEL 1 · TEMA 2 — WHERE con =, !=, >, < ────────────────────────────
+  new Ejercicio({
+    id: 'n1-t2-01',
     titulo: 'Jugadores de Chile',
     enunciado: 'Obtén el nombre, apellido y posición de todos los jugadores de nacionalidad chilena.',
-    nivelId: 'nivel1',
-    baseDatosId: 'deportes',
+    nivelId: 'nivel1', temaId: 'n1-t2', baseDatosId: 'deportes',
     consultaEsperada: "SELECT nombre, apellido, posicion FROM jugadores WHERE nacionalidad = 'Chile'",
     pistas: [
       'Usa WHERE para filtrar por nacionalidad',
@@ -29,11 +85,10 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'hosp-n1-01',
+    id: 'n1-t2-02',
     titulo: 'Médicos del turno mañana',
     enunciado: "Obtén el nombre, apellido y especialidad_id de todos los médicos que trabajan en el turno 'Mañana'.",
-    nivelId: 'nivel1',
-    baseDatosId: 'hospital',
+    nivelId: 'nivel1', temaId: 'n1-t2', baseDatosId: 'hospital',
     consultaEsperada: "SELECT nombre, apellido, especialidad_id FROM medicos WHERE turno = 'Mañana'",
     pistas: [
       'La tabla se llama medicos',
@@ -42,11 +97,10 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'univ-n1-02',
+    id: 'n1-t2-03',
     titulo: 'Estudiantes con buen promedio',
     enunciado: 'Obtén todos los datos de los estudiantes cuyo promedio sea mayor o igual a 6.5.',
-    nivelId: 'nivel1',
-    baseDatosId: 'universidad',
+    nivelId: 'nivel1', temaId: 'n1-t2', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT * FROM estudiantes WHERE promedio >= 6.5',
     pistas: [
       'Usa WHERE para filtrar filas',
@@ -54,12 +108,16 @@ export const EJERCICIOS = [
       'Ejemplo: WHERE columna >= valor',
     ],
   }),
+
+  // ── NIVEL 1 · TEMA 3 — AND, OR, NOT ─────────────────────────────────────
+  // (pendiente — se agregan en próxima iteración)
+
+  // ── NIVEL 1 · TEMA 4 — ORDER BY ASC/DESC ────────────────────────────────
   new Ejercicio({
-    id: 'dep-n1-02',
+    id: 'n1-t4-01',
     titulo: 'Equipos fundados antes de 1910',
     enunciado: 'Obtén el nombre y año de fundación de los equipos fundados antes de 1910, ordenados por fundación ascendente.',
-    nivelId: 'nivel1',
-    baseDatosId: 'deportes',
+    nivelId: 'nivel1', temaId: 'n1-t4', baseDatosId: 'deportes',
     consultaEsperada: 'SELECT nombre, fundacion FROM equipos WHERE fundacion < 1910 ORDER BY fundacion ASC',
     pistas: [
       'La columna de año se llama fundacion',
@@ -68,11 +126,10 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'hosp-n1-02',
+    id: 'n1-t4-02',
     titulo: 'Medicamentos económicos',
     enunciado: 'Obtén el nombre y precio de los medicamentos con precio menor a 6000, ordenados por precio ascendente.',
-    nivelId: 'nivel1',
-    baseDatosId: 'hospital',
+    nivelId: 'nivel1', temaId: 'n1-t4', baseDatosId: 'hospital',
     consultaEsperada: 'SELECT nombre, precio FROM medicamentos WHERE precio < 6000 ORDER BY precio ASC',
     pistas: [
       'La tabla se llama medicamentos',
@@ -80,12 +137,13 @@ export const EJERCICIOS = [
       'Luego ORDER BY precio ASC',
     ],
   }),
+
+  // ── NIVEL 1 · TEMA 5 — LIMIT ─────────────────────────────────────────────
   new Ejercicio({
-    id: 'univ-n1-03',
+    id: 'n1-t5-01',
     titulo: 'Top 5 estudiantes',
     enunciado: 'Obtén el nombre, apellido y promedio de los 5 estudiantes con mayor promedio.',
-    nivelId: 'nivel1',
-    baseDatosId: 'universidad',
+    nivelId: 'nivel1', temaId: 'n1-t5', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT nombre, apellido, promedio FROM estudiantes ORDER BY promedio DESC LIMIT 5',
     pistas: [
       'Primero ordena de mayor a menor con ORDER BY promedio DESC',
@@ -93,12 +151,13 @@ export const EJERCICIOS = [
       'LIMIT va al final de la consulta',
     ],
   }),
+
+  // ── NIVEL 1 · TEMA 6 — DISTINCT ──────────────────────────────────────────
   new Ejercicio({
-    id: 'dep-n1-03',
+    id: 'n1-t6-01',
     titulo: 'Nacionalidades únicas',
     enunciado: 'Obtén la lista de todas las nacionalidades diferentes que tienen los jugadores.',
-    nivelId: 'nivel1',
-    baseDatosId: 'deportes',
+    nivelId: 'nivel1', temaId: 'n1-t6', baseDatosId: 'deportes',
     consultaEsperada: 'SELECT DISTINCT nacionalidad FROM jugadores',
     pistas: [
       'DISTINCT elimina duplicados',
@@ -106,13 +165,19 @@ export const EJERCICIOS = [
       'Solo necesitas una columna: nacionalidad',
     ],
   }),
-  // ── NIVEL 2 — Agrupación ──────────────────────────────────────────────
+
+  // ── NIVEL 1 · TEMA 7 — IS NULL / IS NOT NULL ─────────────────────────────
+  // (pendiente — se agregan en próxima iteración)
+
+  // ── NIVEL 1 · TEMA 8 — LIKE, BETWEEN, IN ─────────────────────────────────
+  // (pendiente — se agregan en próxima iteración)
+
+  // ── NIVEL 2 · TEMA 1 — COUNT, SUM, AVG, MAX, MIN ─────────────────────────
   new Ejercicio({
-    id: 'univ-n2-01',
+    id: 'n2-t1-01',
     titulo: 'Promedio general',
     enunciado: 'Obtén el promedio de todos los promedios de estudiantes, el máximo y el mínimo. Llama a las columnas promedio_general, maximo y minimo.',
-    nivelId: 'nivel2',
-    baseDatosId: 'universidad',
+    nivelId: 'nivel2', temaId: 'n2-t1', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT AVG(promedio) AS promedio_general, MAX(promedio) AS maximo, MIN(promedio) AS minimo FROM estudiantes',
     pistas: [
       'Usa AVG() para el promedio, MAX() y MIN()',
@@ -120,12 +185,13 @@ export const EJERCICIOS = [
       'No necesitas GROUP BY porque es un solo resultado global',
     ],
   }),
+
+  // ── NIVEL 2 · TEMA 2 — GROUP BY ──────────────────────────────────────────
   new Ejercicio({
-    id: 'dep-n2-01',
+    id: 'n2-t2-01',
     titulo: 'Jugadores por equipo',
     enunciado: 'Obtén el id de cada equipo y la cantidad de jugadores que tiene. Llama a la cuenta total_jugadores.',
-    nivelId: 'nivel2',
-    baseDatosId: 'deportes',
+    nivelId: 'nivel2', temaId: 'n2-t2', baseDatosId: 'deportes',
     consultaEsperada: 'SELECT equipo_id, COUNT(*) AS total_jugadores FROM jugadores GROUP BY equipo_id',
     pistas: [
       'COUNT(*) cuenta todas las filas del grupo',
@@ -134,11 +200,23 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'hosp-n2-01',
+    id: 'n2-t2-02',
+    titulo: 'Promedio por carrera',
+    enunciado: 'Obtén el id de cada carrera y el promedio de sus estudiantes. Llama al resultado promedio_carrera.',
+    nivelId: 'nivel2', temaId: 'n2-t2', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT carrera_id, AVG(promedio) AS promedio_carrera FROM estudiantes GROUP BY carrera_id',
+    pistas: [
+      'GROUP BY carrera_id agrupa por carrera',
+      'AVG(promedio) calcula el promedio del grupo',
+    ],
+  }),
+
+  // ── NIVEL 2 · TEMA 3 — HAVING ────────────────────────────────────────────
+  new Ejercicio({
+    id: 'n2-t3-01',
     titulo: 'Médicos con más de 2 consultas',
     enunciado: 'Obtén el id de cada médico y su número de consultas. Muestra solo los que tienen más de 2 consultas.',
-    nivelId: 'nivel2',
-    baseDatosId: 'hospital',
+    nivelId: 'nivel2', temaId: 'n2-t3', baseDatosId: 'hospital',
     consultaEsperada: 'SELECT medico_id, COUNT(*) AS total_consultas FROM consultas GROUP BY medico_id HAVING COUNT(*) > 2',
     pistas: [
       'GROUP BY medico_id para agrupar por médico',
@@ -147,25 +225,23 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'univ-n2-02',
-    titulo: 'Promedio por carrera',
-    enunciado: 'Obtén el id de cada carrera y el promedio de sus estudiantes. Llama al resultado promedio_carrera. Muestra solo las carreras con promedio mayor a 6.0.',
-    nivelId: 'nivel2',
-    baseDatosId: 'universidad',
+    id: 'n2-t3-02',
+    titulo: 'Carreras con promedio alto',
+    enunciado: 'Obtén el id de cada carrera y el promedio de sus estudiantes. Muestra solo las carreras con promedio mayor a 6.0. Llama al resultado promedio_carrera.',
+    nivelId: 'nivel2', temaId: 'n2-t3', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT carrera_id, AVG(promedio) AS promedio_carrera FROM estudiantes GROUP BY carrera_id HAVING AVG(promedio) > 6.0',
     pistas: [
       'GROUP BY carrera_id agrupa por carrera',
-      'AVG(promedio) calcula el promedio del grupo',
       'HAVING AVG(promedio) > 6.0 filtra los grupos',
     ],
   }),
-  // ── NIVEL 3 — Relaciones ──────────────────────────────────────────────
+
+  // ── NIVEL 3 · TEMA 1 — INNER JOIN ────────────────────────────────────────
   new Ejercicio({
-    id: 'univ-n3-01',
+    id: 'n3-t1-01',
     titulo: 'Estudiantes con su carrera',
     enunciado: 'Obtén el nombre y apellido del estudiante junto con el nombre de su carrera. Llama a la columna de carrera "carrera".',
-    nivelId: 'nivel3',
-    baseDatosId: 'universidad',
+    nivelId: 'nivel3', temaId: 'n3-t1', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT e.nombre, e.apellido, c.nombre AS carrera FROM estudiantes e JOIN carreras c ON e.carrera_id = c.id',
     pistas: [
       'Usa JOIN para unir dos tablas',
@@ -174,24 +250,21 @@ export const EJERCICIOS = [
     ],
   }),
   new Ejercicio({
-    id: 'dep-n3-01',
+    id: 'n3-t1-02',
     titulo: 'Jugadores con su equipo',
     enunciado: 'Obtén el nombre, apellido y posición del jugador junto con el nombre de su equipo. Llama a la columna del equipo "equipo".',
-    nivelId: 'nivel3',
-    baseDatosId: 'deportes',
+    nivelId: 'nivel3', temaId: 'n3-t1', baseDatosId: 'deportes',
     consultaEsperada: 'SELECT j.nombre, j.apellido, j.posicion, e.nombre AS equipo FROM jugadores j JOIN equipos e ON j.equipo_id = e.id',
     pistas: [
       'jugadores.equipo_id apunta a equipos.id',
       'Usa JOIN ... ON para relacionar las tablas',
-      'Usa AS equipo para renombrar la columna',
     ],
   }),
   new Ejercicio({
-    id: 'hosp-n3-01',
+    id: 'n3-t1-03',
     titulo: 'Consultas con médico y paciente',
     enunciado: 'Obtén la fecha de cada consulta, el nombre del paciente y el nombre del médico. Llama a las columnas "paciente" y "medico".',
-    nivelId: 'nivel3',
-    baseDatosId: 'hospital',
+    nivelId: 'nivel3', temaId: 'n3-t1', baseDatosId: 'hospital',
     consultaEsperada: 'SELECT c.fecha, p.nombre AS paciente, m.nombre AS medico FROM consultas c JOIN pacientes p ON c.paciente_id = p.id JOIN medicos m ON c.medico_id = m.id',
     pistas: [
       'Necesitas dos JOIN: uno para pacientes y otro para médicos',
@@ -199,25 +272,27 @@ export const EJERCICIOS = [
       'consultas.medico_id → medicos.id',
     ],
   }),
+
+  // ── NIVEL 3 · TEMA 2 — LEFT JOIN ─────────────────────────────────────────
   new Ejercicio({
-    id: 'univ-n3-02',
+    id: 'n3-t2-01',
     titulo: 'Estudiantes sin matrícula',
     enunciado: 'Obtén el nombre y apellido de los estudiantes que NO tienen ninguna matrícula registrada.',
-    nivelId: 'nivel3',
-    baseDatosId: 'universidad',
+    nivelId: 'nivel3', temaId: 'n3-t2', baseDatosId: 'universidad',
     consultaEsperada: 'SELECT e.nombre, e.apellido FROM estudiantes e LEFT JOIN matriculas m ON e.id = m.estudiante_id WHERE m.id IS NULL',
     pistas: [
       'LEFT JOIN incluye todos los estudiantes aunque no tengan matrícula',
       'Cuando no hay match, las columnas de matriculas quedan en NULL',
-      'Filtra con WHERE m.id IS NULL para quedarte solo con los que no tienen',
+      'Filtra con WHERE m.id IS NULL',
     ],
   }),
+
+  // ── NIVEL 3 · TEMA 1 — INNER JOIN (JOIN + GROUP BY) ─────────────────────
   new Ejercicio({
-    id: 'dep-n3-02',
+    id: 'n3-t1-04',
     titulo: 'Goles por jugador',
     enunciado: 'Obtén el nombre, apellido y total de goles de cada jugador que haya marcado al menos 2 goles. Ordena de más goles a menos.',
-    nivelId: 'nivel3',
-    baseDatosId: 'deportes',
+    nivelId: 'nivel3', temaId: 'n3-t1', baseDatosId: 'deportes',
     consultaEsperada: 'SELECT j.nombre, j.apellido, COUNT(g.id) AS total_goles FROM jugadores j JOIN goles g ON j.id = g.jugador_id GROUP BY j.id HAVING COUNT(g.id) >= 2 ORDER BY total_goles DESC',
     pistas: [
       'JOIN jugadores con goles usando jugador_id',

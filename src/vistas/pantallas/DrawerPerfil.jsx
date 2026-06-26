@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NIVELES } from '../../datos/niveles';
 import { EJERCICIOS } from '../../datos/ejercicios';
 
-export default function DrawerPerfil({ controlador, abierto, onCerrar }) {
+export default function DrawerPerfil({ controlador, abierto, onCerrar, onVerArbol }) {
   const [nombre, setNombre] = useState(controlador.nombre);
   const [confirmando, setConfirmando] = useState(false);
   const [version, setVersion] = useState(0);
@@ -68,6 +68,18 @@ export default function DrawerPerfil({ controlador, abierto, onCerrar }) {
             </div>
           </div>
         </div>
+
+        {/* Ver currículo */}
+        {onVerArbol && (
+          <div className="px-4 pt-3 pb-1 flex-shrink-0">
+            <button
+              onClick={() => { onCerrar(); onVerArbol(); }}
+              className="w-full py-2 border border-[#30363d] text-[#8b949e] hover:text-white hover:border-[#8b949e] text-xs rounded font-sans transition-colors"
+            >
+              📋 Ver currículo
+            </button>
+          </div>
+        )}
 
         {/* Borrar avance */}
         <div className="px-4 py-4 border-t border-[#30363d] flex-shrink-0">

@@ -3,6 +3,7 @@ import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
+import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import { EJERCICIOS } from './datos/ejercicios';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 
@@ -44,6 +45,15 @@ export default function App() {
     window.history.pushState({ pantalla: 'editor' }, '');
   };
 
+  const irAArbol = () => {
+    setPantalla('arbol');
+    window.history.pushState({ pantalla: 'arbol' }, '');
+  };
+
+  if (pantalla === 'arbol') {
+    return <PantallaArbol onVolver={() => setPantalla('areas')} />;
+  }
+
   if (pantalla === 'editor') {
     const indiceActual = ejerciciosOrdenados.findIndex(e => e.id === ejercicioActual?.id);
     const siguienteEjercicio = ejerciciosOrdenados[indiceActual + 1] ?? null;
@@ -80,5 +90,5 @@ export default function App() {
     );
   }
 
-  return <PantallaAreas onSeleccionar={irANiveles} controladorPerfil={ctrlPerfil.current} />;
+  return <PantallaAreas onSeleccionar={irANiveles} controladorPerfil={ctrlPerfil.current} onVerArbol={irAArbol} />;
 }
