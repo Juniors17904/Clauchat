@@ -1,15 +1,72 @@
 import { Tema } from '../modelos/tema';
+import { ConceptoTema } from '../modelos/concepto_tema';
 
 export const TEMAS = [
   // ── NIVEL 1 — Fundamentos ────────────────────────────────────────────────
-  new Tema({ id: 'n1-t1', nombre: 'SELECT, FROM',             descripcion: 'Consultas básicas de selección',          nivelId: 'nivel1', orden: 1 }),
-  new Tema({ id: 'n1-t2', nombre: 'WHERE con =, !=, >, <',   descripcion: 'Filtrar filas por condición',             nivelId: 'nivel1', orden: 2 }),
-  new Tema({ id: 'n1-t3', nombre: 'AND, OR, NOT',             descripcion: 'Operadores lógicos',                      nivelId: 'nivel1', orden: 3 }),
-  new Tema({ id: 'n1-t4', nombre: 'ORDER BY ASC/DESC',        descripcion: 'Ordenar resultados',                      nivelId: 'nivel1', orden: 4 }),
-  new Tema({ id: 'n1-t5', nombre: 'LIMIT',                    descripcion: 'Limitar el número de filas',              nivelId: 'nivel1', orden: 5 }),
-  new Tema({ id: 'n1-t6', nombre: 'DISTINCT',                 descripcion: 'Eliminar duplicados',                     nivelId: 'nivel1', orden: 6 }),
-  new Tema({ id: 'n1-t7', nombre: 'IS NULL / IS NOT NULL',    descripcion: 'Filtrar valores nulos',                   nivelId: 'nivel1', orden: 7 }),
-  new Tema({ id: 'n1-t8', nombre: 'LIKE, BETWEEN, IN',        descripcion: 'Patrones, rangos y listas',               nivelId: 'nivel1', orden: 8 }),
+  new Tema({
+    id: 'n1-t1', nombre: 'SELECT, FROM', descripcion: 'Consultas básicas de selección', nivelId: 'nivel1', orden: 1,
+    concepto: new ConceptoTema({
+      queEs: 'SELECT indica qué columnas quieres ver y FROM indica de qué tabla. Son las dos palabras clave que toda consulta SQL necesita.',
+      sintaxis: 'SELECT columna1, columna2\nFROM tabla',
+      ejemplo: 'SELECT nombre, apellido, promedio\nFROM estudiantes',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t2', nombre: 'WHERE con =, !=, >, <', descripcion: 'Filtrar filas por condición', nivelId: 'nivel1', orden: 2,
+    concepto: new ConceptoTema({
+      queEs: 'WHERE filtra las filas de la tabla. Solo se devuelven las filas donde la condición es verdadera. Puedes usar = (igual), != (distinto), > (mayor), < (menor), >= y <=.',
+      sintaxis: 'SELECT columnas\nFROM tabla\nWHERE columna = valor',
+      ejemplo: 'SELECT nombre, promedio\nFROM estudiantes\nWHERE promedio >= 6.5',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t3', nombre: 'AND, OR, NOT', descripcion: 'Operadores lógicos', nivelId: 'nivel1', orden: 3,
+    concepto: new ConceptoTema({
+      queEs: 'AND exige que todas las condiciones sean verdaderas. OR basta con que una lo sea. NOT niega la condición que le sigue.',
+      sintaxis: 'WHERE cond1 AND cond2\nWHERE cond1 OR cond2\nWHERE NOT condicion',
+      ejemplo: "SELECT nombre, posicion\nFROM jugadores\nWHERE posicion = 'Delantero'\n  AND nacionalidad = 'Chile'",
+    }),
+  }),
+  new Tema({
+    id: 'n1-t4', nombre: 'ORDER BY ASC/DESC', descripcion: 'Ordenar resultados', nivelId: 'nivel1', orden: 4,
+    concepto: new ConceptoTema({
+      queEs: 'ORDER BY ordena los resultados según una columna. ASC ordena de menor a mayor (A→Z, 1→9). DESC ordena de mayor a menor (Z→A, 9→1).',
+      sintaxis: 'SELECT columnas\nFROM tabla\nORDER BY columna ASC\nORDER BY columna DESC',
+      ejemplo: 'SELECT nombre, apellido, promedio\nFROM estudiantes\nORDER BY promedio DESC',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t5', nombre: 'LIMIT', descripcion: 'Limitar el número de filas', nivelId: 'nivel1', orden: 5,
+    concepto: new ConceptoTema({
+      queEs: 'LIMIT restringe cuántas filas devuelve la consulta. Siempre va al final. Se usa junto con ORDER BY para obtener los "top N" de algo.',
+      sintaxis: 'SELECT columnas\nFROM tabla\nORDER BY columna DESC\nLIMIT n',
+      ejemplo: 'SELECT nombre, apellido, promedio\nFROM estudiantes\nORDER BY promedio DESC\nLIMIT 5',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t6', nombre: 'DISTINCT', descripcion: 'Eliminar duplicados', nivelId: 'nivel1', orden: 6,
+    concepto: new ConceptoTema({
+      queEs: 'DISTINCT elimina las filas duplicadas del resultado. Se escribe justo después de SELECT. Si una columna repite valores, con DISTINCT aparece cada valor solo una vez.',
+      sintaxis: 'SELECT DISTINCT columna\nFROM tabla',
+      ejemplo: 'SELECT DISTINCT nacionalidad\nFROM jugadores',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t7', nombre: 'IS NULL / IS NOT NULL', descripcion: 'Filtrar valores nulos', nivelId: 'nivel1', orden: 7,
+    concepto: new ConceptoTema({
+      queEs: 'NULL significa que un campo no tiene valor. No se puede comparar con = o !=. Se usa IS NULL para encontrar los vacíos e IS NOT NULL para los que sí tienen valor.',
+      sintaxis: 'WHERE columna IS NULL\nWHERE columna IS NOT NULL',
+      ejemplo: 'SELECT nombre, apellido, email\nFROM profesores\nWHERE email IS NOT NULL',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t8', nombre: 'LIKE, BETWEEN, IN', descripcion: 'Patrones, rangos y listas', nivelId: 'nivel1', orden: 8,
+    concepto: new ConceptoTema({
+      queEs: "LIKE busca por patrón de texto (% = cualquier texto). BETWEEN filtra un rango incluyendo los extremos. IN filtra por una lista de valores posibles.",
+      sintaxis: "WHERE nombre LIKE 'A%'\nWHERE precio BETWEEN 100 AND 500\nWHERE pais IN ('Chile', 'Argentina')",
+      ejemplo: 'SELECT nombre, promedio\nFROM estudiantes\nWHERE promedio BETWEEN 6.0 AND 7.0',
+    }),
+  }),
 
   // ── NIVEL 2 — Agrupación ─────────────────────────────────────────────────
   new Tema({ id: 'n2-t1', nombre: 'COUNT, SUM, AVG, MAX, MIN', descripcion: 'Funciones de agregación',               nivelId: 'nivel2', orden: 1 }),

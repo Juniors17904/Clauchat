@@ -7,7 +7,7 @@ import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 
-export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCompletado }) {
+export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguiente, onCompletado }) {
   const [consulta, setConsulta] = useState('');
   const [resultado, setResultado] = useState(null);
   const [estado, setEstado] = useState('neutral');
@@ -142,11 +142,16 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
         {estado === 'feliz' && resultado !== null ? (
           <>
             <p className="text-[#3fb950] text-sm font-sans flex-1 mx-4">¡Correcto! 😊</p>
+            {progreso && (
+              <span className="text-[#3fb950] text-xs font-mono mr-3 flex-shrink-0">
+                {progreso.actual}/{progreso.total}
+              </span>
+            )}
             <button
               onClick={onSiguiente ?? onVolver}
               className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-md transition-colors font-sans flex-shrink-0"
             >
-              {onSiguiente ? 'Siguiente →' : 'Volver'}
+              {onSiguiente ? 'Siguiente →' : 'Terminar'}
             </button>
           </>
         ) : (
@@ -157,6 +162,11 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
                 : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
               }
             </div>
+            {progreso && (
+              <span className="text-[#484f58] text-xs font-mono mr-2 flex-shrink-0">
+                {progreso.actual}/{progreso.total}
+              </span>
+            )}
             <div className="flex items-center gap-3">
               <CaritaEstado estado={estado} />
               <button

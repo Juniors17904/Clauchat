@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaTemas from './vistas/pantallas/PantallaTemas';
-import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
+import PantallaConcepto from './vistas/pantallas/PantallaConcepto';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import { EJERCICIOS } from './datos/ejercicios';
@@ -38,13 +38,20 @@ export default function App() {
     window.history.pushState({ pantalla: 'temas' }, '');
   };
 
-  const irAEjercicios = (tema) => {
+  const irAConcepto = (tema) => {
     setTemaActual(tema);
     const mezclados = [...EJERCICIOS.filter(e => e.temaId === tema.id)]
       .sort(() => Math.random() - 0.5);
     setEjerciciosOrdenados(mezclados);
-    setPantalla('ejercicios');
-    window.history.pushState({ pantalla: 'ejercicios' }, '');
+    setPantalla('concepto');
+    window.history.pushState({ pantalla: 'concepto' }, '');
+  };
+
+  const iniciarEjercicios = () => {
+    if (ejerciciosOrdenados.length === 0) return;
+    setEjercicioActual(ejerciciosOrdenados[0]);
+    setPantalla('editor');
+    window.history.pushState({ pantalla: 'editor' }, '');
   };
 
   const irAEditor = (ejercicio) => {
@@ -69,21 +76,21 @@ export default function App() {
     return (
       <PantallaEditor
         ejercicio={ejercicioActual}
-        onVolver={() => setPantalla('ejercicios')}
+        progreso={{ actual: indiceActual + 1, total: ejerciciosOrdenados.length }}
+        onVolver={() => setPantalla('concepto')}
         onSiguiente={siguienteEjercicio ? () => irAEditor(siguienteEjercicio) : null}
         onCompletado={(id) => ctrlPerfil.current.marcarCompletado(id)}
       />
     );
   }
 
-  if (pantalla === 'ejercicios') {
+  if (pantalla === 'concepto') {
     return (
-      <PantallaEjercicios
-        nivel={nivelActual}
-        ejercicios={ejerciciosOrdenados}
-        onSeleccionar={irAEditor}
+      <PantallaConcepto
+        tema={temaActual}
+        totalEjercicios={ejerciciosOrdenados.length}
         onVolver={() => setPantalla('temas')}
-        controladorPerfil={ctrlPerfil.current}
+        onEmpezar={iniciarEjercicios}
       />
     );
   }
@@ -92,7 +99,7 @@ export default function App() {
     return (
       <PantallaTemas
         nivel={nivelActual}
-        onSeleccionar={irAEjercicios}
+        onSeleccionar={irAConcepto}
         onVolver={() => setPantalla('niveles')}
       />
     );
