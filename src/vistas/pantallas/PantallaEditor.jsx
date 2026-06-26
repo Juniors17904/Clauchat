@@ -147,7 +147,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
       )}
 
       {/* Editor SQL */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-[35] flex flex-col min-h-0">
         <div className="flex-1 relative min-h-0">
           <textarea
             ref={textareaRef}
@@ -177,11 +177,11 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
       </div>
 
       {/* Panel de resultados */}
-      <div className="h-44 border-t border-[#30363d] bg-[#161b22] flex-shrink-0 overflow-hidden">
-        <div className="px-4 py-1.5 border-b border-[#30363d]">
+      <div className="flex-[65] border-t border-[#30363d] bg-[#161b22] min-h-0 flex flex-col">
+        <div className="px-4 py-1.5 border-b border-[#30363d] flex-shrink-0">
           <p className="text-[#8b949e] text-xs font-sans">Resultados</p>
         </div>
-        <div className="h-full overflow-auto">
+        <div className="flex-1 overflow-auto">
           <PanelResultados resultado={resultado} />
         </div>
       </div>
