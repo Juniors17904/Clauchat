@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
@@ -10,19 +10,31 @@ export default function App() {
   const [nivelActual, setNivelActual] = useState(null);
   const [ejercicioActual, setEjercicioActual] = useState(null);
 
+  useEffect(() => {
+    window.history.replaceState({ pantalla: 'areas' }, '');
+    const manejarRetroceso = (e) => {
+      setPantalla(e.state?.pantalla ?? 'areas');
+    };
+    window.addEventListener('popstate', manejarRetroceso);
+    return () => window.removeEventListener('popstate', manejarRetroceso);
+  }, []);
+
   const irANiveles = (area) => {
     setAreaActual(area);
     setPantalla('niveles');
+    window.history.pushState({ pantalla: 'niveles' }, '');
   };
 
   const irAEjercicios = (nivel) => {
     setNivelActual(nivel);
     setPantalla('ejercicios');
+    window.history.pushState({ pantalla: 'ejercicios' }, '');
   };
 
   const irAEditor = (ejercicio) => {
     setEjercicioActual(ejercicio);
     setPantalla('editor');
+    window.history.pushState({ pantalla: 'editor' }, '');
   };
 
   if (pantalla === 'editor') {
