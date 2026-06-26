@@ -109,33 +109,48 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
     <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden" style={{ height: alturaPantalla }}>
 
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#161b22] flex-shrink-0">
-        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
+      <div className={`flex items-center justify-between px-4 py-2.5 border-b flex-shrink-0 transition-colors duration-300 ${estado === 'feliz' && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
+        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors flex-shrink-0">
           ←
         </button>
-        <div className="flex-1 mx-4 min-w-0">
-          {ejercicio
-            ? <p className="text-[#e6edf3] text-sm truncate font-sans">{ejercicio.titulo}</p>
-            : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
-          }
-        </div>
-        <div className="flex items-center gap-3">
-          <CaritaEstado estado={estado} />
-          <button
-            onClick={() => setDiagramaAbierto(true)}
-            className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
-            title="Ver diagrama"
-          >
-            📊
-          </button>
-          <button
-            onClick={() => setDrawerAbierto(true)}
-            className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
-            title="Explorar tablas"
-          >
-            🗄️
-          </button>
-        </div>
+
+        {estado === 'feliz' && resultado !== null ? (
+          <>
+            <p className="text-[#3fb950] text-sm font-sans flex-1 mx-4">¡Correcto! 😊</p>
+            <button
+              onClick={onSiguiente ?? onVolver}
+              className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-md transition-colors font-sans flex-shrink-0"
+            >
+              {onSiguiente ? 'Siguiente →' : 'Volver'}
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="flex-1 mx-4 min-w-0">
+              {ejercicio
+                ? <p className="text-[#e6edf3] text-sm truncate font-sans">{ejercicio.titulo}</p>
+                : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
+              }
+            </div>
+            <div className="flex items-center gap-3">
+              <CaritaEstado estado={estado} />
+              <button
+                onClick={() => setDiagramaAbierto(true)}
+                className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+                title="Ver diagrama"
+              >
+                📊
+              </button>
+              <button
+                onClick={() => setDrawerAbierto(true)}
+                className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+                title="Explorar tablas"
+              >
+                🗄️
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Enunciado */}
@@ -184,19 +199,6 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
           </button>
         </div>
       </div>
-
-      {/* Banner de éxito */}
-      {estado === 'feliz' && resultado !== null && (
-        <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d2117] border-t border-[#238636] flex-shrink-0">
-          <p className="text-[#3fb950] text-sm font-sans">¡Correcto!</p>
-          <button
-            onClick={onSiguiente ?? onVolver}
-            className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-md transition-colors font-sans"
-          >
-            {onSiguiente ? 'Siguiente ejercicio →' : 'Volver a ejercicios'}
-          </button>
-        </div>
-      )}
 
       {/* Panel de resultados */}
       <div className={`${resultado ? 'flex-[60]' : 'flex-none'} border-t border-[#30363d] bg-[#161b22] min-h-0 flex flex-col`}>
