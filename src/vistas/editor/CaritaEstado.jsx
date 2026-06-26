@@ -1,17 +1,12 @@
 const CARITAS = {
-  neutral:  { emoji: '😐', color: '#8b949e', label: '' },
-  pensando: { emoji: '🤔', color: '#d29922', label: 'Analizando...' },
-  feliz:    { emoji: '😊', color: '#3fb950', label: '¡Correcto!' },
-  triste:   { emoji: '😢', color: '#f85149', label: 'Incorrecto' },
+  neutral:  '😐',
+  pensando: '🤔',
+  feliz:    '😊',
+  triste:   '😢',
 };
 
 export default function CaritaEstado({ estado }) {
-  const { emoji, color, label } = CARITAS[estado] ?? CARITAS.neutral;
-
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xl leading-none">{emoji}</span>
-      {label && <span className="text-xs font-medium" style={{ color }}>{label}</span>}
-    </div>
+    <span className="text-xl leading-none">{CARITAS[estado] ?? CARITAS.neutral}</span>
   );
 }
