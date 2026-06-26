@@ -1,6 +1,6 @@
 import { EJERCICIOS } from '../../datos/ejercicios';
 
-export default function PantallaEjercicios({ nivel, onSeleccionar, onVolver }) {
+export default function PantallaEjercicios({ nivel, onSeleccionar, onVolver, controladorPerfil }) {
   const ejercicios = EJERCICIOS.filter(e => e.nivelId === nivel.id);
 
   return (
@@ -23,10 +23,13 @@ export default function PantallaEjercicios({ nivel, onSeleccionar, onVolver }) {
               className="w-full flex items-center gap-4 px-5 py-4 rounded-xl border bg-[#161b22] border-[#30363d] hover:border-[#388bfd] transition-all text-left"
             >
               <span className="text-[#388bfd] font-bold text-sm w-6">{i + 1}</span>
-              <div>
+              <div className="flex-1 min-w-0">
                 <p className="text-white font-medium text-sm">{ej.titulo}</p>
                 <p className="text-[#8b949e] text-xs mt-0.5 line-clamp-1">{ej.enunciado}</p>
               </div>
+              {controladorPerfil?.estaCompletado(ej.id) && (
+                <span className="text-[#3fb950] text-sm flex-shrink-0">✓</span>
+              )}
             </button>
           ))}
 

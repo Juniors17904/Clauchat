@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaEjercicios from './vistas/pantallas/PantallaEjercicios';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import { EJERCICIOS } from './datos/ejercicios';
+import { ControladorPerfil } from './controladores/controlador_perfil';
 
 export default function App() {
   const [pantalla, setPantalla] = useState('areas');
   const [areaActual, setAreaActual] = useState(null);
   const [nivelActual, setNivelActual] = useState(null);
   const [ejercicioActual, setEjercicioActual] = useState(null);
+  const ctrlPerfil = useRef(new ControladorPerfil());
 
   useEffect(() => {
     window.history.replaceState({ pantalla: 'areas' }, '');
@@ -48,6 +50,7 @@ export default function App() {
         ejercicio={ejercicioActual}
         onVolver={() => setPantalla('ejercicios')}
         onSiguiente={siguienteEjercicio ? () => irAEditor(siguienteEjercicio) : null}
+        onCompletado={(id) => ctrlPerfil.current.marcarCompletado(id)}
       />
     );
   }
@@ -58,6 +61,7 @@ export default function App() {
         nivel={nivelActual}
         onSeleccionar={irAEditor}
         onVolver={() => setPantalla('niveles')}
+        controladorPerfil={ctrlPerfil.current}
       />
     );
   }
@@ -72,5 +76,5 @@ export default function App() {
     );
   }
 
-  return <PantallaAreas onSeleccionar={irANiveles} />;
+  return <PantallaAreas onSeleccionar={irANiveles} controladorPerfil={ctrlPerfil.current} />;
 }

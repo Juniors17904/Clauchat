@@ -7,7 +7,7 @@ import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 
-export default function PantallaEditor({ ejercicio, onVolver, onSiguiente }) {
+export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCompletado }) {
   const [consulta, setConsulta] = useState('');
   const [resultado, setResultado] = useState(null);
   const [estado, setEstado] = useState('neutral');
@@ -79,6 +79,9 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente }) {
   const ejecutar = () => {
     const res = controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
+    if (ejercicio && controlador.current.verificarCorreccion(res)) {
+      onCompletado?.(ejercicio.id);
+    }
   };
 
   const handleKeyDown = (e) => {
