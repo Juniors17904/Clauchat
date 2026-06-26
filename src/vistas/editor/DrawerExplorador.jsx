@@ -38,65 +38,71 @@ export default function DrawerExplorador({ tablas, onObtenerDatos, abierto, onCe
           {tablas.length === 0 ? (
             <p className="text-[#484f58] text-xs text-center mt-8 font-sans">Sin tablas disponibles</p>
           ) : (
-            tablas.map(tabla => (
-              <div key={tabla.nombre}>
-                {/* Nombre de la tabla */}
-                <button
-                  onClick={() => seleccionarTabla(tabla)}
-                  className={`w-full flex items-center gap-2 px-4 py-3 text-left border-b border-[#21262d] transition-colors font-sans
-                    ${tablaActiva?.nombre === tabla.nombre ? 'bg-[#1c2128]' : 'hover:bg-[#1c2128]'}`}
-                >
-                  <span className="text-[#388bfd] text-xs">▶</span>
-                  <span className="text-[#e6edf3] text-sm font-medium">{tabla.nombre}</span>
-                </button>
+            tablas.map(tabla => {
+              const activa = tablaActiva?.nombre === tabla.nombre;
+              return (
+                <div key={tabla.nombre}>
+                  {/* Nombre de la tabla */}
+                  <button
+                    onClick={() => seleccionarTabla(tabla)}
+                    className={`w-full flex items-center gap-2 px-4 py-3 text-left border-b border-[#21262d] transition-colors font-sans
+                      ${activa ? 'bg-[#1c2128]' : 'hover:bg-[#1c2128]'}`}
+                  >
+                    <span className={`text-[#388bfd] text-xs transition-transform duration-200 ${activa ? 'rotate-90' : ''}`}>▶</span>
+                    <span className="text-[#e6edf3] text-sm font-medium">{tabla.nombre}</span>
+                  </button>
 
-                {/* Columnas de la tabla */}
-                <div className="bg-[#0d1117] px-4 py-2 border-b border-[#21262d]">
-                  {tabla.columnas.map(col => (
-                    <div key={col.nombre} className="flex items-center justify-between py-1">
-                      <div className="flex items-center gap-1.5">
-                        {col.esPrimaria && <span className="text-[#d29922] text-xs">🔑</span>}
-                        <span className="text-[#e6edf3] text-xs font-mono">{col.nombre}</span>
+                  {/* Columnas + datos: solo si está activa */}
+                  {activa && (
+                    <>
+                      <div className="bg-[#0d1117] px-4 py-2 border-b border-[#21262d]">
+                        {tabla.columnas.map(col => (
+                          <div key={col.nombre} className="flex items-center justify-between py-1">
+                            <div className="flex items-center gap-1.5">
+                              {col.esPrimaria && <span className="text-[#d29922] text-xs">🔑</span>}
+                              <span className="text-[#e6edf3] text-xs font-mono">{col.nombre}</span>
+                            </div>
+                            <span className="text-[#484f58] text-xs font-mono">{col.tipo}</span>
+                          </div>
+                        ))}
                       </div>
-                      <span className="text-[#484f58] text-xs font-mono">{col.tipo}</span>
-                    </div>
-                  ))}
-                </div>
 
-                {/* Datos reales al tocar la tabla */}
-                {tablaActiva?.nombre === tabla.nombre && datosTabla && (
-                  <div className="border-b border-[#30363d]">
-                    <p className="text-[#388bfd] text-xs px-4 py-2 font-sans bg-[#1c2128]">
-                      Datos · {datosTabla.totalFilas} filas
-                    </p>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-xs font-mono">
-                        <thead>
-                          <tr className="bg-[#161b22]">
-                            {datosTabla.columnas.map(col => (
-                              <th key={col} className="text-left px-3 py-1.5 text-[#8b949e] border-b border-[#30363d] whitespace-nowrap font-medium">
-                                {col}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {datosTabla.filas.map((fila, i) => (
-                            <tr key={i} className="border-b border-[#21262d] hover:bg-[#1c2128]">
-                              {fila.map((celda, j) => (
-                                <td key={j} className="px-3 py-1.5 text-[#e6edf3] whitespace-nowrap">
-                                  {celda === null ? <span className="text-[#484f58]">NULL</span> : String(celda)}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))
+                      {datosTabla && (
+                        <div className="border-b border-[#30363d]">
+                          <p className="text-[#388bfd] text-xs px-4 py-2 font-sans bg-[#1c2128]">
+                            Datos · {datosTabla.totalFilas} filas
+                          </p>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-xs font-mono">
+                              <thead>
+                                <tr className="bg-[#161b22]">
+                                  {datosTabla.columnas.map(col => (
+                                    <th key={col} className="text-left px-3 py-1.5 text-[#8b949e] border-b border-[#30363d] whitespace-nowrap font-medium">
+                                      {col}
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {datosTabla.filas.map((fila, i) => (
+                                  <tr key={i} className="border-b border-[#21262d] hover:bg-[#1c2128]">
+                                    {fila.map((celda, j) => (
+                                      <td key={j} className="px-3 py-1.5 text-[#e6edf3] whitespace-nowrap">
+                                        {celda === null ? <span className="text-[#484f58]">NULL</span> : String(celda)}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       </div>
