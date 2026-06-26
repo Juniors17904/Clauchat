@@ -18,6 +18,7 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
   const [drawerAbierto, setDrawerAbierto] = useState(false);
   const [diagramaAbierto, setDiagramaAbierto] = useState(false);
   const [tablas, setTablas] = useState([]);
+  const [errorCarga, setErrorCarga] = useState(null);
   const [alturaPantalla, setAlturaPantalla] = useState(
     () => window.visualViewport?.height ?? window.innerHeight
   );
@@ -40,6 +41,9 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
     ctrl.iniciar(ejercicio, baseDatos).then(async () => {
       setTablas(await ctrl.obtenerEsquema());
       setCargando(false);
+    }).catch(err => {
+      setCargando(false);
+      setErrorCarga(err?.message ?? 'Error al cargar la base de datos');
     });
 
     return () => ctrl.destruir();
@@ -105,6 +109,23 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
     return (
       <div className="bg-[#0d1117] flex items-center justify-center" style={{ height: alturaPantalla }}>
         <p className="text-[#8b949e] text-sm">Inicializando base de datos...</p>
+      </div>
+    );
+  }
+
+  if (errorCarga) {
+    return (
+      <div className="bg-[#0d1117] flex flex-col" style={{ height: alturaPantalla }}>
+        <div className="fixed top-4 left-4 right-4 bg-[#2d1111] border border-[#f85149] rounded-lg px-4 py-3 z-50 font-sans">
+          <p className="text-[#f85149] text-sm font-bold">Error al cargar</p>
+          <p className="text-[#8b949e] text-xs mt-1">{errorCarga}</p>
+          <button
+            onClick={onVolver}
+            className="text-[#388bfd] text-xs mt-2 underline"
+          >
+            Volver
+          </button>
+        </div>
       </div>
     );
   }

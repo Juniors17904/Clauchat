@@ -1,4 +1,3 @@
-import { PGlite } from '@electric-sql/pglite';
 import { ControladorBase } from './controlador_base';
 import { ResultadoConsulta } from '../modelos/resultado_consulta';
 import { InfoTabla } from '../modelos/info_tabla';
@@ -25,6 +24,7 @@ export class ControladorEditor extends ControladorBase {
   }
 
   async iniciar(ejercicio, baseDatos) {
+    const { PGlite } = await import('@electric-sql/pglite');
     this.#ejercicio = ejercicio;
     this.#db = new PGlite();
     if (baseDatos?.esquemaSQL) {
