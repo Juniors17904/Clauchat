@@ -24,6 +24,7 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
+  const ultimaConsulta = useRef('');
 
   useEffect(() => {
     const ctrl = controlador.current;
@@ -35,13 +36,10 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
     setMostrarPista(false);
     setIndicePista(0);
 
-    import('sql.js').then(mod => {
-      const SqlJs = mod.default ?? mod;
-      const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
-      ctrl.iniciar(ejercicio, baseDatos, SqlJs).then(() => {
-        setTablas(ctrl.obtenerEsquema());
-        setCargando(false);
-      });
+    const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
+    ctrl.iniciar(ejercicio, baseDatos).then(async () => {
+      setTablas(await ctrl.obtenerEsquema());
+      setCargando(false);
     });
 
     return () => ctrl.destruir();
@@ -59,11 +57,13 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
     };
   }, []);
 
-  const handleCambio = (e) => {
+  const handleCambio = async (e) => {
     const valor = e.target.value;
+    ultimaConsulta.current = valor;
     setConsulta(valor);
-    setEstado(controlador.current.evaluarEstado(valor));
     setSugerencias(controlador.current.sugerirAutocompletado(valor));
+    const nuevoEstado = await controlador.current.evaluarEstado(valor);
+    if (ultimaConsulta.current === valor) setEstado(nuevoEstado);
   };
 
   const handleAutocompletar = (palabra) => {
@@ -72,15 +72,19 @@ export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCom
     const nueva = palabras.join('');
     setConsulta(nueva);
     setSugerencias([]);
-    setEstado(controlador.current.evaluarEstado(nueva));
+    controlador.current.evaluarEstado(nueva).then(nuevoEstado => setEstado(nuevoEstado));
     textareaRef.current?.focus();
   };
 
-  const ejecutar = () => {
-    const res = controlador.current.ejecutarConsulta(consulta);
+  const ejecutar = async () => {
+    const res = await controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
-    if (ejercicio && controlador.current.verificarCorreccion(res)) {
-      onCompletado?.(ejercicio.id);
+    if (ejercicio) {
+      const correcto = await controlador.current.verificarCorreccion(res);
+      if (correcto) {
+        onCompletado?.(ejercicio.id);
+        setEstado('feliz');
+      }
     }
   };
 
