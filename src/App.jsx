@@ -11,6 +11,7 @@ export default function App() {
   const [areaActual, setAreaActual] = useState(null);
   const [nivelActual, setNivelActual] = useState(null);
   const [ejercicioActual, setEjercicioActual] = useState(null);
+  const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
   const ctrlPerfil = useRef(new ControladorPerfil());
 
   useEffect(() => {
@@ -30,6 +31,9 @@ export default function App() {
 
   const irAEjercicios = (nivel) => {
     setNivelActual(nivel);
+    const mezclados = [...EJERCICIOS.filter(e => e.nivelId === nivel.id)]
+      .sort(() => Math.random() - 0.5);
+    setEjerciciosOrdenados(mezclados);
     setPantalla('ejercicios');
     window.history.pushState({ pantalla: 'ejercicios' }, '');
   };
@@ -41,9 +45,8 @@ export default function App() {
   };
 
   if (pantalla === 'editor') {
-    const ejerciciosDelNivel = EJERCICIOS.filter(e => e.nivelId === nivelActual?.id);
-    const indiceActual = ejerciciosDelNivel.findIndex(e => e.id === ejercicioActual?.id);
-    const siguienteEjercicio = ejerciciosDelNivel[indiceActual + 1] ?? null;
+    const indiceActual = ejerciciosOrdenados.findIndex(e => e.id === ejercicioActual?.id);
+    const siguienteEjercicio = ejerciciosOrdenados[indiceActual + 1] ?? null;
 
     return (
       <PantallaEditor
@@ -59,6 +62,7 @@ export default function App() {
     return (
       <PantallaEjercicios
         nivel={nivelActual}
+        ejercicios={ejerciciosOrdenados}
         onSeleccionar={irAEditor}
         onVolver={() => setPantalla('niveles')}
         controladorPerfil={ctrlPerfil.current}

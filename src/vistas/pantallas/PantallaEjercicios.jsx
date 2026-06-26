@@ -1,7 +1,4 @@
-import { EJERCICIOS } from '../../datos/ejercicios';
-
-export default function PantallaEjercicios({ nivel, onSeleccionar, onVolver, controladorPerfil }) {
-  const ejercicios = EJERCICIOS.filter(e => e.nivelId === nivel.id);
+export default function PantallaEjercicios({ nivel, ejercicios = [], onSeleccionar, onVolver, controladorPerfil }) {
 
   return (
     <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center px-4">
@@ -11,7 +8,7 @@ export default function PantallaEjercicios({ nivel, onSeleccionar, onVolver, con
         </button>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-white">{nivel.nombre}</h2>
+          <h2 className="text-2xl font-bold text-white">{nivel?.nombre}</h2>
           <p className="text-[#8b949e] text-sm mt-1">{ejercicios.length} ejercicios disponibles</p>
         </div>
 
