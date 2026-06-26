@@ -18,6 +18,9 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   const [drawerAbierto, setDrawerAbierto] = useState(false);
   const [diagramaAbierto, setDiagramaAbierto] = useState(false);
   const [tablas, setTablas] = useState([]);
+  const [alturaPantalla, setAlturaPantalla] = useState(
+    () => window.visualViewport?.height ?? window.innerHeight
+  );
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
@@ -37,6 +40,18 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
     return () => ctrl.destruir();
   }, [ejercicio]);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const actualizar = () => setAlturaPantalla(vv.height);
+    vv.addEventListener('resize', actualizar);
+    vv.addEventListener('scroll', actualizar);
+    return () => {
+      vv.removeEventListener('resize', actualizar);
+      vv.removeEventListener('scroll', actualizar);
+    };
+  }, []);
 
   const handleCambio = (e) => {
     const valor = e.target.value;
@@ -75,14 +90,14 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
   if (cargando) {
     return (
-      <div className="h-screen bg-[#0d1117] flex items-center justify-center">
+      <div className="bg-[#0d1117] flex items-center justify-center" style={{ height: alturaPantalla }}>
         <p className="text-[#8b949e] text-sm">Inicializando base de datos...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-screen bg-[#0d1117] flex flex-col font-mono overflow-hidden">
+    <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden" style={{ height: alturaPantalla }}>
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#161b22] flex-shrink-0">
@@ -150,7 +165,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
         {/* Barra inferior */}
         <div className="flex items-center justify-between px-4 py-2 border-t border-[#30363d] bg-[#161b22] flex-shrink-0">
-          <p className="text-[#484f58] text-xs font-sans">Ctrl+Enter para ejecutar</p>
+          <p className="text-[#484f58] text-xs font-sans hidden sm:block">Ctrl+Enter para ejecutar</p>
           <button
             onClick={ejecutar}
             disabled={!consulta.trim()}
