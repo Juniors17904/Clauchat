@@ -2,8 +2,13 @@ import { NIVELES } from '../../datos/niveles';
 
 const COLORES = {
   1: { borde: 'hover:border-[#3fb950]', etiqueta: 'bg-[#1a4731] text-[#3fb950]' },
-  2: { borde: 'hover:border-[#d29922]', etiqueta: 'bg-[#3d2b00] text-[#d29922]' },
-  3: { borde: 'hover:border-[#f85149]', etiqueta: 'bg-[#3d0e0e] text-[#f85149]' },
+  2: { borde: 'hover:border-[#39c5cf]', etiqueta: 'bg-[#0e3535] text-[#39c5cf]' },
+  3: { borde: 'hover:border-[#388bfd]', etiqueta: 'bg-[#0d2a5a] text-[#388bfd]' },
+  4: { borde: 'hover:border-[#8250df]', etiqueta: 'bg-[#2a1a4a] text-[#8250df]' },
+  5: { borde: 'hover:border-[#d29922]', etiqueta: 'bg-[#3d2b00] text-[#d29922]' },
+  6: { borde: 'hover:border-[#e3b341]', etiqueta: 'bg-[#3a2500] text-[#e3b341]' },
+  7: { borde: 'hover:border-[#f78166]', etiqueta: 'bg-[#3d1a10] text-[#f78166]' },
+  8: { borde: 'hover:border-[#f85149]', etiqueta: 'bg-[#3d0e0e] text-[#f85149]' },
 };
 
 export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
@@ -35,7 +40,7 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
                   <p className="text-[#8b949e] text-xs mt-0.5">{nivel.descripcion}</p>
                 </div>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${colores.etiqueta}`}>
-                  {nivel.orden === 1 ? 'Nivel 1' : nivel.orden === 2 ? 'Nivel 2' : 'Nivel 3'}
+                  Nivel {nivel.orden}
                 </span>
               </button>
             );
