@@ -10,7 +10,33 @@
     <link rel="icon" href="/icon-192.png" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="splash" style="position:fixed;inset:0;background:#0d1117;display:flex;align-items:center;justify-content:center;font-family:sans-serif">
+        <p style="color:#8b949e;font-size:14px">Cargando...</p>
+      </div>
+    </div>
+    <script>
+      (function () {
+        function mostrarError(msg) {
+          var root = document.getElementById('root');
+          if (!root) return;
+          root.innerHTML =
+            '<div style="position:fixed;inset:0;background:#0d1117;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif">' +
+            '<div style="background:#161b22;border:1px solid #f85149;border-radius:12px;padding:24px;max-width:360px;width:100%;text-align:center">' +
+            '<p style="color:#f85149;font-size:14px;font-weight:bold;margin-bottom:8px">Error de carga</p>' +
+            '<p style="color:#8b949e;font-size:11px;word-break:break-word;margin-bottom:16px">' + String(msg).substring(0, 300) + '</p>' +
+            '<button onclick="location.reload()" style="background:#238636;color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:14px">Recargar</button>' +
+            '</div></div>';
+        }
+        window.onerror = function (msg, src, line, col, error) {
+          mostrarError(error ? error.message : msg);
+          return true;
+        };
+        window.addEventListener('unhandledrejection', function (e) {
+          mostrarError(e.reason && e.reason.message ? e.reason.message : String(e.reason));
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
