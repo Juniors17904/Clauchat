@@ -18,8 +18,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
       },
       manifest: {
-        name: 'SQLab',
-        short_name: 'SQLab',
+        name: 'Sqlaboratorio',
+        short_name: 'Sqlaboratorio',
         description: 'Aprende SQL desde básico hasta nivel senior',
         version: '0.2.0',
         theme_color: '#0d1117',
