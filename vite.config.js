@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png'],
       workbox: {
-        cacheId: 'sqlab-v3',
+        cacheId: 'sqlab-v4',
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
@@ -22,7 +22,7 @@ export default defineConfig({
         name: 'Sqlaboratorio',
         short_name: 'Sqlaboratorio',
         description: 'Aprende SQL desde básico hasta nivel senior',
-        version: '0.2.0',
+        version: '0.3.0',
         theme_color: '#0d1117',
         background_color: '#0d1117',
         display: 'standalone',
