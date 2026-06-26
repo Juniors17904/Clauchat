@@ -1,3 +1,4 @@
+import { PGlite } from '@electric-sql/pglite';
 import { ControladorBase } from './controlador_base';
 import { ResultadoConsulta } from '../modelos/resultado_consulta';
 import { InfoTabla } from '../modelos/info_tabla';
@@ -23,49 +24,58 @@ export class ControladorEditor extends ControladorBase {
     this.#ejercicio = null;
   }
 
-  async iniciar(ejercicio, baseDatos, SqlJs) {
+  async iniciar(ejercicio, baseDatos) {
     this.#ejercicio = ejercicio;
-    const SQL = await SqlJs({ locateFile: () => '/sql-wasm.wasm' });
-    this.#db = new SQL.Database();
+    this.#db = new PGlite();
     if (baseDatos?.esquemaSQL) {
-      this.#db.run(baseDatos.esquemaSQL);
+      await this.#db.exec(baseDatos.esquemaSQL);
     }
   }
 
-  ejecutarConsulta(sql) {
+  async ejecutarConsulta(sql) {
     if (!this.#db) {
       return new ResultadoConsulta({ error: 'Base de datos no inicializada' });
     }
     try {
-      const resultados = this.#db.exec(sql.trim());
-      if (!resultados.length) {
-        return new ResultadoConsulta({ columnas: [], filas: [] });
-      }
-      const { columns, values } = resultados[0];
-      return new ResultadoConsulta({ columnas: columns, filas: values });
+      const result = await this.#db.query(sql.trim());
+      const columnas = result.fields.map(f => f.name);
+      const filas = result.rows.map(row => columnas.map(col => row[col]));
+      return new ResultadoConsulta({ columnas, filas });
     } catch (e) {
       return new ResultadoConsulta({ error: e.message });
     }
   }
 
-  evaluarEstado(consulta) {
+  async evaluarEstado(consulta) {
     const texto = consulta.trim();
-    if (!texto) return 'neutral';
-
-    const palabrasSQL = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE'];
-    const tieneEstructura = palabrasSQL.some(p => texto.toUpperCase().includes(p));
-
-    if (!tieneEstructura) return 'pensando';
-
+    if (!texto || !this.#db) return 'neutral';
+    const res = await this.ejecutarConsulta(texto);
+    if (res.error) return 'pensando';
     if (this.#ejercicio) {
-      const esperada = this.#ejercicio.consultaEsperada.trim().toUpperCase();
-      const actual = texto.toUpperCase();
-      if (actual === esperada) return 'feliz';
-      if (esperada.startsWith(actual.slice(0, 6))) return 'pensando';
-      return 'triste';
+      return (await this.verificarCorreccion(res)) ? 'feliz' : 'pensando';
     }
-
     return 'pensando';
+  }
+
+  async verificarCorreccion(resultado) {
+    if (!this.#ejercicio?.consultaEsperada || !this.#db) return false;
+    if (resultado.error) return false;
+    try {
+      const esperadoResult = await this.#db.query(this.#ejercicio.consultaEsperada.trim());
+      const colsEsp = esperadoResult.fields.map(f => f.name);
+      const filasEsp = esperadoResult.rows.map(row => colsEsp.map(col => row[col]));
+      const colsAct = resultado.columnas ?? [];
+      const filasAct = resultado.filas ?? [];
+      if (colsEsp.length !== colsAct.length) return false;
+      if (filasEsp.length !== filasAct.length) return false;
+      const mismasCols = colsEsp.every((c, i) => c.toLowerCase() === colsAct[i]?.toLowerCase());
+      if (!mismasCols) return false;
+      return filasEsp.every((fila, i) =>
+        fila.every((val, j) => String(val ?? '') === String(filasAct[i]?.[j] ?? ''))
+      );
+    } catch {
+      return false;
+    }
   }
 
   sugerirAutocompletado(texto) {
@@ -75,35 +85,43 @@ export class ControladorEditor extends ControladorBase {
     return PALABRAS_SQL.filter(p => p.startsWith(ultima) && p !== ultima).slice(0, 4);
   }
 
-  obtenerEsquema() {
+  async obtenerEsquema() {
     if (!this.#db) return [];
     try {
-      const res = this.#db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
-      if (!res.length) return [];
-      return res[0].values.map(([nombre]) => {
-        const info = this.#db.exec(`PRAGMA table_info("${nombre}")`);
-        const fkRes = this.#db.exec(`PRAGMA foreign_key_list("${nombre}")`);
+      const tablasRes = await this.#db.query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name"
+      );
+      const resultado = [];
+      for (const fila of tablasRes.rows) {
+        const nombre = fila.table_name;
+        const colsRes = await this.#db.query(
+          `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '${nombre}' ORDER BY ordinal_position`
+        );
+        const pkRes = await this.#db.query(
+          `SELECT kcu.column_name FROM information_schema.key_column_usage kcu JOIN information_schema.table_constraints tc ON tc.constraint_name = kcu.constraint_name WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '${nombre}' AND tc.table_schema = 'public'`
+        );
+        const pkCols = new Set(pkRes.rows.map(r => r.column_name));
+        const fkRes = await this.#db.query(
+          `SELECT kcu.column_name, ccu.table_name AS ref_table FROM information_schema.referential_constraints rc JOIN information_schema.key_column_usage kcu ON kcu.constraint_name = rc.constraint_name JOIN information_schema.constraint_column_usage ccu ON ccu.constraint_name = rc.unique_constraint_name WHERE kcu.table_name = '${nombre}' AND kcu.table_schema = 'public'`
+        );
         const fkMap = {};
-        if (fkRes.length) {
-          fkRes[0].values.forEach(fk => { fkMap[fk[3]] = fk[2]; });
-        }
-        const columnas = info.length
-          ? info[0].values.map(fila => new InfoColumna({
-              nombre: fila[1],
-              tipo: fila[2],
-              esPrimaria: fila[5] === 1,
-              esForanea: !!fkMap[fila[1]],
-              referenciaTabla: fkMap[fila[1]] || null,
-            }))
-          : [];
-        return new InfoTabla({ nombre, columnas });
-      });
+        fkRes.rows.forEach(r => { fkMap[r.column_name] = r.ref_table; });
+        const columnas = colsRes.rows.map(r => new InfoColumna({
+          nombre: r.column_name,
+          tipo: r.data_type,
+          esPrimaria: pkCols.has(r.column_name),
+          esForanea: !!fkMap[r.column_name],
+          referenciaTabla: fkMap[r.column_name] || null,
+        }));
+        resultado.push(new InfoTabla({ nombre, columnas }));
+      }
+      return resultado;
     } catch {
       return [];
     }
   }
 
-  obtenerDatosTabla(nombre) {
+  async obtenerDatosTabla(nombre) {
     return this.ejecutarConsulta(`SELECT * FROM "${nombre}" LIMIT 50`);
   }
 

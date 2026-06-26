@@ -4,14 +4,14 @@ export default function DrawerExplorador({ tablas, onObtenerDatos, abierto, onCe
   const [tablaActiva, setTablaActiva] = useState(null);
   const [datosTabla, setDatosTabla] = useState(null);
 
-  const seleccionarTabla = (tabla) => {
+  const seleccionarTabla = async (tabla) => {
     if (tablaActiva?.nombre === tabla.nombre) {
       setTablaActiva(null);
       setDatosTabla(null);
       return;
     }
     setTablaActiva(tabla);
-    setDatosTabla(onObtenerDatos(tabla.nombre));
+    setDatosTabla(await onObtenerDatos(tabla.nombre));
   };
 
   return (

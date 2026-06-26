@@ -7,7 +7,7 @@ import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 
-export default function PantallaEditor({ ejercicio, onVolver }) {
+export default function PantallaEditor({ ejercicio, onVolver, onSiguiente, onCompletado }) {
   const [consulta, setConsulta] = useState('');
   const [resultado, setResultado] = useState(null);
   const [estado, setEstado] = useState('neutral');
@@ -18,31 +18,52 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
   const [drawerAbierto, setDrawerAbierto] = useState(false);
   const [diagramaAbierto, setDiagramaAbierto] = useState(false);
   const [tablas, setTablas] = useState([]);
+  const [alturaPantalla, setAlturaPantalla] = useState(
+    () => window.visualViewport?.height ?? window.innerHeight
+  );
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
+  const ultimaConsulta = useRef('');
 
   useEffect(() => {
     const ctrl = controlador.current;
     setCargando(true);
+    setConsulta('');
+    setResultado(null);
+    setEstado('neutral');
+    setSugerencias([]);
+    setMostrarPista(false);
+    setIndicePista(0);
 
-    import('sql.js').then(mod => {
-      const SqlJs = mod.default ?? mod;
-      const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
-      ctrl.iniciar(ejercicio, baseDatos, SqlJs).then(() => {
-        setTablas(ctrl.obtenerEsquema());
-        setCargando(false);
-      });
+    const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
+    ctrl.iniciar(ejercicio, baseDatos).then(async () => {
+      setTablas(await ctrl.obtenerEsquema());
+      setCargando(false);
     });
 
     return () => ctrl.destruir();
   }, [ejercicio]);
 
-  const handleCambio = (e) => {
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const actualizar = () => setAlturaPantalla(vv.height);
+    vv.addEventListener('resize', actualizar);
+    vv.addEventListener('scroll', actualizar);
+    return () => {
+      vv.removeEventListener('resize', actualizar);
+      vv.removeEventListener('scroll', actualizar);
+    };
+  }, []);
+
+  const handleCambio = async (e) => {
     const valor = e.target.value;
+    ultimaConsulta.current = valor;
     setConsulta(valor);
-    setEstado(controlador.current.evaluarEstado(valor));
     setSugerencias(controlador.current.sugerirAutocompletado(valor));
+    const nuevoEstado = await controlador.current.evaluarEstado(valor);
+    if (ultimaConsulta.current === valor) setEstado(nuevoEstado);
   };
 
   const handleAutocompletar = (palabra) => {
@@ -51,13 +72,20 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
     const nueva = palabras.join('');
     setConsulta(nueva);
     setSugerencias([]);
-    setEstado(controlador.current.evaluarEstado(nueva));
+    controlador.current.evaluarEstado(nueva).then(nuevoEstado => setEstado(nuevoEstado));
     textareaRef.current?.focus();
   };
 
-  const ejecutar = () => {
-    const res = controlador.current.ejecutarConsulta(consulta);
+  const ejecutar = async () => {
+    const res = await controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
+    if (ejercicio) {
+      const correcto = await controlador.current.verificarCorreccion(res);
+      if (correcto) {
+        onCompletado?.(ejercicio.id);
+        setEstado('feliz');
+      }
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -75,43 +103,58 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
   if (cargando) {
     return (
-      <div className="h-screen bg-[#0d1117] flex items-center justify-center">
+      <div className="bg-[#0d1117] flex items-center justify-center" style={{ height: alturaPantalla }}>
         <p className="text-[#8b949e] text-sm">Inicializando base de datos...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-screen bg-[#0d1117] flex flex-col font-mono overflow-hidden">
+    <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden" style={{ height: alturaPantalla }}>
 
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d] bg-[#161b22] flex-shrink-0">
-        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
+      <div className={`flex items-center justify-between px-4 py-2.5 border-b flex-shrink-0 transition-colors duration-300 ${estado === 'feliz' && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
+        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors flex-shrink-0">
           ←
         </button>
-        <div className="flex-1 mx-4 min-w-0">
-          {ejercicio
-            ? <p className="text-[#e6edf3] text-sm truncate font-sans">{ejercicio.titulo}</p>
-            : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
-          }
-        </div>
-        <div className="flex items-center gap-3">
-          <CaritaEstado estado={estado} />
-          <button
-            onClick={() => setDiagramaAbierto(true)}
-            className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
-            title="Ver diagrama"
-          >
-            📊
-          </button>
-          <button
-            onClick={() => setDrawerAbierto(true)}
-            className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
-            title="Explorar tablas"
-          >
-            🗄️
-          </button>
-        </div>
+
+        {estado === 'feliz' && resultado !== null ? (
+          <>
+            <p className="text-[#3fb950] text-sm font-sans flex-1 mx-4">¡Correcto! 😊</p>
+            <button
+              onClick={onSiguiente ?? onVolver}
+              className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-md transition-colors font-sans flex-shrink-0"
+            >
+              {onSiguiente ? 'Siguiente →' : 'Volver'}
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="flex-1 mx-4 min-w-0">
+              {ejercicio
+                ? <p className="text-[#e6edf3] text-sm truncate font-sans">{ejercicio.titulo}</p>
+                : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
+              }
+            </div>
+            <div className="flex items-center gap-3">
+              <CaritaEstado estado={estado} />
+              <button
+                onClick={() => setDiagramaAbierto(true)}
+                className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+                title="Ver diagrama"
+              >
+                📊
+              </button>
+              <button
+                onClick={() => setDrawerAbierto(true)}
+                className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
+                title="Explorar tablas"
+              >
+                🗄️
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Enunciado */}
@@ -132,7 +175,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
       )}
 
       {/* Editor SQL */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-[40] flex flex-col min-h-0">
         <div className="flex-1 relative min-h-0">
           <textarea
             ref={textareaRef}
@@ -150,7 +193,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
 
         {/* Barra inferior */}
         <div className="flex items-center justify-between px-4 py-2 border-t border-[#30363d] bg-[#161b22] flex-shrink-0">
-          <p className="text-[#484f58] text-xs font-sans">Ctrl+Enter para ejecutar</p>
+          <p className="text-[#484f58] text-xs font-sans hidden sm:block">Ctrl+Enter para ejecutar</p>
           <button
             onClick={ejecutar}
             disabled={!consulta.trim()}
@@ -162,11 +205,11 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
       </div>
 
       {/* Panel de resultados */}
-      <div className="h-44 border-t border-[#30363d] bg-[#161b22] flex-shrink-0 overflow-hidden">
-        <div className="px-4 py-1.5 border-b border-[#30363d]">
+      <div className={`${resultado ? 'flex-[60]' : 'flex-none'} border-t border-[#30363d] bg-[#161b22] min-h-0 flex flex-col`}>
+        <div className="px-4 py-1.5 border-b border-[#30363d] flex-shrink-0">
           <p className="text-[#8b949e] text-xs font-sans">Resultados</p>
         </div>
-        <div className="h-full overflow-auto">
+        <div className="flex-1 overflow-auto">
           <PanelResultados resultado={resultado} />
         </div>
       </div>
@@ -176,6 +219,7 @@ export default function PantallaEditor({ ejercicio, onVolver }) {
         tablas={tablas}
         abierto={diagramaAbierto}
         onCerrar={() => setDiagramaAbierto(false)}
+        nombreBD={ejercicio?.baseDatosId ? (obtenerBaseDatos(ejercicio.baseDatosId)?.nombre ?? '') : ''}
       />
 
       {/* Drawer explorador */}
