@@ -4,7 +4,6 @@ import './index.css'
 import App from './App.jsx'
 import { LimitadorErrores } from './vistas/LimitadorErrores.jsx'
 
-if (window._stopMatrix) window._stopMatrix();
 const splash = document.getElementById('splash');
 if (splash) splash.remove();
 
