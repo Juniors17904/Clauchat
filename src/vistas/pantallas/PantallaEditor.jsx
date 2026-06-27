@@ -65,6 +65,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     const valor = e.target.value;
     ultimaConsulta.current = valor;
     setConsulta(valor);
+    setResultado(null);
     setSugerencias(controlador.current.sugerirAutocompletado(valor));
     const nuevoEstado = await controlador.current.evaluarEstado(valor);
     if (ultimaConsulta.current === valor) setEstado(nuevoEstado);
