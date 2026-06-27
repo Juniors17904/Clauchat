@@ -83,11 +83,17 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const ejecutar = async () => {
     const res = await controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
+    if (res.error) {
+      setEstado('pensando');
+      return;
+    }
     if (ejercicio) {
       const correcto = await controlador.current.verificarCorreccion(res);
       if (correcto) {
         onCompletado?.(ejercicio.id);
         setEstado('feliz');
+      } else {
+        setEstado('pensando');
       }
     }
   };
