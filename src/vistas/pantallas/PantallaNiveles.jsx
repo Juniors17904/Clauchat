@@ -39,8 +39,8 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
                   <p className="text-white font-medium text-sm">{nivel.nombre}</p>
                   <p className="text-[#8b949e] text-xs mt-0.5">{nivel.descripcion}</p>
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${colores.etiqueta}`}>
-                  Nivel {nivel.orden}
+                <span className={`w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center flex-shrink-0 ${colores.etiqueta}`}>
+                  {nivel.orden}
                 </span>
               </button>
             );
