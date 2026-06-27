@@ -19,9 +19,9 @@ export default defineConfig({
         globIgnores: ['**/*.wasm', '**/*.data'],
       },
       manifest: {
-        name: 'Sqlaboratorio',
-        short_name: 'Sqlaboratorio',
-        description: 'Aprende SQL desde básico hasta nivel senior',
+        name: 'Maestro Dev',
+        short_name: 'Maestro Dev',
+        description: 'Aprende programación desde básico hasta nivel senior',
         version: '0.3.0',
         theme_color: '#0d1117',
         background_color: '#0d1117',
