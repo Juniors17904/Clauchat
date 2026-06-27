@@ -251,6 +251,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
         abierto={diagramaAbierto}
         onCerrar={() => setDiagramaAbierto(false)}
         nombreBD={ejercicio?.baseDatosId ? (obtenerBaseDatos(ejercicio.baseDatosId)?.nombre ?? '') : ''}
+        descripcionBD={ejercicio?.baseDatosId ? (obtenerBaseDatos(ejercicio.baseDatosId)?.descripcion ?? '') : ''}
       />
 
       {/* Drawer explorador */}
@@ -259,6 +260,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
         onObtenerDatos={(nombre) => controlador.current.obtenerDatosTabla(nombre)}
         abierto={drawerAbierto}
         onCerrar={() => setDrawerAbierto(false)}
+        baseDatos={ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null}
       />
     </div>
   );

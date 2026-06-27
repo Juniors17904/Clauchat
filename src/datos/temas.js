@@ -6,9 +6,9 @@ export const TEMAS = [
   new Tema({
     id: 'n1-t1', nombre: 'SELECT, FROM', descripcion: 'Consultas básicas de selección', nivelId: 'nivel1', orden: 1,
     concepto: new ConceptoTema({
-      queEs: 'SELECT indica qué columnas quieres ver y FROM indica de qué tabla. Son las dos palabras clave que toda consulta SQL necesita.',
-      sintaxis: 'SELECT columna1, columna2\nFROM tabla',
-      ejemplo: 'SELECT nombre, apellido, promedio\nFROM estudiantes',
+      queEs: 'SELECT indica qué columnas quieres ver y FROM indica de qué tabla. Son las dos palabras clave que toda consulta SQL necesita. Con SELECT * traes todas las columnas sin escribir cada nombre.',
+      sintaxis: 'SELECT columna1, columna2\nFROM tabla\n\n-- O para traer todo:\nSELECT *\nFROM tabla',
+      ejemplo: 'SELECT nombre, apellido, promedio\nFROM estudiantes\n\n-- Todas las columnas:\nSELECT * FROM estudiantes',
     }),
   }),
   new Tema({

@@ -16,14 +16,14 @@ export const EJERCICIOS = [
   }),
   new Ejercicio({
     id: 'n1-t1-02',
-    titulo: 'Equipos de fútbol',
-    enunciado: 'Obtén el nombre y ciudad de todos los equipos.',
+    titulo: 'Todos los datos de equipos',
+    enunciado: 'Obtén todas las columnas de todos los equipos.',
     nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'deportes',
-    consultaEsperada: 'SELECT nombre, ciudad FROM equipos',
+    consultaEsperada: 'SELECT * FROM equipos',
     pistas: [
-      'La tabla se llama equipos',
-      'Selecciona las columnas nombre y ciudad',
-      'No necesitas WHERE ni ORDER BY',
+      'El asterisco (*) selecciona todas las columnas',
+      'No necesitas escribir cada columna por su nombre',
+      'SELECT * FROM equipos',
     ],
   }),
   new Ejercicio({
@@ -50,13 +50,13 @@ export const EJERCICIOS = [
   }),
   new Ejercicio({
     id: 'n1-t1-05',
-    titulo: 'Datos de jugadores',
-    enunciado: 'Obtén el nombre, apellido y posición de todos los jugadores.',
-    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'deportes',
-    consultaEsperada: 'SELECT nombre, apellido, posicion FROM jugadores',
+    titulo: 'Todos los datos de medicamentos',
+    enunciado: 'Obtén todas las columnas de todos los medicamentos disponibles.',
+    nivelId: 'nivel1', temaId: 'n1-t1', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT * FROM medicamentos',
     pistas: [
-      'La tabla se llama jugadores',
-      'Selecciona tres columnas: nombre, apellido, posicion',
+      'Usa * para seleccionar todo sin escribir cada columna',
+      'SELECT * FROM nombre_tabla',
     ],
   }),
   new Ejercicio({

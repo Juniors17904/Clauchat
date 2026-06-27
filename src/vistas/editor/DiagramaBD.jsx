@@ -223,7 +223,7 @@ function generarRelaciones(tablas, posiciones) {
   return rels;
 }
 
-export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' }) {
+export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '', descripcionBD = '' }) {
   const [traslado, setTraslado] = useState({ x: 20, y: 20 });
   const [escala, setEscala] = useState(1);
 
@@ -339,6 +339,9 @@ export default function DiagramaBD({ tablas, abierto, onCerrar, nombreBD = '' })
           <p className="text-white font-semibold text-sm font-sans">
             📊 {nombreBD || 'Diagrama ER'}
           </p>
+          {descripcionBD && (
+            <p className="text-[#8b949e] text-xs font-sans mt-0.5">{descripcionBD}</p>
+          )}
           <p className="text-[#484f58] text-[10px] font-sans mt-0.5">
             SQLab · v1.0 · {fecha}
           </p>
