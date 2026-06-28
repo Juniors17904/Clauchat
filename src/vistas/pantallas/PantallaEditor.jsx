@@ -8,11 +8,11 @@ import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 
 const MENSAJES_CARGA = [
-  'Iniciando PostgreSQL...',
-  'Creando tablas...',
-  'Insertando datos...',
-  'Cargando relaciones...',
-  'Afilando consultas...',
+  'Iniciando motor de base de datos...',
+  'Ejecutando esquema SQL...',
+  'Cargando datos de ejemplo...',
+  'Leyendo estructura de columnas...',
+  'Verificando relaciones...',
   'Casi listo...',
 ];
 
