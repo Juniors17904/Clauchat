@@ -100,20 +100,16 @@ export default function DrawerPerfil({ controlador, abierto, onCerrar, onVerArbo
                 );
               })}
             </div>
+            {onVerArbol && (
+              <button
+                onClick={() => { onCerrar(); onVerArbol(); }}
+                className="mt-4 w-full text-center text-[#484f58] hover:text-[#8b949e] text-xs font-sans transition-colors py-1"
+              >
+                Ver currículo completo →
+              </button>
+            )}
           </div>
         </div>
-
-        {/* Ver currículo */}
-        {onVerArbol && (
-          <div className="px-4 pt-3 pb-1 flex-shrink-0">
-            <button
-              onClick={() => { onCerrar(); onVerArbol(); }}
-              className="w-full py-2 border border-[#30363d] text-[#8b949e] hover:text-white hover:border-[#8b949e] text-xs rounded font-sans transition-colors"
-            >
-              📋 Ver currículo
-            </button>
-          </div>
-        )}
 
         {/* Borrar avance */}
         <div className="px-4 py-4 border-t border-[#30363d] flex-shrink-0">
