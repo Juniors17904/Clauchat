@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png'],
       workbox: {
-        cacheId: 'sqlab-v8',
+        cacheId: 'sqlab-v9',
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,

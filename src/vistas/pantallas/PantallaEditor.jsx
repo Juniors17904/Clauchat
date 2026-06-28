@@ -181,17 +181,27 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   };
 
   if (errorCarga) {
+    const esCacheVieja = errorCarga.includes('fetch') || errorCarga.includes('import');
     return (
       <div className="bg-[#0d1117] flex flex-col" style={{ height: alturaPantalla }}>
         <div className="fixed top-4 left-4 right-4 bg-[#2d1111] border border-[#f85149] rounded-lg px-4 py-3 z-50 font-sans">
           <p className="text-[#f85149] text-sm font-bold">Error al cargar</p>
-          <p className="text-[#8b949e] text-xs mt-1">{errorCarga}</p>
-          <button
-            onClick={onVolver}
-            className="text-[#388bfd] text-xs mt-2 underline"
-          >
-            Volver
-          </button>
+          <p className="text-[#8b949e] text-xs mt-1">
+            {esCacheVieja ? 'La app tiene una versión desactualizada. Recarga para continuar.' : errorCarga}
+          </p>
+          <div className="flex gap-3 mt-2">
+            {esCacheVieja && (
+              <button
+                onClick={() => window.location.reload()}
+                className="text-white text-xs bg-[#238636] px-3 py-1 rounded-md"
+              >
+                Recargar app
+              </button>
+            )}
+            <button onClick={onVolver} className="text-[#388bfd] text-xs underline self-center">
+              Volver
+            </button>
+          </div>
         </div>
       </div>
     );
