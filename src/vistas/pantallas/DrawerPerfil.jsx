@@ -103,9 +103,9 @@ export default function DrawerPerfil({ controlador, abierto, onCerrar, onVerArbo
             {onVerArbol && (
               <button
                 onClick={() => { onCerrar(); onVerArbol(); }}
-                className="mt-4 w-full text-center text-[#484f58] hover:text-[#8b949e] text-xs font-sans transition-colors py-1"
+                className="mt-4 w-full py-2 border border-[#30363d] rounded text-[#8b949e] hover:text-white hover:border-[#8b949e] text-xs font-sans transition-colors"
               >
-                Ver currículo completo →
+                📋 Ver currículo completo
               </button>
             )}
           </div>
