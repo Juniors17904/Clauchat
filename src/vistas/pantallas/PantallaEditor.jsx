@@ -210,56 +210,57 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   return (
     <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden select-none" style={{ height: alturaPantalla }}>
 
-      {/* Header — fila principal */}
-      <div className={`flex items-center gap-2 px-3 py-2 border-b flex-shrink-0 transition-colors duration-300 ${estado === 'feliz' && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
-        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0 leading-none">
-          ←
-        </button>
+      {/* Header — dos filas */}
+      <div className={`border-b flex-shrink-0 transition-colors duration-300 ${estado === 'feliz' && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
 
         {estado === 'feliz' && resultado !== null ? (
-          <>
+          <div className="flex items-center gap-3 px-4 py-3">
+            <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
             <p className="text-[#3fb950] text-sm font-sans flex-1">¡Correcto! 😊</p>
             <button
               onClick={onSiguiente ?? onVolver}
-              className="px-3 py-1 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-md transition-colors font-sans flex-shrink-0"
+              className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-lg transition-colors font-sans flex-shrink-0"
             >
               {onSiguiente ? 'Siguiente →' : 'Terminar'}
             </button>
-          </>
+          </div>
         ) : (
           <>
-            {/* Breadcrumb: BD · Tema en una sola línea */}
-            <div className="flex-1 min-w-0">
-              {ejercicio ? (
-                <p className="text-xs truncate leading-none">
-                  <span className="text-[#8b949e] font-sans">{baseDatos ? `${baseDatos.icono} ${baseDatos.nombre}` : ''}</span>
-                  {tema && <span className="text-[#484f58] font-mono"> · {tema.nombre}</span>}
-                </p>
-              ) : (
-                <p className="text-[#8b949e] text-xs font-sans">Práctica libre</p>
-              )}
+            {/* Fila 1 — navegación */}
+            <div className="flex items-center gap-3 px-4 pt-3 pb-1.5">
+              <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
+              <div className="flex-1 min-w-0">
+                {ejercicio ? (
+                  <p className="text-sm leading-snug">
+                    <span className="text-[#c9d1d9] font-sans">{baseDatos ? `${baseDatos.icono} ${baseDatos.nombre}` : ''}</span>
+                    {tema && <span className="text-[#8b949e] font-mono text-xs"> · {tema.nombre}</span>}
+                  </p>
+                ) : (
+                  <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
+                )}
+              </div>
             </div>
 
-            {/* Controles derecha */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-[#484f58] text-xs font-mono tabular-nums">{formatearTiempo(segundos)}</span>
-              {progreso && (
-                <span className="text-[#484f58] text-xs font-mono">{progreso.actual}/{progreso.total}</span>
-              )}
-              <button onClick={reiniciar} title="Reiniciar" className="text-[#484f58] hover:text-[#8b949e] transition-colors p-0.5">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+            {/* Fila 2 — controles espaciados */}
+            <div className="flex items-center justify-between px-5 pb-2.5">
+              <button onClick={reiniciar} title="Reiniciar" className="text-[#484f58] hover:text-[#8b949e] transition-colors">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
                   <path fillRule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
                 </svg>
               </button>
+              <span className="text-[#484f58] text-xs font-mono tabular-nums">{formatearTiempo(segundos)}</span>
+              {progreso && (
+                <span className="text-[#8b949e] text-xs font-mono">{progreso.actual}/{progreso.total}</span>
+              )}
               <CaritaEstado estado={estado} />
-              <button onClick={() => setDiagramaAbierto(true)} title="Ver diagrama" className="text-[#8b949e] hover:text-[#388bfd] transition-colors p-0.5">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <button onClick={() => setDiagramaAbierto(true)} title="Ver diagrama" className="text-[#8b949e] hover:text-[#388bfd] transition-colors">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5h-2v12h2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
                 </svg>
               </button>
-              <button onClick={() => setDrawerAbierto(true)} title="Explorar tablas" className="text-[#8b949e] hover:text-[#388bfd] transition-colors p-0.5">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <button onClick={() => setDrawerAbierto(true)} title="Explorar tablas" className="text-[#8b949e] hover:text-[#388bfd] transition-colors">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 3H1v2h14V5zm0 3H1v2h14V8zm0 3H1v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3z"/>
                 </svg>
               </button>
