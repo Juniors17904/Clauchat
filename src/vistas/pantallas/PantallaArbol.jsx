@@ -24,15 +24,13 @@ export default function PantallaArbol({ onVolver }) {
   const temasConEjercicios = TEMAS.filter(t => EJERCICIOS.some(e => e.temaId === t.id)).length;
 
   return (
-    <div className="min-h-[100svh] bg-[#0d1117] px-4 py-6">
-      <div className="w-full max-w-sm mx-auto">
-        <button
-          onClick={onVolver}
-          className="text-[#8b949e] hover:text-white text-sm mb-6 flex items-center gap-1 transition-colors"
-        >
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col">
+      <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10">
+        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
           ← Volver
         </button>
-
+      </div>
+      <div className="w-full max-w-sm mx-auto px-4 py-6">
         <h2 className="text-xl font-bold text-white mb-1">Currículo SQL</h2>
         <p className="text-[#8b949e] text-xs mb-3">Estado del contenido por nivel y tema</p>
 

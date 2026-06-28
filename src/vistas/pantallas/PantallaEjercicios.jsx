@@ -1,12 +1,13 @@
 export default function PantallaEjercicios({ nivel, ejercicios = [], onSeleccionar, onVolver, controladorPerfil }) {
 
   return (
-    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm mb-8 flex items-center gap-1 transition-colors">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col">
+      <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10">
+        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
           ← Volver
         </button>
-
+      </div>
+      <div className="w-full max-w-sm mx-auto px-4 py-6">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white">{nivel?.nombre}</h2>
           <p className="text-[#8b949e] text-sm mt-1">{ejercicios.length} ejercicios disponibles</p>

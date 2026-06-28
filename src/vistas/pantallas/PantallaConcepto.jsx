@@ -2,15 +2,16 @@ export default function PantallaConcepto({ tema, totalEjercicios, onVolver, onEm
   const concepto = tema?.concepto;
 
   return (
-    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col px-4 py-6">
-      <div className="w-full max-w-sm mx-auto flex flex-col flex-1">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col">
 
-        <button
-          onClick={onVolver}
-          className="text-[#8b949e] hover:text-white text-sm mb-6 flex items-center gap-1 transition-colors self-start"
-        >
+      {/* Header fijo */}
+      <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10">
+        <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
           ← Volver
         </button>
+      </div>
+
+      <div className="w-full max-w-sm mx-auto flex flex-col flex-1 px-4 py-6">
 
         <div className="mb-6">
           <p className="text-[#8b949e] text-xs mb-1 font-sans">Tema</p>
