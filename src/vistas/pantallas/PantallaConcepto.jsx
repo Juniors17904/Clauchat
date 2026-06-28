@@ -2,7 +2,7 @@ export default function PantallaConcepto({ tema, totalEjercicios, onVolver, onEm
   const concepto = tema?.concepto;
 
   return (
-    <div className="min-h-screen bg-[#0d1117] flex flex-col px-4 py-6">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col px-4 py-6">
       <div className="w-full max-w-sm mx-auto flex flex-col flex-1">
 
         <button

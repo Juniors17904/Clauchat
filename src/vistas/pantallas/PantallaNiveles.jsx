@@ -15,7 +15,7 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
   const niveles = NIVELES.filter(n => n.areaId === area.id);
 
   return (
-    <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center px-4">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm mb-8 flex items-center gap-1 transition-colors">
           ← Volver

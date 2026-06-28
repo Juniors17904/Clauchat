@@ -17,7 +17,7 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver }) {
   const colores = COLORES[nivel.orden];
 
   return (
-    <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center px-4">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <button
           onClick={onVolver}

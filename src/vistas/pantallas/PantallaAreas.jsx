@@ -6,7 +6,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
   const [perfilAbierto, setPerfilAbierto] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center px-4">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col items-center justify-center px-4">
       <div className="mb-10 text-center relative">
         <button
           onClick={() => setPerfilAbierto(true)}

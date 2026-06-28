@@ -24,7 +24,7 @@ export default function PantallaArbol({ onVolver }) {
   const temasConEjercicios = TEMAS.filter(t => EJERCICIOS.some(e => e.temaId === t.id)).length;
 
   return (
-    <div className="min-h-screen bg-[#0d1117] px-4 py-6">
+    <div className="min-h-[100svh] bg-[#0d1117] px-4 py-6">
       <div className="w-full max-w-sm mx-auto">
         <button
           onClick={onVolver}
