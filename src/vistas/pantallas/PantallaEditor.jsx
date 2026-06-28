@@ -226,23 +226,23 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           </div>
         ) : (
           <>
-            {/* Fila 1 — navegación */}
-            <div className="flex items-center gap-3 px-4 pt-3 pb-1.5">
+            {/* Fila 1 — solo nombre de la base de datos */}
+            <div className="flex items-center gap-3 px-4 pt-3 pb-1">
               <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
-              <div className="flex-1 min-w-0">
-                {ejercicio ? (
-                  <p className="text-sm leading-snug">
-                    <span className="text-[#c9d1d9] font-sans">{baseDatos ? `${baseDatos.icono} ${baseDatos.nombre}` : ''}</span>
-                    {tema && <span className="text-[#8b949e] font-mono text-xs"> · {tema.nombre}</span>}
-                  </p>
-                ) : (
-                  <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
-                )}
-              </div>
+              <span className="text-[#484f58] text-[10px] font-mono uppercase tracking-widest">
+                {baseDatos ? baseDatos.nombre : 'Práctica libre'}
+              </span>
             </div>
 
-            {/* Fila 2 — controles espaciados */}
-            <div className="flex items-center justify-between px-5 pb-2.5">
+            {/* Fila 2 — solo nombre del tema */}
+            <div className="px-4 pb-1.5 pl-10">
+              <span className="text-[#c9d1d9] text-sm font-sans">
+                {tema ? tema.nombre : ''}
+              </span>
+            </div>
+
+            {/* Fila 3 — controles espaciados */}
+            <div className="flex items-center justify-between px-5 pb-2.5 pt-0.5">
               <button onClick={reiniciar} title="Reiniciar" className="text-[#484f58] hover:text-[#8b949e] transition-colors">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
