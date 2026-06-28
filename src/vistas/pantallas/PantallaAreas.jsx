@@ -23,7 +23,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
   const manejarTouchEnd = () => {
     if (distanciaTiro >= UMBRAL_PULL) {
       setActualizando(true);
-      onActualizar();
+      window.location.reload();
     }
     setDistanciaTiro(0);
     inicioRef.current = null;
