@@ -143,6 +143,11 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
   const siguientePista = () => {
     if (!ejercicio?.pistas?.length) return;
+    if (mostrarPista && indicePista >= ejercicio.pistas.length - 1) {
+      setMostrarPista(false);
+      setIndicePista(0);
+      return;
+    }
     setMostrarPista(true);
     setIndicePista(i => Math.min(i + 1, ejercicio.pistas.length - 1));
   };
@@ -233,7 +238,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           )}
           {ejercicio.pistas?.length > 0 && (
             <button onClick={siguientePista} className="text-[#8b949e] hover:text-[#d29922] text-xs mt-2 transition-colors font-sans">
-              {mostrarPista && indicePista < ejercicio.pistas.length - 1 ? 'Otra pista' : mostrarPista ? 'Sin más pistas' : '💡 Pista'}
+              {mostrarPista && indicePista < ejercicio.pistas.length - 1 ? 'Otra pista' : mostrarPista ? 'Ocultar pista' : '💡 Pista'}
             </button>
           )}
         </div>
