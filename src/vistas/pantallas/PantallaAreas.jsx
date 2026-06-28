@@ -35,7 +35,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
 
   return (
     <div
-      className={`min-h-[100svh] bg-[#0d1117] flex flex-col items-center justify-center px-4 relative select-none ${needRefresh ? 'pt-10' : ''}`}
+      className="min-h-[100svh] bg-[#0d1117] flex flex-col select-none relative"
       onTouchStart={manejarTouchStart}
       onTouchMove={manejarTouchMove}
       onTouchEnd={manejarTouchEnd}
@@ -60,25 +60,53 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           style={{ opacity: actualizando ? 1 : opacidadIndicador }}
         >
           <p className="text-[#484f58] text-xs font-sans">
-            {actualizando
-              ? '↻ Actualizando...'
-              : listoParaSoltar
-              ? '↑ Suelta para actualizar'
-              : '↓ Desliza para actualizar'}
+            {actualizando ? '↻ Actualizando...' : listoParaSoltar ? '↑ Suelta para actualizar' : '↓ Desliza para actualizar'}
           </p>
         </div>
       )}
 
-      <div className="mb-10 text-center relative">
+      {/* Botón perfil — esquina superior derecha */}
+      <div className={`flex justify-end px-5 ${needRefresh ? 'pt-12' : 'pt-10'}`}>
         <button
           onClick={() => setPerfilAbierto(true)}
-          className="absolute -right-16 top-0 text-[#8b949e] hover:text-white transition-colors text-xl"
+          className="w-9 h-9 rounded-full bg-[#161b22] border border-[#30363d] flex items-center justify-center text-[#8b949e] hover:text-white hover:border-[#388bfd] transition-colors text-base"
           title="Ver perfil"
         >
           👤
         </button>
-        <h1 className="text-3xl font-bold text-white tracking-tight">SQLab</h1>
-        <p className="text-[#8b949e] mt-2 text-sm">Elige un área de estudio</p>
+      </div>
+
+      {/* Branding */}
+      <div className="flex flex-col items-center justify-center flex-1 px-6 gap-10">
+        <div className="text-center">
+          <div className="text-5xl mb-4">🛢️</div>
+          <h1 className="text-3xl font-bold text-white tracking-tight font-sans">SQLab</h1>
+          <p className="text-[#8b949e] mt-1.5 text-sm font-sans">Elige un área de estudio</p>
+        </div>
+
+        {/* Tarjetas de áreas */}
+        <div className="w-full max-w-sm space-y-3">
+          {AREAS.map(area => (
+            <button
+              key={area.id}
+              onClick={() => area.disponible && onSeleccionar(area)}
+              disabled={!area.disponible}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl border text-left transition-all
+                ${area.disponible
+                  ? 'bg-[#161b22] border-[#30363d] hover:border-[#388bfd] hover:bg-[#1c2128] active:scale-[0.98]'
+                  : 'bg-[#0d1117] border-[#21262d] opacity-40 cursor-not-allowed'
+                }`}
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#21262d] flex items-center justify-center text-xl flex-shrink-0">
+                {area.icono}
+              </div>
+              <div className="min-w-0">
+                <p className="text-white font-medium text-sm font-sans">{area.nombre}</p>
+                <p className="text-[#8b949e] text-xs mt-0.5 font-sans">{area.descripcion}</p>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       <DrawerPerfil
@@ -87,27 +115,6 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         onCerrar={() => setPerfilAbierto(false)}
         onVerArbol={onVerArbol}
       />
-
-      <div className="w-full max-w-sm space-y-3">
-        {AREAS.map(area => (
-          <button
-            key={area.id}
-            onClick={() => area.disponible && onSeleccionar(area)}
-            disabled={!area.disponible}
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl border text-left transition-all
-              ${area.disponible
-                ? 'bg-[#161b22] border-[#30363d] hover:border-[#388bfd] hover:bg-[#1c2128] cursor-pointer'
-                : 'bg-[#0d1117] border-[#21262d] opacity-40 cursor-not-allowed'
-              }`}
-          >
-            <span className="text-2xl">{area.icono}</span>
-            <div>
-              <p className="text-white font-medium text-sm">{area.nombre}</p>
-              <p className="text-[#8b949e] text-xs mt-0.5">{area.descripcion}</p>
-            </div>
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

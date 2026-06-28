@@ -3,9 +3,9 @@ import { AreaEstudio } from '../modelos/area_estudio';
 export const AREAS = [
   new AreaEstudio({
     id: 'bases-de-datos',
-    nombre: 'Base de Datos SQL Server',
-    descripcion: 'Aprende SQL desde fundamentos hasta nivel senior',
-    icono: '🗄️',
+    nombre: 'SQL',
+    descripcion: 'Desde SELECT hasta Window Functions',
+    icono: '🛢️',
     disponible: true,
   }),
   new AreaEstudio({
