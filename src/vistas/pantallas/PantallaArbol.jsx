@@ -34,16 +34,16 @@ export default function PantallaArbol({ onVolver }) {
         <h2 className="text-xl font-bold text-white mb-1">Currículo SQL</h2>
         <p className="text-[#8b949e] text-xs mb-3">Estado del contenido por nivel y tema</p>
 
-        <div className="flex gap-4 mb-6">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 text-center">
+        <div className="flex gap-2 mb-6">
+          <div className="flex-1 bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 text-center">
             <p className="text-[#3fb950] text-lg font-bold font-mono">{totalEjercicios}</p>
             <p className="text-[#8b949e] text-xs">ejercicios</p>
           </div>
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 text-center">
-            <p className="text-[#388bfd] text-lg font-bold font-mono">{temasConEjercicios}<span className="text-[#8b949e] text-sm">/{totalTemas}</span></p>
+          <div className="flex-1 bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 text-center">
+            <p className="text-[#388bfd] text-lg font-bold font-mono">{temasConEjercicios}<span className="text-[#484f58] text-sm">/{totalTemas}</span></p>
             <p className="text-[#8b949e] text-xs">temas activos</p>
           </div>
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 text-center">
+          <div className="flex-1 bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 text-center">
             <p className="text-[#8250df] text-lg font-bold font-mono">{sqlNiveles.length}</p>
             <p className="text-[#8b949e] text-xs">niveles</p>
           </div>
@@ -66,11 +66,11 @@ export default function PantallaArbol({ onVolver }) {
                   className="w-full flex items-center justify-between px-4 py-3 bg-[#161b22] hover:bg-[#1c2128] transition-colors text-left"
                 >
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs font-mono ${color}`}>{abierto ? '▼' : '▶'}</span>
+                    <span className={`text-sm ${color}`}>{abierto ? '▾' : '▸'}</span>
                     <span className="text-white text-sm font-medium">{nivel.nombre}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[#8b949e] text-xs font-mono">
-                    <span className={ejerciciosDeNivel.length > 0 ? 'text-[#3fb950]' : ''}>{ejerciciosDeNivel.length} ej.</span>
+                  <div className="flex items-center gap-2 text-[#484f58] text-xs font-mono">
+                    <span className={ejerciciosDeNivel.length > 0 ? color : ''}>{ejerciciosDeNivel.length} ej.</span>
                     <span>·</span>
                     <span>{temasDejNivel.length} temas</span>
                   </div>
@@ -89,17 +89,11 @@ export default function PantallaArbol({ onVolver }) {
                             className="w-full flex items-center justify-between px-4 py-2.5 pl-7 bg-[#0d1117] hover:bg-[#161b22] transition-colors text-left"
                           >
                             <div className="flex items-center gap-2">
-                              <span className="text-[#484f58] text-xs">{temaExpandido ? '▼' : '▶'}</span>
+                              <span className="text-[#8b949e] text-sm">{temaExpandido ? '▾' : '▸'}</span>
                               <span className="text-[#e6edf3] text-xs">{tema.nombre}</span>
                             </div>
-                            <span className={`text-xs px-1.5 py-0.5 rounded font-mono ${
-                              ejerciciosDeTema.length >= 5
-                                ? 'bg-[#1a4731] text-[#3fb950]'
-                                : ejerciciosDeTema.length > 0
-                                  ? 'bg-[#3d2b00] text-[#d29922]'
-                                  : 'bg-[#21262d] text-[#484f58]'
-                            }`}>
-                              {ejerciciosDeTema.length}
+                            <span className="text-[#484f58] text-xs font-mono shrink-0">
+                              {ejerciciosDeTema.length} ej.
                             </span>
                           </button>
 
@@ -109,9 +103,16 @@ export default function PantallaArbol({ onVolver }) {
                                 <p className="text-[#484f58] text-xs py-1">Sin ejercicios aún</p>
                               ) : (
                                 ejerciciosDeTema.map((ej, i) => (
-                                  <div key={ej.id} className="flex items-start gap-2 py-0.5">
-                                    <span className="text-[#484f58] text-xs font-mono mt-0.5 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                                    <span className="text-[#8b949e] text-xs leading-relaxed">{ej.titulo}</span>
+                                  <div key={ej.id} className="py-1.5 border-b border-[#21262d] last:border-b-0">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-[#484f58] text-xs font-mono shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                                      <span className="text-[#c9d1d9] text-xs">{ej.titulo}</span>
+                                    </div>
+                                    {ej.consultaEsperada && (
+                                      <code className="block mt-1 ml-6 text-[#79c0ff] text-xs font-mono truncate">
+                                        {ej.consultaEsperada}
+                                      </code>
+                                    )}
                                   </div>
                                 ))
                               )}
