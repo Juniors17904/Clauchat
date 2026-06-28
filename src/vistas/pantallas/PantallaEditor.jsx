@@ -120,14 +120,6 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     setIndicePista(i => Math.min(i + 1, ejercicio.pistas.length - 1));
   };
 
-  if (cargando) {
-    return (
-      <div className="bg-[#0d1117] flex items-center justify-center" style={{ height: alturaPantalla }}>
-        <p className="text-[#8b949e] text-sm">Inicializando base de datos...</p>
-      </div>
-    );
-  }
-
   if (errorCarga) {
     return (
       <div className="bg-[#0d1117] flex flex-col" style={{ height: alturaPantalla }}>
@@ -223,15 +215,21 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
       {/* Editor SQL */}
       <div className="flex-[40] flex flex-col min-h-0">
         <div className="flex-1 relative min-h-0">
-          <textarea
-            ref={textareaRef}
-            value={consulta}
-            onChange={handleCambio}
-            onKeyDown={handleKeyDown}
-            placeholder="Escribe tu consulta SQL aquí..."
-            className="w-full h-full bg-[#0d1117] text-[#e6edf3] text-sm resize-none focus:outline-none px-4 py-4 leading-6 placeholder-[#484f58]"
-            spellCheck={false}
-          />
+          {cargando ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <p className="text-[#484f58] text-sm font-sans">Preparando base de datos...</p>
+            </div>
+          ) : (
+            <textarea
+              ref={textareaRef}
+              value={consulta}
+              onChange={handleCambio}
+              onKeyDown={handleKeyDown}
+              placeholder="Escribe tu consulta SQL aquí..."
+              className="w-full h-full bg-[#0d1117] text-[#e6edf3] text-sm resize-none focus:outline-none px-4 py-4 leading-6 placeholder-[#484f58]"
+              spellCheck={false}
+            />
+          )}
         </div>
 
         {/* Autocompletado */}
