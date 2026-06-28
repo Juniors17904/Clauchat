@@ -17,17 +17,52 @@ const COLORES_NIVEL = {
 export default function PantallaArbol({ onVolver }) {
   const [nivelAbierto, setNivelAbierto] = useState(null);
   const [temaAbierto, setTemaAbierto] = useState(null);
+  const [copiado, setCopiado] = useState(false);
 
   const sqlNiveles = NIVELES.filter(n => n.areaId === 'bases-de-datos');
   const totalEjercicios = EJERCICIOS.length;
   const totalTemas = TEMAS.length;
   const temasConEjercicios = TEMAS.filter(t => EJERCICIOS.some(e => e.temaId === t.id)).length;
 
+  const copiarTodo = () => {
+    const lineas = [];
+    lineas.push('CURRÍCULO SQL');
+    lineas.push(`${totalEjercicios} ejercicios · ${temasConEjercicios}/${totalTemas} temas · ${sqlNiveles.length} niveles`);
+
+    sqlNiveles.forEach(nivel => {
+      const temasDejNivel = TEMAS.filter(t => t.nivelId === nivel.id);
+      const ejerciciosDeNivel = EJERCICIOS.filter(e => e.nivelId === nivel.id);
+      lineas.push('');
+      lineas.push('─'.repeat(44));
+      lineas.push(`${nivel.nombre}  (${ejerciciosDeNivel.length} ej. · ${temasDejNivel.length} temas)`);
+
+      temasDejNivel.forEach(tema => {
+        const ejerciciosDeTema = EJERCICIOS.filter(e => e.temaId === tema.id);
+        lineas.push('');
+        lineas.push(`  ▸ ${tema.nombre}  (${ejerciciosDeTema.length} ej.)`);
+        ejerciciosDeTema.forEach((ej, i) => {
+          lineas.push(`    ${String(i + 1).padStart(2, '0')}. ${ej.titulo}`);
+          if (ej.consultaEsperada) lineas.push(`        ${ej.consultaEsperada}`);
+        });
+      });
+    });
+
+    navigator.clipboard.writeText(lineas.join('\n'));
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 2000);
+  };
+
   return (
     <div className="min-h-[100svh] bg-[#0d1117] flex flex-col">
-      <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10">
+      <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10 flex items-center justify-between">
         <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
           ← Volver
+        </button>
+        <button
+          onClick={copiarTodo}
+          className={`text-xs font-mono transition-colors flex items-center gap-1.5 ${copiado ? 'text-[#3fb950]' : 'text-[#8b949e] hover:text-white'}`}
+        >
+          {copiado ? '✓ Copiado' : '⎘ Copiar todo'}
         </button>
       </div>
       <div className="w-full max-w-sm mx-auto px-4 py-6">
