@@ -7,6 +7,15 @@ import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 
+const MENSAJES_CARGA = [
+  'Iniciando PostgreSQL...',
+  'Creando tablas...',
+  'Insertando datos...',
+  'Cargando relaciones...',
+  'Afilando consultas...',
+  'Casi listo...',
+];
+
 export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguiente, onCompletado }) {
   const [consulta, setConsulta] = useState('');
   const [resultado, setResultado] = useState(null);
@@ -22,6 +31,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [alturaPantalla, setAlturaPantalla] = useState(
     () => window.visualViewport?.height ?? window.innerHeight
   );
+  const [mensajeCarga, setMensajeCarga] = useState(MENSAJES_CARGA[0]);
+  const [opacidadMensaje, setOpacidadMensaje] = useState(1);
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
@@ -68,6 +79,22 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
       vv.removeEventListener('scroll', actualizar);
     };
   }, []);
+
+  useEffect(() => {
+    if (!cargando) return;
+    let indice = 0;
+    setMensajeCarga(MENSAJES_CARGA[0]);
+    setOpacidadMensaje(1);
+    const intervalo = setInterval(() => {
+      setOpacidadMensaje(0);
+      setTimeout(() => {
+        indice = (indice + 1) % MENSAJES_CARGA.length;
+        setMensajeCarga(MENSAJES_CARGA[indice]);
+        setOpacidadMensaje(1);
+      }, 200);
+    }, 750);
+    return () => clearInterval(intervalo);
+  }, [cargando]);
 
   const handleCambio = async (e) => {
     const valor = e.target.value;
@@ -217,7 +244,12 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
         <div className="flex-1 relative min-h-0">
           {cargando ? (
             <div className="w-full h-full flex items-center justify-center">
-              <p className="text-[#484f58] text-sm font-sans">Preparando base de datos...</p>
+              <p
+                className="text-[#484f58] text-sm font-sans transition-opacity duration-200"
+                style={{ opacity: opacidadMensaje }}
+              >
+                {mensajeCarga}
+              </p>
             </div>
           ) : (
             <textarea
