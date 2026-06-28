@@ -67,12 +67,30 @@ export const TEMAS = [
       ejemplo: 'SELECT nombre, promedio\nFROM estudiantes\nWHERE promedio BETWEEN 6.0 AND 7.0',
     }),
   }),
+  new Tema({
+    id: 'n1-t9', nombre: 'Alias con AS', descripcion: 'Renombrar columnas y expresiones', nivelId: 'nivel1', orden: 9,
+    concepto: new ConceptoTema({
+      queEs: 'AS le da un nombre alternativo (alias) a una columna en el resultado. Es el nombre que aparece como título de la columna. Se usa para aclarar nombres, renombrar cálculos o abreviar nombres largos.',
+      sintaxis: 'SELECT columna AS alias\nFROM tabla\n\n-- El alias se puede usar en ORDER BY:\nSELECT precio AS costo FROM medicamentos\nORDER BY costo ASC',
+      ejemplo: 'SELECT nombre AS alumno, promedio AS nota\nFROM estudiantes\nORDER BY nota DESC',
+    }),
+  }),
+  new Tema({
+    id: 'n1-t10', nombre: 'Operadores aritméticos', descripcion: 'Cálculos con +, -, *, /, %', nivelId: 'nivel1', orden: 10,
+    concepto: new ConceptoTema({
+      queEs: 'Puedes hacer cálculos matemáticos directamente en el SELECT. Los operadores son + (suma), - (resta), * (multiplicación), / (división) y % (módulo o resto). El resultado aparece como una columna calculada y se combina con AS para ponerle nombre.',
+      sintaxis: 'SELECT columna * numero AS resultado\nSELECT columna1 + columna2 AS suma\nSELECT numero - columna AS diferencia',
+      ejemplo: 'SELECT nombre, precio * 1.19 AS precio_con_iva\nFROM medicamentos',
+    }),
+  }),
 
   // ── NIVEL 2 — Agrupación ─────────────────────────────────────────────────
   new Tema({ id: 'n2-t1', nombre: 'COUNT, SUM, AVG, MAX, MIN', descripcion: 'Funciones de agregación',               nivelId: 'nivel2', orden: 1 }),
   new Tema({ id: 'n2-t2', nombre: 'GROUP BY',                  descripcion: 'Agrupar filas por columna',             nivelId: 'nivel2', orden: 2 }),
   new Tema({ id: 'n2-t3', nombre: 'HAVING',                    descripcion: 'Filtrar grupos',                        nivelId: 'nivel2', orden: 3 }),
-  new Tema({ id: 'n2-t4', nombre: 'Alias con AS',              descripcion: 'Renombrar columnas y expresiones',      nivelId: 'nivel2', orden: 4 }),
+  new Tema({ id: 'n2-t4', nombre: 'INSERT INTO',    descripcion: 'Insertar nuevas filas en una tabla',        nivelId: 'nivel2', orden: 4 }),
+  new Tema({ id: 'n2-t5', nombre: 'UPDATE ... SET', descripcion: 'Modificar filas existentes',                nivelId: 'nivel2', orden: 5 }),
+  new Tema({ id: 'n2-t6', nombre: 'DELETE FROM',    descripcion: 'Eliminar filas de una tabla',               nivelId: 'nivel2', orden: 6 }),
 
   // ── NIVEL 3 — Relaciones ─────────────────────────────────────────────────
   new Tema({ id: 'n3-t1', nombre: 'INNER JOIN',     descripcion: 'Unión de filas con coincidencia en ambas tablas', nivelId: 'nivel3', orden: 1 }),
@@ -80,7 +98,8 @@ export const TEMAS = [
   new Tema({ id: 'n3-t3', nombre: 'RIGHT JOIN',     descripcion: 'Todas las filas de la derecha',                   nivelId: 'nivel3', orden: 3 }),
   new Tema({ id: 'n3-t4', nombre: 'FULL OUTER JOIN', descripcion: 'Todas las filas de ambas tablas',                nivelId: 'nivel3', orden: 4 }),
   new Tema({ id: 'n3-t5', nombre: 'SELF JOIN',      descripcion: 'Una tabla unida consigo misma',                   nivelId: 'nivel3', orden: 5 }),
-  new Tema({ id: 'n3-t6', nombre: 'CROSS JOIN',     descripcion: 'Producto cartesiano',                             nivelId: 'nivel3', orden: 6 }),
+  new Tema({ id: 'n3-t6', nombre: 'CROSS JOIN',        descripcion: 'Producto cartesiano',                        nivelId: 'nivel3', orden: 6 }),
+  new Tema({ id: 'n3-t7', nombre: 'UNION / UNION ALL', descripcion: 'Combinar resultados de varias consultas',    nivelId: 'nivel3', orden: 7 }),
 
   // ── NIVEL 4 — Subconsultas ───────────────────────────────────────────────
   new Tema({ id: 'n4-t1', nombre: 'Subquery en WHERE',    descripcion: 'Subconsulta como filtro',                 nivelId: 'nivel4', orden: 1 }),

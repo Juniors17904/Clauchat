@@ -712,4 +712,143 @@ export const EJERCICIOS = [
       'HAVING COUNT(g.id) >= 2 filtra los que marcaron al menos 2',
     ],
   }),
+
+  // ── NIVEL 1 · TEMA 9 — Alias con AS ──────────────────────────────────────
+  new Ejercicio({
+    id: 'n1-t9-01',
+    titulo: 'Estudiantes con alias',
+    enunciado: 'Obtén el nombre, apellido y promedio de todos los estudiantes. Llama a las columnas: alumno, apellidos y nota.',
+    nivelId: 'nivel1', temaId: 'n1-t9', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre AS alumno, apellido AS apellidos, promedio AS nota FROM estudiantes',
+    pistas: [
+      'AS va justo después del nombre original de la columna',
+      'SELECT nombre AS alumno, apellido AS apellidos, ...',
+      'Cada columna tiene su propio alias separado',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t9-02',
+    titulo: 'Equipos con alias',
+    enunciado: 'Obtén el nombre y ciudad de todos los equipos. Llama a las columnas: club y sede.',
+    nivelId: 'nivel1', temaId: 'n1-t9', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre AS club, ciudad AS sede FROM equipos',
+    pistas: [
+      'SELECT nombre AS club, ciudad AS sede',
+      'FROM equipos',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t9-03',
+    titulo: 'Medicamentos ordenados por alias',
+    enunciado: 'Obtén el nombre y precio de todos los medicamentos. Llama a las columnas: medicamento y costo. Ordénalos de menor a mayor costo.',
+    nivelId: 'nivel1', temaId: 'n1-t9', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT nombre AS medicamento, precio AS costo FROM medicamentos ORDER BY costo ASC',
+    pistas: [
+      'Define el alias en SELECT: precio AS costo',
+      'Puedes usar el alias en ORDER BY: ORDER BY costo ASC',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t9-04',
+    titulo: 'Top jugadores con alias',
+    enunciado: 'Obtén el nombre y valor de mercado de los 5 jugadores más valiosos. Llama a las columnas: jugador y valor.',
+    nivelId: 'nivel1', temaId: 'n1-t9', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre AS jugador, valor_mercado AS valor FROM jugadores ORDER BY valor DESC LIMIT 5',
+    pistas: [
+      'nombre AS jugador, valor_mercado AS valor',
+      'ORDER BY valor DESC para ordenar de mayor a menor',
+      'LIMIT 5 para los 5 primeros',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t9-05',
+    titulo: 'Profesores con alias',
+    enunciado: 'Obtén el nombre, apellido y salario de todos los profesores. Llama a las columnas: nombre_profe, apellido_profe y sueldo.',
+    nivelId: 'nivel1', temaId: 'n1-t9', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre AS nombre_profe, apellido AS apellido_profe, salario AS sueldo FROM profesores',
+    pistas: [
+      'Cada columna necesita su propio AS con el alias indicado',
+      'nombre AS nombre_profe, apellido AS apellido_profe, salario AS sueldo',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t9-06',
+    titulo: 'Pacientes con alias y filtro',
+    enunciado: "Obtén el nombre, apellido y tipo de sangre de los pacientes de género masculino ('M'). Llama a las columnas: paciente, apellidos y sangre.",
+    nivelId: 'nivel1', temaId: 'n1-t9', baseDatosId: 'hospital',
+    consultaEsperada: "SELECT nombre AS paciente, apellido AS apellidos, tipo_sangre AS sangre FROM pacientes WHERE genero = 'M'",
+    pistas: [
+      'Escribe el SELECT con los alias primero',
+      "WHERE genero = 'M' para filtrar masculinos",
+      'Los alias no afectan el WHERE',
+    ],
+  }),
+
+  // ── NIVEL 1 · TEMA 10 — Operadores aritméticos ───────────────────────────
+  new Ejercicio({
+    id: 'n1-t10-01',
+    titulo: 'Precio con IVA',
+    enunciado: 'Obtén el nombre de cada medicamento y su precio con IVA del 19% (precio multiplicado por 1.19). Llama a la columna calculada: precio_con_iva.',
+    nivelId: 'nivel1', temaId: 'n1-t10', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT nombre, precio * 1.19 AS precio_con_iva FROM medicamentos',
+    pistas: [
+      'Multiplica precio por 1.19 directamente en el SELECT',
+      'precio * 1.19 AS precio_con_iva',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t10-02',
+    titulo: 'Salario mensual de profesores',
+    enunciado: 'Los salarios están en formato anual. Obtén el nombre y el salario mensual de cada profesor (divide entre 12). Llama a la columna: salario_mensual.',
+    nivelId: 'nivel1', temaId: 'n1-t10', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre, salario / 12 AS salario_mensual FROM profesores',
+    pistas: [
+      'Divide salario entre 12 directamente en el SELECT',
+      'salario / 12 AS salario_mensual',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t10-03',
+    titulo: 'Años de existencia de los equipos',
+    enunciado: 'Obtén el nombre de cada equipo y cuántos años tiene desde su fundación (usa 2024 como año actual, resta la columna fundacion). Llama a la columna: anos_existencia.',
+    nivelId: 'nivel1', temaId: 'n1-t10', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre, 2024 - fundacion AS anos_existencia FROM equipos',
+    pistas: [
+      'Resta la columna fundacion a un número: 2024 - fundacion',
+      '2024 - fundacion AS anos_existencia',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t10-04',
+    titulo: 'Precio con descuento',
+    enunciado: 'Obtén el nombre y precio con descuento del 10% de cada medicamento (multiplica el precio por 0.9). Llama a la columna: precio_oferta.',
+    nivelId: 'nivel1', temaId: 'n1-t10', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT nombre, precio * 0.9 AS precio_oferta FROM medicamentos',
+    pistas: [
+      'Un descuento del 10% equivale a multiplicar por 0.9',
+      'precio * 0.9 AS precio_oferta',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t10-05',
+    titulo: 'Valor de mercado en millones',
+    enunciado: 'Obtén el nombre de cada jugador y su valor de mercado en millones (divide entre 1000000). Llama a la columna: valor_millones.',
+    nivelId: 'nivel1', temaId: 'n1-t10', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre, valor_mercado / 1000000 AS valor_millones FROM jugadores',
+    pistas: [
+      'Divide valor_mercado entre 1000000',
+      'valor_mercado / 1000000 AS valor_millones',
+    ],
+  }),
+  new Ejercicio({
+    id: 'n1-t10-06',
+    titulo: 'Cajas de medicamentos',
+    enunciado: 'Cada caja trae 30 unidades. Obtén el nombre de cada medicamento y cuántas cajas completas hay en el stock (divide stock entre 30). Llama a la columna: cajas_disponibles.',
+    nivelId: 'nivel1', temaId: 'n1-t10', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT nombre, stock / 30 AS cajas_disponibles FROM medicamentos',
+    pistas: [
+      'Divide stock entre 30 para obtener las cajas',
+      'stock / 30 AS cajas_disponibles',
+    ],
+  }),
 ];
