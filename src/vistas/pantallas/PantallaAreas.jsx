@@ -15,7 +15,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         >
           👤
         </button>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Sqlaboratorio</h1>
+        <h1 className="text-3xl font-bold text-white tracking-tight">Maestro Dev</h1>
         <p className="text-[#8b949e] mt-2 text-sm">Elige un área de estudio</p>
       </div>
 
