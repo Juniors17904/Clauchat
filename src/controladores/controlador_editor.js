@@ -94,11 +94,28 @@ export class ControladorEditor extends ControladorBase {
     }
   }
 
-  sugerirAutocompletado(texto) {
+  sugerirAutocompletado(texto, tablas = []) {
     if (!texto) return [];
     const ultima = texto.split(/\s+/).pop().toUpperCase();
     if (ultima.length < 1) return [];
-    return PALABRAS_SQL.filter(p => p.startsWith(ultima) && p !== ultima).slice(0, 4);
+
+    const keywords = PALABRAS_SQL
+      .filter(p => p.startsWith(ultima) && p !== ultima)
+      .slice(0, 3)
+      .map(t => ({ texto: t, tipo: 'keyword' }));
+
+    const nombreTablas = tablas
+      .filter(t => t.nombre.toUpperCase().startsWith(ultima) && t.nombre.toUpperCase() !== ultima)
+      .slice(0, 3)
+      .map(t => ({ texto: t.nombre, tipo: 'tabla' }));
+
+    const columnas = tablas
+      .flatMap(t => t.columnas)
+      .filter(c => c.nombre.toUpperCase().startsWith(ultima) && c.nombre.toUpperCase() !== ultima)
+      .slice(0, 3)
+      .map(c => ({ texto: c.nombre, tipo: 'columna' }));
+
+    return [...keywords, ...nombreTablas, ...columnas];
   }
 
   async obtenerEsquema() {
