@@ -165,7 +165,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   }
 
   return (
-    <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden" style={{ height: alturaPantalla }}>
+    <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden select-none" style={{ height: alturaPantalla }}>
 
       {/* Header */}
       <div className={`flex items-center justify-between px-4 py-2.5 border-b flex-shrink-0 transition-colors duration-300 ${estado === 'feliz' && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
@@ -258,7 +258,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               onChange={handleCambio}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu consulta SQL aquí..."
-              className="w-full h-full bg-[#0d1117] text-[#e6edf3] text-sm resize-none focus:outline-none px-4 py-4 leading-6 placeholder-[#484f58]"
+              className="w-full h-full bg-[#0d1117] text-[#e6edf3] text-sm resize-none focus:outline-none px-4 py-4 leading-6 placeholder-[#484f58] select-text"
               spellCheck={false}
             />
           )}
@@ -285,7 +285,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
         <div className="px-4 py-1.5 border-b border-[#30363d] flex-shrink-0">
           <p className="text-[#8b949e] text-xs font-sans">Resultados</p>
         </div>
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto select-text">
           <PanelResultados resultado={resultado} />
         </div>
       </div>
