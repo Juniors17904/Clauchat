@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 import PantallaAreas from './vistas/pantallas/PantallaAreas';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaTemas from './vistas/pantallas/PantallaTemas';
@@ -9,6 +10,7 @@ import { EJERCICIOS } from './datos/ejercicios';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 
 export default function App() {
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
   const [pantalla, setPantalla] = useState('areas');
   const [areaActual, setAreaActual] = useState(null);
   const [nivelActual, setNivelActual] = useState(null);
@@ -115,5 +117,13 @@ export default function App() {
     );
   }
 
-  return <PantallaAreas onSeleccionar={irANiveles} controladorPerfil={ctrlPerfil.current} onVerArbol={irAArbol} />;
+  return (
+    <PantallaAreas
+      onSeleccionar={irANiveles}
+      controladorPerfil={ctrlPerfil.current}
+      onVerArbol={irAArbol}
+      needRefresh={needRefresh}
+      onActualizar={() => updateServiceWorker(true)}
+    />
+  );
 }
