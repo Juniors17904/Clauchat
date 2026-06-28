@@ -26,6 +26,7 @@ export class ControladorPerfil extends ControladorBase {
   resumenPorNivel(niveles, ejercicios) {
     return niveles.map(nivel => ({
       nombre: nivel.nombre,
+      orden: nivel.orden,
       completados: this.#progreso.completadosDelNivel(nivel.id, ejercicios),
       total: ejercicios.filter(e => e.nivelId === nivel.id).length,
     }));
