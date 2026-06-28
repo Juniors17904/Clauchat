@@ -29,7 +29,14 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
   useEffect(() => {
     const ctrl = controlador.current;
-    setCargando(true);
+    return () => ctrl.destruir();
+  }, []);
+
+  useEffect(() => {
+    const ctrl = controlador.current;
+    const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
+    const cambiaBD = ctrl.baseDatosIdActual !== (ejercicio?.baseDatosId ?? null);
+
     setConsulta('');
     setResultado(null);
     setEstado('neutral');
@@ -37,16 +44,17 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     setMostrarPista(false);
     setIndicePista(0);
 
-    const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
+    if (cambiaBD) setCargando(true);
+
     ctrl.iniciar(ejercicio, baseDatos).then(async () => {
-      setTablas(await ctrl.obtenerEsquema());
-      setCargando(false);
+      if (cambiaBD) {
+        setTablas(await ctrl.obtenerEsquema());
+        setCargando(false);
+      }
     }).catch(err => {
       setCargando(false);
       setErrorCarga(err?.message ?? 'Error al cargar la base de datos');
     });
-
-    return () => ctrl.destruir();
   }, [ejercicio]);
 
   useEffect(() => {

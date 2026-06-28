@@ -16,16 +16,32 @@ const PALABRAS_SQL = [
 export class ControladorEditor extends ControladorBase {
   #db;
   #ejercicio;
+  #baseDatosIdActual;
 
   constructor() {
     super();
     this.#db = null;
     this.#ejercicio = null;
+    this.#baseDatosIdActual = null;
   }
 
+  get baseDatosIdActual() { return this.#baseDatosIdActual; }
+
   async iniciar(ejercicio, baseDatos) {
-    const { PGlite } = await import('@electric-sql/pglite');
     this.#ejercicio = ejercicio;
+    const nuevaId = ejercicio?.baseDatosId ?? null;
+
+    if (this.#db && nuevaId === this.#baseDatosIdActual) {
+      return;
+    }
+
+    if (this.#db) {
+      this.#db.close();
+      this.#db = null;
+    }
+
+    const { PGlite } = await import('@electric-sql/pglite');
+    this.#baseDatosIdActual = nuevaId;
     this.#db = new PGlite();
     if (baseDatos?.esquemaSQL) {
       await this.#db.exec(baseDatos.esquemaSQL);
