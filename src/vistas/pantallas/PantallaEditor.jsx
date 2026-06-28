@@ -226,18 +226,18 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           </div>
         ) : (
           <>
-            {/* Fila 1 — nombre de la base de datos centrado */}
+            {/* Fila 1 — tema como título principal centrado */}
             <div className="relative flex items-center px-4 pt-3 pb-1">
               <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
-              <span className="absolute left-0 right-0 text-center text-[#484f58] text-[10px] font-mono uppercase tracking-widest pointer-events-none">
-                BD: {baseDatos ? baseDatos.nombre : 'Práctica libre'}
+              <span className="absolute left-0 right-0 text-center text-[#e6edf3] text-base font-semibold font-sans pointer-events-none px-10">
+                {tema ? tema.nombre : 'Práctica libre'}
               </span>
             </div>
 
-            {/* Fila 2 — solo nombre del tema */}
-            <div className="px-4 pb-1.5 pl-10">
-              <span className="text-[#c9d1d9] text-sm font-sans">
-                {tema ? tema.nombre : ''}
+            {/* Fila 2 — BD y nivel como subtítulo */}
+            <div className="text-center pb-2">
+              <span className="text-[#484f58] text-[10px] font-mono uppercase tracking-widest">
+                {baseDatos ? baseDatos.nombre : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
               </span>
             </div>
 
