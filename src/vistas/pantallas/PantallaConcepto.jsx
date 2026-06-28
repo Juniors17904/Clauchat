@@ -2,7 +2,7 @@ export default function PantallaConcepto({ tema, totalEjercicios, onVolver, onEm
   const concepto = tema?.concepto;
 
   return (
-    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col select-none">
 
       {/* Header fijo */}
       <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10">

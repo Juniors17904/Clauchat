@@ -1,7 +1,7 @@
 export default function PantallaEjercicios({ nivel, ejercicios = [], onSeleccionar, onVolver, controladorPerfil }) {
 
   return (
-    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col">
+    <div className="min-h-[100svh] bg-[#0d1117] flex flex-col select-none">
       <div className="sticky top-0 bg-[#0d1117] border-b border-[#30363d] px-4 py-3 z-10">
         <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-sm transition-colors">
           ← Volver
