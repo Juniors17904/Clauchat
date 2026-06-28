@@ -237,7 +237,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             {/* Fila 2 — BD y nivel como subtítulo */}
             <div className="text-center pb-2">
               <span className="text-[#484f58] text-[10px] font-mono uppercase tracking-widest">
-                {baseDatos ? baseDatos.nombre : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
+                {baseDatos ? `BD: ${baseDatos.nombre}` : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
               </span>
             </div>
 
