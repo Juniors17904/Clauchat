@@ -1,11 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { ControladorEditor } from '../../controladores/controlador_editor';
 import { obtenerBaseDatos } from '../../datos/bases_datos';
+import { TEMAS } from '../../datos/temas';
 import CaritaEstado from '../editor/CaritaEstado';
 import AutocompletadorSQL from '../editor/AutocompletadorSQL';
 import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
+
+const formatearTiempo = (seg) => {
+  const m = Math.floor(seg / 60);
+  const s = seg % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+};
 
 const MENSAJES_CARGA = [
   'Iniciando motor de base de datos...',
@@ -33,6 +40,10 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   );
   const [mensajeCarga, setMensajeCarga] = useState(MENSAJES_CARGA[0]);
   const [opacidadMensaje, setOpacidadMensaje] = useState(1);
+  const [segundos, setSegundos] = useState(0);
+
+  const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
+  const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
@@ -95,6 +106,23 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     }, 750);
     return () => clearInterval(intervalo);
   }, [cargando]);
+
+  useEffect(() => {
+    setSegundos(0);
+    const intervalo = setInterval(() => setSegundos(s => s + 1), 1000);
+    return () => clearInterval(intervalo);
+  }, [ejercicio]);
+
+  const reiniciar = () => {
+    setConsulta('');
+    setResultado(null);
+    setEstado('neutral');
+    setSugerencias([]);
+    setMostrarPista(false);
+    setIndicePista(0);
+    setSegundos(0);
+    textareaRef.current?.focus();
+  };
 
   const handleCambio = async (e) => {
     const valor = e.target.value;
@@ -195,33 +223,29 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           </>
         ) : (
           <>
-            <div className="flex-1 mx-4 min-w-0">
-              {ejercicio
-                ? <p className="text-[#e6edf3] text-sm truncate font-sans">{ejercicio.titulo}</p>
-                : <p className="text-[#8b949e] text-sm font-sans">Práctica libre</p>
-              }
+            <div className="flex-1 mx-2 min-w-0 flex flex-col justify-center">
+              {ejercicio ? (
+                <>
+                  <p className="text-[#8b949e] text-xs font-sans truncate leading-tight">
+                    {baseDatos ? `${baseDatos.icono} ${baseDatos.nombre}` : ''}
+                  </p>
+                  {tema && (
+                    <p className="text-[#484f58] text-xs font-mono truncate leading-tight">{tema.nombre}</p>
+                  )}
+                </>
+              ) : (
+                <p className="text-[#8b949e] text-xs font-sans">Práctica libre</p>
+              )}
             </div>
-            {progreso && (
-              <span className="text-[#484f58] text-xs font-mono mr-2 flex-shrink-0">
-                {progreso.actual}/{progreso.total}
-              </span>
-            )}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-[#484f58] text-xs font-mono">{formatearTiempo(segundos)}</span>
+              <button onClick={reiniciar} className="text-[#484f58] hover:text-white text-sm transition-colors" title="Reiniciar">↺</button>
+              {progreso && (
+                <span className="text-[#484f58] text-xs font-mono">{progreso.actual}/{progreso.total}</span>
+              )}
               <CaritaEstado estado={estado} />
-              <button
-                onClick={() => setDiagramaAbierto(true)}
-                className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
-                title="Ver diagrama"
-              >
-                📊
-              </button>
-              <button
-                onClick={() => setDrawerAbierto(true)}
-                className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-xs font-sans px-2 py-1 rounded border border-[#30363d] hover:border-[#388bfd]"
-                title="Explorar tablas"
-              >
-                🗄️
-              </button>
+              <button onClick={() => setDiagramaAbierto(true)} className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-sm" title="Ver diagrama">📊</button>
+              <button onClick={() => setDrawerAbierto(true)} className="text-[#8b949e] hover:text-[#388bfd] transition-colors text-sm" title="Explorar tablas">🗄️</button>
             </div>
           </>
         )}
