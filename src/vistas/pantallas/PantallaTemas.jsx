@@ -2,19 +2,19 @@ import { TEMAS } from '../../datos/temas';
 import { EJERCICIOS } from '../../datos/ejercicios';
 
 const COLORES = {
-  1: { borde: 'hover:border-[#3fb950]', cuenta: 'bg-[#1a4731] text-[#3fb950]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  2: { borde: 'hover:border-[#39c5cf]', cuenta: 'bg-[#0e3535] text-[#39c5cf]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  3: { borde: 'hover:border-[#388bfd]', cuenta: 'bg-[#0d2a5a] text-[#388bfd]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  4: { borde: 'hover:border-[#8250df]', cuenta: 'bg-[#2a1a4a] text-[#8250df]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  5: { borde: 'hover:border-[#d29922]', cuenta: 'bg-[#3d2b00] text-[#d29922]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  6: { borde: 'hover:border-[#e3b341]', cuenta: 'bg-[#3a2500] text-[#e3b341]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  7: { borde: 'hover:border-[#f78166]', cuenta: 'bg-[#3d1a10] text-[#f78166]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
-  8: { borde: 'hover:border-[#f85149]', cuenta: 'bg-[#3d0e0e] text-[#f85149]', cuentaVacia: 'bg-[#21262d] text-[#484f58]' },
+  1: '#3fb950',
+  2: '#39c5cf',
+  3: '#388bfd',
+  4: '#8250df',
+  5: '#d29922',
+  6: '#e3b341',
+  7: '#f78166',
+  8: '#f85149',
 };
 
 export default function PantallaTemas({ nivel, onSeleccionar, onVolver }) {
   const temas = TEMAS.filter(t => t.nivelId === nivel.id).sort((a, b) => a.orden - b.orden);
-  const colores = COLORES[nivel.orden];
+  const color = COLORES[nivel.orden];
 
   return (
     <div className="min-h-[100svh] bg-[#0d1117] flex flex-col select-none">
@@ -23,14 +23,18 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver }) {
           ← Volver
         </button>
       </div>
+
       <div className="w-full max-w-sm mx-auto px-4 py-6">
         <div className="mb-8">
+          <p className="text-xs font-mono uppercase tracking-widest mb-1" style={{ color }}>
+            Nivel {nivel.orden}
+          </p>
           <h2 className="text-2xl font-bold text-white">{nivel.nombre}</h2>
-          <p className="text-[#8b949e] text-sm mt-1">Selecciona un tema</p>
         </div>
 
-        <div className="space-y-3">
-          {temas.map(tema => {
+        {/* Lista de temas */}
+        <div className="border border-[#30363d] rounded-xl overflow-hidden">
+          {temas.map((tema, i) => {
             const cantidad = EJERCICIOS.filter(e => e.temaId === tema.id).length;
             const disponible = cantidad > 0;
 
@@ -39,19 +43,37 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver }) {
                 key={tema.id}
                 onClick={() => disponible && onSeleccionar(tema)}
                 disabled={!disponible}
-                className={`w-full flex items-center justify-between px-5 py-4 rounded-xl border text-left transition-all
+                className={`w-full flex items-center gap-4 px-4 py-3.5 text-left transition-all
+                  ${i > 0 ? 'border-t border-[#21262d]' : ''}
                   ${disponible
-                    ? `bg-[#161b22] border-[#30363d] ${colores.borde} cursor-pointer`
-                    : 'bg-[#0d1117] border-[#21262d] opacity-40 cursor-not-allowed'
+                    ? 'bg-[#161b22] hover:bg-[#1c2128] group cursor-pointer'
+                    : 'bg-[#0d1117] cursor-not-allowed'
                   }`}
               >
-                <div>
-                  <p className="text-white font-medium text-sm">{tema.nombre}</p>
-                  <p className="text-[#8b949e] text-xs mt-0.5">{tema.descripcion}</p>
+                {/* Punto de color o candado */}
+                {disponible ? (
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+                ) : (
+                  <span className="text-[#484f58] text-xs flex-shrink-0">🔒</span>
+                )}
+
+                {/* Nombre y descripción */}
+                <div className="flex-1 min-w-0">
+                  <p className={`font-medium text-sm ${disponible ? 'text-white' : 'text-[#484f58]'}`}>
+                    {tema.nombre}
+                  </p>
+                  <p className="text-[#8b949e] text-xs mt-0.5 truncate">{tema.descripcion}</p>
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ml-3 ${disponible ? colores.cuenta : colores.cuentaVacia}`}>
-                  {cantidad} ej.
-                </span>
+
+                {/* Contador o indicador */}
+                {disponible ? (
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-[#484f58] text-xs font-mono">{cantidad} ej.</span>
+                    <span className="text-[#484f58] group-hover:text-[#8b949e] transition-colors">›</span>
+                  </div>
+                ) : (
+                  <span className="text-[#484f58] text-xs font-mono">Próximo</span>
+                )}
               </button>
             );
           })}
