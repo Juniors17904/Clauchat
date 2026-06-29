@@ -44,6 +44,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
   const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
+  const esCorrecto = estado === 'feliz' || estado === 'celebrando';
+  const estadoCarita = segundos > 120 && !esCorrecto && estado !== 'neutral' ? 'estresado' : estado;
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
@@ -148,17 +150,19 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     const res = await controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
     if (res.error) {
-      setEstado('pensando');
+      setEstado('triste');
       return;
     }
     if (ejercicio) {
       const correcto = await controlador.current.verificarCorreccion(res);
       if (correcto) {
         onCompletado?.(ejercicio.id);
-        setEstado('feliz');
+        setEstado(onSiguiente ? 'feliz' : 'celebrando');
       } else {
-        setEstado('pensando');
+        setEstado((res.filas?.length ?? 0) === 0 ? 'sorprendido' : 'confundido');
       }
+    } else {
+      setEstado((res.filas?.length ?? 0) === 0 ? 'sorprendido' : 'pensando');
     }
   };
 
@@ -211,9 +215,9 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden select-none" style={{ height: alturaPantalla }}>
 
       {/* Header — dos filas */}
-      <div className={`border-b flex-shrink-0 transition-colors duration-300 ${estado === 'feliz' && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
+      <div className={`border-b flex-shrink-0 transition-colors duration-300 ${esCorrecto && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
 
-        {estado === 'feliz' && resultado !== null ? (
+        {esCorrecto && resultado !== null ? (
           <div className="flex items-center gap-3 px-4 py-3">
             <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
             <p className="text-[#3fb950] text-sm font-sans flex-1">¡Correcto! 😊</p>
@@ -253,7 +257,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               {progreso && (
                 <span className="text-[#8b949e] text-xs font-mono">{progreso.actual}/{progreso.total}</span>
               )}
-              <CaritaEstado estado={estado} />
+              <CaritaEstado estado={estadoCarita} />
               <button onClick={() => setDiagramaAbierto(true)} title="Ver diagrama" className="text-[#8b949e] hover:text-[#388bfd] transition-colors">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5h-2v12h2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
@@ -276,7 +280,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             className="h-full transition-all duration-700 ease-out"
             style={{
               width: `${(progreso.actual / progreso.total) * 100}%`,
-              backgroundColor: estado === 'feliz' && resultado !== null ? '#3fb950' : '#388bfd',
+              backgroundColor: esCorrecto && resultado !== null ? '#3fb950' : '#388bfd',
             }}
           />
         </div>
