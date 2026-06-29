@@ -9,6 +9,7 @@ import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
 import { NIVELES } from './datos/niveles';
+import { AREAS } from './datos/areas';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 
 export default function App() {
@@ -74,6 +75,8 @@ export default function App() {
     if (!pos) return;
     const deTema = EJERCICIOS.filter(e => e.temaId === pos.tema.id);
     const nivel = NIVELES.find(n => n.id === pos.tema.nivelId) ?? null;
+    const area = nivel ? (AREAS.find(a => a.id === nivel.areaId) ?? null) : null;
+    setAreaActual(area);
     setNivelActual(nivel);
     setTemaActual(pos.tema);
     setEjerciciosOrdenados(deTema);
