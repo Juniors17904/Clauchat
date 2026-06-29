@@ -7,6 +7,7 @@ import PantallaConcepto from './vistas/pantallas/PantallaConcepto';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import { EJERCICIOS } from './datos/ejercicios';
+import { TEMAS } from './datos/temas';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 
 export default function App() {
@@ -67,6 +68,17 @@ export default function App() {
     window.history.pushState({ pantalla: 'arbol' }, '');
   };
 
+  const irAContinuar = () => {
+    const pos = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
+    if (!pos) return;
+    const deTema = EJERCICIOS.filter(e => e.temaId === pos.tema.id);
+    setTemaActual(pos.tema);
+    setEjerciciosOrdenados(deTema);
+    setEjercicioActual(pos.ejercicio);
+    setPantalla('editor');
+    window.history.pushState({ pantalla: 'editor' }, '');
+  };
+
   if (pantalla === 'arbol') {
     return <PantallaArbol onVolver={() => setPantalla('areas')} />;
   }
@@ -117,6 +129,8 @@ export default function App() {
     );
   }
 
+  const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
+
   return (
     <PantallaAreas
       onSeleccionar={irANiveles}
@@ -124,6 +138,8 @@ export default function App() {
       onVerArbol={irAArbol}
       needRefresh={needRefresh}
       onActualizar={() => updateServiceWorker(true)}
+      ultimaPosicion={ultimaPosicion}
+      onContinuar={irAContinuar}
     />
   );
 }

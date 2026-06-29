@@ -4,7 +4,7 @@ import DrawerPerfil from './DrawerPerfil';
 
 const UMBRAL_PULL = 65;
 
-export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, needRefresh, onActualizar }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, needRefresh, onActualizar, ultimaPosicion, onContinuar }) {
   const [perfilAbierto, setPerfilAbierto] = useState(false);
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
@@ -90,6 +90,25 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           <p className="text-white/60 mt-1 text-sm font-sans">Elige un área de estudio</p>
         </div>
       </div>
+
+      {/* Botón Continuar */}
+      {ultimaPosicion && (
+        <div className="w-full max-w-sm mx-auto px-5 pt-5 pb-1">
+          <button
+            onClick={onContinuar}
+            className="w-full flex items-center gap-4 px-5 py-4 rounded-xl border bg-[#0d2117] border-[#238636] hover:bg-[#122117] active:scale-[0.98] transition-all text-left"
+          >
+            <div className="w-10 h-10 rounded-lg bg-[#238636]/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-[#3fb950] text-lg">▶</span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[#3fb950] font-medium text-sm font-sans">Continuar</p>
+              <p className="text-[#8b949e] text-xs mt-0.5 font-sans truncate">{ultimaPosicion.tema.nombre}</p>
+            </div>
+            <span className="text-[#484f58] text-xs font-mono flex-shrink-0">{ultimaPosicion.completados}/{ultimaPosicion.total}</span>
+          </button>
+        </div>
+      )}
 
       {/* Tarjetas de áreas */}
       <div className="w-full max-w-sm mx-auto px-5 pt-6 pb-8 space-y-3">

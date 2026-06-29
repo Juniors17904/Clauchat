@@ -32,6 +32,10 @@ export class ControladorPerfil extends ControladorBase {
     }));
   }
 
+  obtenerUltimaPosicion(ejercicios, temas) {
+    return this.#progreso.obtenerUltimaPosicion(ejercicios, temas);
+  }
+
   borrarAvance() {
     this.#progreso.borrarTodo();
   }
