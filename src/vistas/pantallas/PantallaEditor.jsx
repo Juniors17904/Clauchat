@@ -23,7 +23,7 @@ const MENSAJES_CARGA = [
   'Casi listo...',
 ];
 
-export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguiente, onCompletado }) {
+export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguiente, onTerminar, onCompletado }) {
   const [consulta, setConsulta] = useState('');
   const [resultado, setResultado] = useState(null);
   const [estado, setEstado] = useState('neutral');
@@ -218,7 +218,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
             <p className="text-[#3fb950] text-sm font-sans flex-1">¡Correcto! 😊</p>
             <button
-              onClick={onSiguiente ?? onVolver}
+              onClick={onSiguiente ?? onTerminar ?? onVolver}
               className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-lg transition-colors font-sans flex-shrink-0"
             >
               {onSiguiente ? 'Siguiente →' : 'Terminar'}

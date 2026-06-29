@@ -8,6 +8,7 @@ import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
+import { NIVELES } from './datos/niveles';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 
 export default function App() {
@@ -72,6 +73,8 @@ export default function App() {
     const pos = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
     if (!pos) return;
     const deTema = EJERCICIOS.filter(e => e.temaId === pos.tema.id);
+    const nivel = NIVELES.find(n => n.id === pos.tema.nivelId) ?? null;
+    setNivelActual(nivel);
     setTemaActual(pos.tema);
     setEjerciciosOrdenados(deTema);
     setEjercicioActual(pos.ejercicio);
@@ -93,6 +96,7 @@ export default function App() {
         progreso={{ actual: indiceActual + 1, total: ejerciciosOrdenados.length }}
         onVolver={() => setPantalla('concepto')}
         onSiguiente={siguienteEjercicio ? () => irAEditor(siguienteEjercicio) : null}
+        onTerminar={() => setPantalla('temas')}
         onCompletado={(id) => ctrlPerfil.current.marcarCompletado(id)}
       />
     );
