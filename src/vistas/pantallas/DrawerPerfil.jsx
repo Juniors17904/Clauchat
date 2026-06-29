@@ -19,7 +19,7 @@ export default function DrawerPerfil({ controlador, abierto, onCerrar, onVerArbo
   const [confirmando, setConfirmando] = useState(false);
   const [version, setVersion] = useState(0);
 
-  const resumen = controlador.resumenPorNivel(NIVELES, EJERCICIOS).filter(n => n.total > 0);
+  const resumen = controlador.resumenPorNivel(NIVELES, EJERCICIOS).filter(n => n.total > 0 && n.completados > 0);
 
   const handleNombre = (e) => {
     setNombre(e.target.value);
@@ -77,6 +77,9 @@ export default function DrawerPerfil({ controlador, abierto, onCerrar, onVerArbo
           {/* Progreso por nivel */}
           <div key={version}>
             <p className="text-[#8b949e] text-xs mb-3 font-sans">Mi avance</p>
+            {resumen.length === 0 && (
+              <p className="text-[#484f58] text-xs font-sans">Aún no has completado ningún ejercicio.</p>
+            )}
             <div className="space-y-4">
               {resumen.map(({ nombre: nivel, orden, completados, total }) => {
                 const color = COLORES_NIVEL[orden] ?? COLORES_NIVEL[1];
