@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { AREAS } from '../../datos/areas';
 import DrawerPerfil from './DrawerPerfil';
 
@@ -8,7 +8,24 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
   const [perfilAbierto, setPerfilAbierto] = useState(false);
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
+  const [promptInstalar, setPromptInstalar] = useState(null);
   const inicioRef = useRef(null);
+
+  useEffect(() => {
+    const manejar = (e) => {
+      e.preventDefault();
+      setPromptInstalar(e);
+    };
+    window.addEventListener('beforeinstallprompt', manejar);
+    return () => window.removeEventListener('beforeinstallprompt', manejar);
+  }, []);
+
+  const instalarApp = async () => {
+    if (!promptInstalar) return;
+    promptInstalar.prompt();
+    const { outcome } = await promptInstalar.userChoice;
+    if (outcome === 'accepted') setPromptInstalar(null);
+  };
 
   const manejarTouchStart = (e) => {
     inicioRef.current = e.touches[0].clientY;
@@ -83,6 +100,20 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         >
           👤
         </button>
+
+        {/* Botón instalar app — solo en navegador, desaparece si ya está instalada */}
+        {promptInstalar && (
+          <button
+            onClick={instalarApp}
+            className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 border border-white/20 text-white/70 hover:text-white hover:border-white/50 transition-colors text-xs font-sans backdrop-blur-sm"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+            Instalar app
+          </button>
+        )}
 
         {/* Título sobre la imagen */}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
