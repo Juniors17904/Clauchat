@@ -25,7 +25,15 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
       <div className="w-full max-w-sm mx-auto px-4 py-6">
         <div className="mb-8">
           <p className="text-[#8b949e] text-xs mb-1 font-mono uppercase tracking-widest">Área</p>
-          <h2 className="text-2xl font-bold text-white">{area.icono} {area.nombre}</h2>
+          <div className="flex items-center gap-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#388bfd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M3 5v4c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+              <path d="M3 9v4c0 1.66 4 3 9 3s9-1.34 9-3V9" />
+              <path d="M3 13v4c0 1.66 4 3 9 3s9-1.34 9-3v-4" />
+            </svg>
+            <h2 className="text-2xl font-bold text-white">{area.nombre}</h2>
+          </div>
         </div>
 
         <div className="space-y-2">
