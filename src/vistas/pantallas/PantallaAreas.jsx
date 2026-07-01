@@ -81,61 +81,64 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar, promptInstalar,
         </button>
       )}
 
-      {/* Botón Continuar */}
-      {ultimaPosicion && (
-        <button
-          onClick={onContinuar}
-          className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl border bg-[#0d2117] border-[#3fb950]/50 hover:border-[#3fb950] active:scale-[0.98] transition-all text-left"
-        >
-          <div className="w-12 h-12 rounded-xl bg-[#3fb950]/15 flex items-center justify-center flex-shrink-0">
-            <span className="text-[#3fb950] text-xl">▶</span>
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[#3fb950] font-semibold text-sm font-sans">Continuar</p>
-            <p className="text-[#8b949e] text-xs mt-0.5 font-sans truncate">{ultimaPosicion.tema.nombre}</p>
-          </div>
-          <span className="text-[#484f58] text-xs font-mono flex-shrink-0">{ultimaPosicion.completados}/{ultimaPosicion.total}</span>
-        </button>
-      )}
-
       {/* Tarjetas de áreas */}
       {AREAS.map(area => {
         const estilos = AREA_ESTILOS[area.id] ?? AREA_ESTILOS['bases-de-datos'];
         const { color, Icono } = estilos;
         const esIA = area.id === 'inteligencia-artificial';
+        const tieneContinuar = ultimaPosicion && area.id === 'bases-de-datos';
+
         return (
-          <button
+          <div
             key={area.id}
-            onClick={() => area.disponible && onSeleccionar(area)}
-            disabled={!area.disponible}
-            className={`w-full flex items-center gap-4 px-5 py-5 rounded-2xl border text-left transition-all
-              ${area.disponible ? 'active:scale-[0.98] cursor-pointer' : 'cursor-not-allowed'}
-              bg-[#161b22]`}
+            className="rounded-2xl border bg-[#161b22] overflow-hidden"
             style={{ borderColor: `${color}40` }}
           >
-            <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 flex-none" style={{ backgroundColor: `${color}18`, color }}>
-              <Icono />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-white font-semibold text-base font-sans">{area.nombre}</p>
-              <p className={`text-xs mt-1 font-sans leading-relaxed ${esIA ? '' : 'text-[#8b949e]'}`} style={esIA ? { color } : {}}>
-                {area.descripcion}
-              </p>
-            </div>
-            {area.disponible ? (
-              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="flex-shrink-0" style={{ color }}>
-                <path d="M1 1l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            ) : esIA ? (
-              <svg width="16" height="16" viewBox="0 0 16 16" fill={color} className="flex-shrink-0 opacity-70">
-                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
-              </svg>
-            ) : (
-              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="flex-shrink-0 opacity-30" style={{ color }}>
-                <path d="M1 1l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+            {/* Fila principal */}
+            <button
+              onClick={() => area.disponible && onSeleccionar(area)}
+              disabled={!area.disponible}
+              className={`w-full flex items-center gap-4 px-5 py-5 text-left transition-all
+                ${area.disponible ? 'active:scale-[0.98] cursor-pointer' : 'cursor-not-allowed'}`}
+            >
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}18`, color }}>
+                <Icono />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-white font-semibold text-base font-sans">{area.nombre}</p>
+                <p className={`text-xs mt-1 font-sans leading-relaxed ${esIA ? '' : 'text-[#8b949e]'}`} style={esIA ? { color } : {}}>
+                  {area.descripcion}
+                </p>
+              </div>
+              {area.disponible ? (
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="flex-shrink-0" style={{ color }}>
+                  <path d="M1 1l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : esIA ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill={color} className="flex-shrink-0 opacity-70">
+                  <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                </svg>
+              ) : (
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="flex-shrink-0 opacity-30" style={{ color }}>
+                  <path d="M1 1l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+
+            {/* Continuar — solo dentro de Bases de Datos si hay progreso */}
+            {tieneContinuar && (
+              <button
+                onClick={onContinuar}
+                className="w-full flex items-center gap-3 px-5 py-3 border-t text-left transition-colors hover:bg-[#3fb950]/5 active:bg-[#3fb950]/10"
+                style={{ borderColor: `${color}25` }}
+              >
+                <span className="text-[#3fb950] text-sm">▶</span>
+                <span className="text-[#3fb950] text-xs font-sans font-medium">Continuar</span>
+                <span className="text-[#484f58] text-xs font-sans">· {ultimaPosicion.tema.nombre}</span>
+                <span className="ml-auto text-[#484f58] text-xs font-mono">{ultimaPosicion.completados}/{ultimaPosicion.total}</span>
+              </button>
             )}
-          </button>
+          </div>
         );
       })}
     </div>
