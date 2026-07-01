@@ -33,10 +33,9 @@ const AREA_ESTILOS = {
     Icono: () => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
         <rect x="2" y="3" width="20" height="14" rx="2" />
-        <path d="m8 13-4-4 4-4" />
-        <path d="m16 13 4-4-4-4" />
-        <path d="M10 17h4" />
-        <path d="M12 17v4" />
+        <path d="M2 17h20" />
+        <path d="m9 10-3 3 3 3" />
+        <path d="m15 10 3 3-3 3" />
       </svg>
     ),
   },
