@@ -34,8 +34,9 @@ const AREA_ESTILOS = {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
         <rect x="2" y="3" width="20" height="14" rx="2" />
         <path d="M2 17h20" />
-        <path d="m9 10-3 3 3 3" />
-        <path d="m15 10 3 3-3 3" />
+        <path d="m8 10-2 2 2 2" />
+        <path d="M12 8v8" />
+        <path d="m16 10 2 2-2 2" />
       </svg>
     ),
   },
