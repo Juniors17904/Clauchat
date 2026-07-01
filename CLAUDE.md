@@ -246,3 +246,38 @@ git push origin master
 - El sitio se sirve desde `master` (Vercel apunta a `master`)
 - NUNCA dejar cambios solo en la rama de desarrollo sin mergear a `master`
 - SIEMPRE hacer el merge y push a `master` al terminar cada cambio
+
+---
+
+## 📸 Cómo tomar capturas con Claude
+
+**¿Qué hace?**
+El script `tomar_captura.sh` levanta el servidor de desarrollo (`npm run dev`) en background, espera a que esté listo, luego usa Playwright + Xvfb (servidor X virtual) para automatizar un navegador Chromium y capturar la pantalla en dos orientaciones: portrait (390×844) y landscape (844×390).
+
+**¿Cuándo usarlo?**
+Cuando necesites visuales de cómo se ve la app en móvil. Útil para verificar diseño, responsive, y cambios visuales sin abrir manualmente un navegador.
+
+**¿Cómo funciona internamente?**
+1. Inicia `npm run dev -- --host 0.0.0.0` (servidor escuchando en todas las interfaces)
+2. Espera 8 segundos a que esté listo
+3. Crea un script Playwright temporal que:
+   - Lanza Chromium en modo headless
+   - Abre dos contextos de navegador (portrait y landscape)
+   - Navega a `http://localhost:5173/`
+   - Espera a que cargue (`networkidle`)
+   - Toma screenshot de cada uno
+4. Ejecuta el script con `xvfb-run` (entorno virtual X display)
+5. Mata el proceso del servidor de desarrollo
+6. Guarda capturas en `/tmp/captura_portrait.png` y `/tmp/captura_landscape.png`
+
+**¿Por qué funciona?**
+- Chromium como navegador real puede acceder a localhost aunque sea dentro de un contenedor
+- Xvfb crea una pantalla virtual para que Playwright pueda renderizar
+- Playwright automatiza el flujo completo sin intervención manual
+
+**Ejecución:**
+```bash
+./tomar_captura.sh
+```
+
+Cuando Claude te pida capturar, ejecuta este script y las imágenes estarán listas para mostrar.
