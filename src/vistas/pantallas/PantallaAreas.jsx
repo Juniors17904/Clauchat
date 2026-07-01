@@ -63,23 +63,9 @@ const AREA_ESTILOS = {
   },
 };
 
-function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar, promptInstalar, instalarApp }) {
+function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-5 pb-4 space-y-3">
-
-      {/* Botón instalar app */}
-      {promptInstalar && (
-        <button
-          onClick={instalarApp}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#388bfd]/40 bg-[#388bfd]/10 text-left transition-all active:scale-[0.98]"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="#388bfd">
-            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-          </svg>
-          <span className="text-[#388bfd] text-xs font-sans">Instalar app en tu dispositivo</span>
-        </button>
-      )}
 
       {/* Tarjetas de áreas */}
       {AREAS.map(area => {
@@ -388,6 +374,20 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
             <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
           </svg>
         </button>
+
+        {/* Botón instalar app — solo en navegador, desaparece si ya está instalada */}
+        {promptInstalar && (
+          <button
+            onClick={instalarApp}
+            className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 border border-white/20 text-white/70 hover:text-white hover:border-white/50 transition-colors text-xs font-sans backdrop-blur-sm"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+            Instalar app
+          </button>
+        )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
           <h1 className="text-4xl font-bold text-white tracking-tight font-sans drop-shadow-lg">DevLab</h1>
           <p className="text-white/60 mt-1 text-sm font-sans">Elige un área de estudio</p>
@@ -401,8 +401,6 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
             onSeleccionar={onSeleccionar}
             ultimaPosicion={ultimaPosicion}
             onContinuar={onContinuar}
-            promptInstalar={promptInstalar}
-            instalarApp={instalarApp}
           />
         )}
         {tabActual === 'progreso' && <TabProgreso controladorPerfil={controladorPerfil} />}
