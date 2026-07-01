@@ -18,7 +18,7 @@ const COLORES_NIVEL = {
 
 const AREA_ESTILOS = {
   'bases-de-datos': {
-    color: '#f85149',
+    color: '#388bfd',
     Icono: () => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
         <ellipse cx="12" cy="5" rx="9" ry="3" />
