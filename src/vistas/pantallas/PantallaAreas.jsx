@@ -362,7 +362,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
           <h1 className="text-4xl font-bold text-white tracking-tight font-sans drop-shadow-lg">DevLab</h1>
-          <p className="text-white/60 mt-1 text-sm font-sans">Elige un area de estudio</p>
+          <p className="text-white/60 mt-1 text-sm font-sans">Elige un área de estudio</p>
         </div>
       </div>
 
