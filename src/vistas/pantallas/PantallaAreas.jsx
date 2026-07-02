@@ -19,19 +19,19 @@ const COLORES_NIVEL = {
 const AREA_ESTILOS = {
   'bases-de-datos': {
     color: '#3fb950',
-    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-10 h-10 object-contain" />,
+    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-14 h-14 object-contain" />,
   },
   'programacion': {
     color: '#8250df',
-    Icono: () => <img src="/iconos/programacion.png" alt="laptop" className="w-10 h-10 object-contain" />,
+    Icono: () => <img src="/iconos/programacion.png" alt="laptop" className="w-14 h-14 object-contain" />,
   },
   'redes': {
     color: '#388bfd',
-    Icono: () => <img src="/iconos/redes.png" alt="globo" className="w-10 h-10 object-contain" />,
+    Icono: () => <img src="/iconos/redes.png" alt="globo" className="w-14 h-14 object-contain" />,
   },
   'inteligencia-artificial': {
     color: '#d29922',
-    Icono: () => <img src="/iconos/cohete-ia.png" alt="cohete" className="w-10 h-10 object-contain" />,
+    Icono: () => <img src="/iconos/cohete-ia.png" alt="cohete" className="w-14 h-14 object-contain" />,
   },
 };
 
