@@ -54,15 +54,7 @@ const AREA_ESTILOS = {
   },
   'inteligencia-artificial': {
     color: '#d29922',
-    Icono: () => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <ellipse cx="12" cy="10.5" rx="5.5" ry="7.5" />
-        <circle cx="13" cy="8" r="1.3" />
-        <path d="M6 9.5l-2 2l2 2" />
-        <path d="M8.5 18c-0.8 1.2-1.2 2-1.2 2.5" />
-        <path d="M15.5 18c0.8 1.2 1.2 2 1.2 2.5" />
-      </svg>
-    ),
+    Icono: () => <img src="/iconos/cohete-ia.png" alt="cohete" className="w-10 h-10 object-contain" />,
   },
 };
 
