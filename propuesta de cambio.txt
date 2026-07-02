@@ -1,0 +1,269 @@
+PROPUESTA DE REORGANIZACIÓN: SEPARACIÓN DE BASES DE DATOS POR ESPECIALIDAD
+================================================================================
+
+## 1. SITUACIÓN ACTUAL
+
+Estructura existente:
+- 8 niveles (nivel1 a nivel8) bajo área "bases-de-datos"
+- 70 ejercicios en SQL estándar
+- Todos usan: LIMIT, SELECT, WHERE, ORDER BY, JOIN, GROUP BY, subconsultas, funciones estándar
+- Compatible con: PostgreSQL, MySQL, SQLite
+- Archivos: ejercicios.js (854 líneas), niveles.js, areas.js
+
+Problema:
+- No hay diferenciación por motor de BD (PostgreSQL, SQL Server, MySQL, Oracle)
+- Ejercicios no muestran diferencias de sintaxis entre motores
+- Falta especialización para usuarios que quieran aprender motores específicos
+
+---
+
+## 2. PROPUESTA DE REORGANIZACIÓN
+
+Estructura propuesta:
+```
+Bases de Datos (área principal)
+├── Curso Base SQL (nivel1-nivel8 actual, 70 ejercicios)
+│   └── SQL estándar compatible con todos los motores
+├── ESPECIALIDADES
+│   ├── PostgreSQL (70 ejercicios base + ejercicios PostgreSQL específicos)
+│   ├── SQL Server (70 ejercicios adaptados + T-SQL específico)
+│   ├── MySQL (70 ejercicios adaptados + MySQL específico)
+│   └── Oracle (70 ejercicios adaptados + Oracle específico)
+```
+
+---
+
+## 3. MALLA CURRICULAR DE SQL
+
+### NIVEL 1: FUNDAMENTOS (SELECT, WHERE, ORDER BY)
+**Objetivo:** Dominar consultas básicas de lectura de datos
+
+Ejercicios Base SQL (30-35 ejercicios):
+1. SELECT simple - traer todas las columnas
+2. SELECT con columnas específicas
+3. WHERE con condiciones simples (=, <, >, <=, >=)
+4. WHERE con AND y OR
+5. WHERE con NOT
+6. ORDER BY ASC/DESC
+7. LIMIT para limitar resultados
+8. Combinación de WHERE + ORDER BY + LIMIT
+9. DISTINCT para eliminar duplicados
+10. WHERE con LIKE y wildcards (%, _)
+11. WHERE con IN y listas de valores
+12. WHERE con BETWEEN
+13. WHERE con IS NULL / IS NOT NULL
+14. Funciones de conversión básicas (CAST, CONVERT)
+15. Alias de columnas (AS)
+16. Alias de tablas
+17. Búsquedas case-insensitive
+18. Múltiples condiciones complejas
+19. Operadores lógicos combinados
+20. Ordenamiento por múltiples columnas
+21. Navegación de registros (OFFSET en bases que lo soporten)
+22. Expresiones en SELECT (cálculos simples)
+23. Concatenación de strings
+24. Búsquedas con patrones LIKE
+25. Filtrado de datos por rangos de fechas
+26. WHERE con subconsultas simples
+27. Uso de comentarios SQL
+28. Selección condicional (CASE WHEN básico)
+29. Manejo de valores NULL en comparaciones
+30. Agregación simple (COUNT sin GROUP BY)
+
+### NIVEL 2: AGREGACIÓN (GROUP BY, HAVING, Funciones de agregación)
+**Objetivo:** Agrupar datos y calcular resúmenes
+
+Ejercicios Base SQL (10 ejercicios):
+1. GROUP BY simple con una columna
+2. GROUP BY con múltiples columnas
+3. COUNT(*) para contar registros
+4. COUNT(columna) para contar valores no NULL
+5. SUM() para sumar valores
+6. AVG() para promedios
+7. MIN() y MAX()
+8. GROUP BY con WHERE (filtro antes de agrupar)
+9. HAVING para filtrar grupos (filtro después de agrupar)
+10. Combinación de GROUP BY, HAVING, ORDER BY
+
+### NIVEL 3: JOINS (INNER, LEFT, RIGHT, FULL)
+**Objetivo:** Combinar datos de múltiples tablas
+
+Ejercicios Base SQL (10 ejercicios):
+1. INNER JOIN simple
+2. INNER JOIN con múltiples tablas
+3. INNER JOIN con condiciones complejas
+4. LEFT JOIN (incluye todos los de la izquierda)
+5. RIGHT JOIN (incluye todos los de la derecha)
+6. FULL OUTER JOIN (todos los registros)
+7. CROSS JOIN (producto cartesiano)
+8. Self JOIN (tabla unida consigo misma)
+9. JOIN con alias de tablas
+10. Múltiples JOINs en una sola consulta
+
+### NIVEL 4: SUBCONSULTAS Y OPERADORES DE CONJUNTO
+**Objetivo:** Consultas anidadas y combinación de resultados
+
+Ejercicios Base SQL (5-7 ejercicios):
+1. Subconsulta en WHERE (EXISTS)
+2. Subconsulta en WHERE (IN)
+3. Subconsulta correlacionada
+4. Subconsulta en FROM
+5. ANY y ALL con subconsultas
+6. UNION (combinar resultados sin duplicados)
+7. UNION ALL (combinar resultados con duplicados)
+
+### NIVEL 5: FUNCIONES AVANZADAS
+**Objetivo:** Manipulación de datos con funciones
+
+Ejercicios Base SQL (5 ejercicios):
+1. Funciones de texto: UPPER(), LOWER(), LENGTH(), SUBSTRING()
+2. Funciones de fechas: YEAR(), MONTH(), DAY(), DATE()
+3. Funciones numéricas: ROUND(), FLOOR(), CEILING(), ABS()
+4. CASE WHEN con múltiples condiciones
+5. Combinación de funciones anidadas
+
+### NIVEL 6: FUNCIONES DE VENTANA Y CTEs
+**Objetivo:** Análisis avanzado y consultas reutilizables
+
+Ejercicios Base SQL (3 ejercicios):
+1. ROW_NUMBER() - numerar filas
+2. RANK() y DENSE_RANK() - ordenamiento con rangos
+3. LAG() y LEAD() - acceder a filas anteriores/posteriores
+4. PARTITION BY - dividir datos en ventanas
+5. CTEs (WITH ... AS) - consultas nombradas reutilizables
+6. CTEs recursivos (cuando es aplicable)
+
+### NIVEL 7: OPTIMIZACIÓN Y VISTAS
+**Objetivo:** Índices, planes de ejecución y abstracciones
+
+Ejercicios Base SQL (2 ejercicios):
+1. EXPLAIN para ver planes de ejecución
+2. Crear y usar VISTAS
+3. Diferencia entre índices y rendimiento
+
+### NIVEL 8: (POR DEFINIR)
+Posibles temas:
+- Procedimientos almacenados
+- Triggers
+- Transacciones (BEGIN, COMMIT, ROLLBACK)
+- Control de concurrencia
+- Integridad referencial
+
+---
+
+## 4. ESPECIALIDADES DE MOTORES
+
+### PostgreSQL - CARACTERÍSTICAS ESPECÍFICAS
+Ejercicios adicionales:
+1. RETURNING clause (modificar + devolver en una sola consulta)
+2. GENERATE_SERIES para generar secuencias
+3. Arrays: creación, acceso a elementos, funciones array_*
+4. JSON y JSONB: operadores ->>, @>, funciones json_*
+5. Window functions avanzadas (FIRST_VALUE, LAST_VALUE, NTH_VALUE)
+6. CTEs recursivos (ejemplo: árbol jerárquico)
+7. Expresiones regulares (SIMILAR TO, ~)
+8. Types personalizados (ENUM, Composite)
+9. Full Text Search (tsvector, tsquery)
+10. Particionamiento de tablas
+
+### SQL Server - CARACTERÍSTICAS ESPECÍFICAS
+Ejercicios adicionales:
+1. TOP N en lugar de LIMIT (TOP 10, TOP 10 PERCENT)
+2. T-SQL: IF/ELSE, Variables (@variable), DECLARE
+3. IDENTITY para auto-incremento
+4. GETDATE(), DATEADD(), DATEDIFF() para fechas
+5. ROW_NUMBER(), RANK(), DENSE_RANK() con OVER
+6. STRING_AGG() para concatenación (equivalente a GROUP_CONCAT)
+7. OFFSET/FETCH para paginación
+8. Stored Procedures (CREATE PROCEDURE)
+9. Transactions (BEGIN TRAN, COMMIT, ROLLBACK)
+10. CASE en SELECT y UPDATE
+
+### MySQL - CARACTERÍSTICAS ESPECÍFICAS
+Ejercicios adicionales:
+1. LIMIT OFFSET para paginación
+2. GROUP_CONCAT() para concatenar valores agrupados
+3. Funciones de string: CONCAT(), SUBSTRING(), LOWER(), UPPER()
+4. Funciones de fecha: YEAR(), MONTH(), DAY(), DATE_FORMAT()
+5. IF() para condicionales en SELECT
+6. UNION vs UNION ALL
+7. Vistas (CREATE VIEW)
+8. Índices para optimización
+9. EXPLAIN para análisis de consultas
+10. Procedimientos almacenados (DELIMITER, CREATE PROCEDURE)
+
+### Oracle - CARACTERÍSTICAS ESPECÍFICAS
+Ejercicios adicionales:
+1. ROWNUM vs ROW_NUMBER() - limitación de registros
+2. TO_DATE() y TO_CHAR() para conversiones de fecha
+3. Sequences para auto-incremento (CREATE SEQUENCE, nextval)
+4. DECODE() equivalente a CASE (sintaxis Oracle)
+5. NVL() para manejo de NULL (equivalente a COALESCE)
+6. SYSDATE para fecha actual
+7. Funciones de texto: SUBSTR(), LENGTH(), INSTR()
+8. Funciones numéricas: ROUND(), TRUNC(), MOD()
+9. Paquetes y Stored Procedures (Oracle PL/SQL)
+10. Vistas y Materialized Views
+
+---
+
+## 5. CAMBIOS TÉCNICOS REQUERIDOS
+
+### 5.1 Archivos a modificar
+
+**areas.js**
+- Agregar nuevas áreas o sub-áreas:
+  - 'sql-base' (Curso Base)
+  - 'postgresql' (Especialidad)
+  - 'sql-server' (Especialidad)
+  - 'mysql' (Especialidad)
+  - 'oracle' (Especialidad)
+
+**niveles.js**
+- Mantener nivel1-nivel8 pero cambiar areaId
+- Para 'sql-base': niveles con SQL estándar
+- Para cada especialidad: niveles específicos del motor
+
+**ejercicios.js**
+- Ejercicios actuales (70): cambiar areaId a 'sql-base'
+- Crear ejercicios paralelos para cada especialidad
+- Cada especialidad hereda los 70 ejercicios base + ejercicios específicos
+
+### 5.2 Cambios UI
+
+**PantallaAreas.jsx**: mantener como está
+
+**Nueva: PantallaBaseDatos.jsx**
+- Mostrar "Curso Base SQL" como tarjeta principal
+- Mostrar "ESPECIALIDADES" como sección separada
+- Botones/tarjetas para: PostgreSQL, SQL Server, MySQL, Oracle
+- Estructura similar a PantallaAreas pero con sub-categorías
+
+---
+
+## 6. CONSIDERACIONES IMPORTANTES
+
+- Los 70 ejercicios actuales son el "core" que se reutiliza
+- No hay que reescribir todo, solo crear variantes por motor
+- La progresión de dificultad (nivel1-8) se mantiene igual
+- El areaId determina qué motor se usa en la BD
+- Cada especialidad debe tener ejemplos de sintaxis diferente pero conceptos iguales
+- El progreso del usuario se guarda por areaId (curso base y especialidades separadas)
+
+---
+
+## 7. PRÓXIMOS PASOS
+
+1. ✓ Definir estructura de áreas (sql-base, postgresql, sql-server, mysql, oracle)
+2. ✓ Crear malla curricular de SQL
+3. [ ] Reorganizar ejercicios por areaId
+4. [ ] Crear ejercicios específicos de cada motor
+5. [ ] Crear PantallaBaseDatos.jsx con estructura de especialidades
+6. [ ] Conectar UI con nueva estructura de datos
+7. [ ] Actualizar GestorProgreso para manejar areaId
+8. [ ] Testing en todos los motores
+
+---
+
+Archivo generado: propuesta de cambio.txt
+Contiene la propuesta completa + malla curricular de SQL por nivel
