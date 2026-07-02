@@ -73,7 +73,7 @@ const ESPECIALIDADES = {
   },
 };
 
-function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolver }) {
+function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpezar, onVolver }) {
   const [seleccionada, setSeleccionada] = useState('sql-base');
 
   const handleSeleccionar = (id) => {
@@ -153,12 +153,12 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
           </div>
         </div>
 
-        {/* Botón Continuar */}
+        {/* Botón Continuar / Empezar */}
         <button
-          onClick={(e) => { e.stopPropagation(); onContinuar?.(); }}
+          onClick={(e) => { e.stopPropagation(); ultimaPosicion ? onContinuar?.() : onEmpezar?.(); }}
           className="w-full py-2 px-4 bg-[#3fb950] text-white font-semibold rounded-lg hover:bg-[#3fb950]/90 active:scale-[0.98] transition-all text-sm font-sans"
         >
-          ▶ Continuar
+          {ultimaPosicion ? '▶ Continuar' : '▶ Empezar'}
         </button>
         {ultimaPosicion && (() => {
           const nivel = NIVELES.find(n => n.id === ultimaPosicion.tema.nivelId);

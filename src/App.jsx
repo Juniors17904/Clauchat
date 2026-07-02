@@ -91,6 +91,23 @@ export default function App() {
     window.history.pushState({ pantalla: 'editor' }, '');
   };
 
+  const irAEmpezar = () => {
+    const primerNivel = [...NIVELES.filter(n => n.areaId === 'bases-de-datos')].sort((a, b) => a.orden - b.orden)[0];
+    if (!primerNivel) return;
+    const primerTema = [...TEMAS.filter(t => t.nivelId === primerNivel.id)].sort((a, b) => a.orden - b.orden)[0];
+    if (!primerTema) return;
+    const deTema = EJERCICIOS.filter(e => e.temaId === primerTema.id);
+    if (deTema.length === 0) return;
+    const area = AREAS.find(a => a.id === 'bases-de-datos') ?? null;
+    setAreaActual(area);
+    setNivelActual(primerNivel);
+    setTemaActual(primerTema);
+    setEjerciciosOrdenados(deTema);
+    setEjercicioActual(deTema[0]);
+    setPantalla('editor');
+    window.history.pushState({ pantalla: 'editor' }, '');
+  };
+
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
 
   if (pantalla === 'arbol') {
@@ -106,6 +123,7 @@ export default function App() {
         }}
         onVolver={() => setPantalla('areas')}
         onContinuar={irAContinuar}
+        onEmpezar={irAEmpezar}
         ultimaPosicion={ultimaPosicion}
       />
     );
