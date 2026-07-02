@@ -56,14 +56,11 @@ const AREA_ESTILOS = {
     color: '#d29922',
     Icono: () => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <path d="M18 3c2 0 3 1.5 3 4v7c0 2-1 3-2 4l-7 0c-2-1-3-2-3-4V7c0-2.5 1-4 3-4l6 0z" />
-        <path d="M21 9l1.5 2l-1.5 2" />
-        <circle cx="14" cy="10" r="1.2" />
-        <path d="M7 15l-2.5 3.5l0-3.5z" />
-        <path d="M15 15l2.5 3.5l0-3.5z" />
-        <path d="M8 20c-0.8 1-1.2 2-1.2 2.5" />
-        <path d="M11.5 20l0 2.5" />
-        <path d="M14 20c0.8 1 1.2 2 1.2 2.5" />
+        <ellipse cx="12" cy="10.5" rx="5.5" ry="7.5" />
+        <circle cx="13" cy="8" r="1.3" />
+        <path d="M6 9.5l-2 2l2 2" />
+        <path d="M8.5 18c-0.8 1.2-1.2 2-1.2 2.5" />
+        <path d="M15.5 18c0.8 1.2 1.2 2 1.2 2.5" />
       </svg>
     ),
   },
