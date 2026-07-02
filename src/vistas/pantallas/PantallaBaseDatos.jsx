@@ -4,7 +4,7 @@ const ESPECIALIDADES = {
   'sql-base': {
     nombre: 'Curso Base SQL',
     descripcion: 'Aprende SQL estándar. Este curso es la base para cualquier motor de base de datos.',
-    icono: '📘',
+    icono: '/iconos/sql-base.png',
     color: '#3fb950',
     recomendado: true,
     niveles: 8,
@@ -17,7 +17,7 @@ const ESPECIALIDADES = {
   'postgresql': {
     nombre: 'PostgreSQL',
     descripcion: 'Sintaxis y funciones propias de PostgreSQL.',
-    icono: '🐘',
+    icono: '/iconos/postgresql.png',
     color: '#336791',
     recomendado: false,
     niveles: 4,
@@ -31,7 +31,7 @@ const ESPECIALIDADES = {
   'sql-server': {
     nombre: 'SQL Server',
     descripcion: 'Aprende T-SQL, TOP, IDENTITY, GETDATE(), procedimientos almacenados, etc.',
-    icono: '🟦',
+    icono: '/iconos/sql-server.png',
     color: '#0078D4',
     recomendado: false,
     niveles: 4,
@@ -45,7 +45,7 @@ const ESPECIALIDADES = {
   'mysql': {
     nombre: 'MySQL',
     descripcion: 'Aprende AUTO_INCREMENT, IFNULL(), LIMIT, GROUP_CONCAT(), etc.',
-    icono: '🐬',
+    icono: '/iconos/mysql.png',
     color: '#00758F',
     recomendado: false,
     niveles: 4,
@@ -59,7 +59,7 @@ const ESPECIALIDADES = {
   'oracle': {
     nombre: 'Oracle',
     descripcion: 'Aprende ROWNUM, Sequences, NVL(), DECODE(), PL/SQL, etc.',
-    icono: '🟥',
+    icono: '/iconos/oracle.png',
     color: '#F80000',
     recomendado: false,
     niveles: 4,
@@ -110,7 +110,9 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
         style={{ borderColor: '#3fb95040' }}
       >
         <div className="flex items-start gap-4 mb-4">
-          <div className="text-4xl">📘</div>
+          <div className="w-11 h-11 flex-shrink-0 flex items-center justify-center">
+            <img src={ESPECIALIDADES['sql-base'].icono} alt="SQL" className="w-full h-full object-contain" />
+          </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <h2 className="text-lg font-bold text-white">Curso Base SQL</h2>
@@ -180,7 +182,9 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
               >
                 <div className="flex items-center gap-3 p-4 border-l-4" style={{ borderLeftColor: esp.color }}>
                   {/* Ícono */}
-                  <div className="text-3xl flex-shrink-0">{esp.icono}</div>
+                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center">
+                    <img src={esp.icono} alt={esp.nombre} className="w-full h-full object-contain" />
+                  </div>
 
                   {/* Contenido */}
                   <div className="flex-1 min-w-0">
