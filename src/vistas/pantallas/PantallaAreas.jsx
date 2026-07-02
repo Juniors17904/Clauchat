@@ -19,7 +19,7 @@ const COLORES_NIVEL = {
 const AREA_ESTILOS = {
   'bases-de-datos': {
     color: '#3fb950',
-    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-14 h-14 object-contain" />,
+    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-16 h-16 object-contain" />,
   },
   'programacion': {
     color: '#8250df',
