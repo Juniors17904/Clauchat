@@ -1,0 +1,224 @@
+TABLA DE REORGANIZACIÓN DE EJERCICIOS POR ESPECIALIDAD
+================================================================================
+
+## ESTADO ACTUAL (70 ejercicios distribuidos)
+
+┌─────────────┬─────────────────────────────────────────────┬────────────┬──────────┐
+│ Nivel       │ Temas                                       │ Ejercicios │ Total    │
+├─────────────┼─────────────────────────────────────────────┼────────────┼──────────┤
+│ Nivel 1     │ 1. SELECT, FROM                             │ 6          │          │
+│             │ 2. WHERE con =, !=, >, <                   │ 6          │          │
+│             │ 3. AND, OR, NOT                             │ 6          │          │
+│             │ 4. ORDER BY ASC/DESC                        │ 6          │          │
+│             │ 5. LIMIT                                    │ 6          │          │
+│             │ 6. DISTINCT                                 │ 6          │          │
+│             │ 7. IS NULL / IS NOT NULL                    │ 6          │          │
+│             │ 8. LIKE, BETWEEN, IN                        │ 6          │          │
+│             │ 9. Alias con AS                             │ 6          │          │
+│             │ 10. Operadores aritméticos                  │ 6          │ 60       │
+├─────────────┼─────────────────────────────────────────────┼────────────┼──────────┤
+│ Nivel 2     │ 1. COUNT, SUM, AVG, MAX, MIN               │ 1          │          │
+│             │ 2. GROUP BY                                 │ 2          │          │
+│             │ 3. HAVING                                   │ 2          │ 5        │
+├─────────────┼─────────────────────────────────────────────┼────────────┼──────────┤
+│ Nivel 3     │ 1. INNER JOIN                               │ 4          │          │
+│             │ 2. LEFT JOIN                                │ 1          │ 5        │
+├─────────────┴─────────────────────────────────────────────┴────────────┴──────────┤
+│                                                           TOTAL: 70 EJERCICIOS    │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+
+## PROPUESTA DE REORGANIZACIÓN POR ESPECIALIDAD
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 1. CURSO BASE SQL (SQL Estándar - Compatible con todos los motores)          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ✅ Todos los 70 ejercicios actuales van aquí                                │
+│                                                                               │
+│  Nivel 1 (60 ejercicios):                                                    │
+│  • SELECT, FROM, WHERE, AND, OR, NOT, ORDER BY, LIMIT, DISTINCT, NULL      │
+│  • LIKE, BETWEEN, IN, Alias (AS), Operadores aritméticos                    │
+│                                                                               │
+│  Nivel 2 (5 ejercicios):                                                     │
+│  • COUNT, SUM, AVG, MAX, MIN, GROUP BY, HAVING                              │
+│                                                                               │
+│  Nivel 3 (5 ejercicios):                                                     │
+│  • INNER JOIN, LEFT JOIN                                                     │
+│                                                                               │
+│  Sub-total: 70 ejercicios SQL estándar                                       │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 2. POSTGRESQL (Especialidad)                                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  Hereda: 70 ejercicios base SQL                                              │
+│  + Ejercicios PostgreSQL específicos (nuevos)                                │
+│                                                                               │
+│  Ejercicios adicionales a crear:                                             │
+│  • RETURNING clause (devolver filas modificadas)                             │
+│  • GENERATE_SERIES (generar secuencias)                                      │
+│  • Arrays y operaciones array[]                                              │
+│  • JSON y JSONB (operadores ->, ->>)                                         │
+│  • Window Functions avanzadas (FIRST_VALUE, LAST_VALUE, NTH_VALUE)           │
+│  • CTEs recursivos                                                           │
+│  • Expresiones regulares (SIMILAR TO, ~)                                     │
+│  • Full Text Search (tsvector)                                               │
+│  • Enum types                                                                │
+│  • Particionamiento de tablas                                                │
+│                                                                               │
+│  Sub-total: 70 base + ~10-15 ejercicios PostgreSQL específicos               │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 3. SQL SERVER (Especialidad)                                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  Hereda: 70 ejercicios base SQL (adaptados para SQL Server)                  │
+│  + Ejercicios SQL Server específicos (nuevos)                                │
+│                                                                               │
+│  Adaptaciones de ejercicios base:                                            │
+│  • LIMIT → TOP (sintaxis diferente)                                          │
+│  • OFFSET → OFFSET/FETCH (paginación)                                        │
+│                                                                               │
+│  Ejercicios adicionales a crear:                                             │
+│  • TOP N y TOP N PERCENT                                                     │
+│  • T-SQL: IF/ELSE, DECLARE @variable                                         │
+│  • IDENTITY (auto-increment)                                                 │
+│  • Funciones de fecha: GETDATE(), DATEADD(), DATEDIFF()                      │
+│  • ROW_NUMBER(), RANK(), DENSE_RANK()                                        │
+│  • STRING_AGG() (concatenación agrupada)                                     │
+│  • OFFSET/FETCH para paginación                                              │
+│  • Stored Procedures                                                         │
+│  • Transactions (BEGIN TRAN, COMMIT, ROLLBACK)                               │
+│  • CASE avanzado                                                             │
+│                                                                               │
+│  Sub-total: 70 base + ~10-12 ejercicios SQL Server específicos               │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 4. MYSQL (Especialidad)                                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  Hereda: 70 ejercicios base SQL (adaptados para MySQL)                       │
+│  + Ejercicios MySQL específicos (nuevos)                                     │
+│                                                                               │
+│  Adaptaciones de ejercicios base:                                            │
+│  • LIMIT → LIMIT OFFSET (sintaxis MySQL)                                     │
+│                                                                               │
+│  Ejercicios adicionales a crear:                                             │
+│  • LIMIT OFFSET (paginación)                                                 │
+│  • GROUP_CONCAT() (concatenación agrupada)                                   │
+│  • CONCAT(), SUBSTRING(), LOWER(), UPPER()                                   │
+│  • Funciones de fecha: YEAR(), MONTH(), DAY(), DATE_FORMAT()                 │
+│  • IF() condicional en SELECT                                                │
+│  • UNION vs UNION ALL                                                        │
+│  • Vistas (CREATE VIEW)                                                      │
+│  • Índices para optimización                                                 │
+│  • EXPLAIN (análisis de consultas)                                           │
+│  • Procedimientos almacenados                                                │
+│                                                                               │
+│  Sub-total: 70 base + ~10-12 ejercicios MySQL específicos                    │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 5. ORACLE (Especialidad)                                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  Hereda: 70 ejercicios base SQL (adaptados para Oracle)                      │
+│  + Ejercicios Oracle específicos (nuevos)                                    │
+│                                                                               │
+│  Adaptaciones de ejercicios base:                                            │
+│  • LIMIT → ROWNUM (sintaxis Oracle antigua/nueva con ROW_NUMBER())           │
+│                                                                               │
+│  Ejercicios adicionales a crear:                                             │
+│  • ROWNUM vs ROW_NUMBER()                                                    │
+│  • TO_DATE() y TO_CHAR() (conversión de fechas)                              │
+│  • Sequences (CREATE SEQUENCE, nextval)                                      │
+│  • DECODE() (equivalente a CASE)                                             │
+│  • NVL() (manejo de NULL)                                                    │
+│  • SYSDATE (fecha actual)                                                    │
+│  • Funciones: SUBSTR(), LENGTH(), INSTR()                                    │
+│  • Funciones: ROUND(), TRUNC(), MOD()                                        │
+│  • Procedimientos almacenados (PL/SQL)                                       │
+│  • Vistas y Materialized Views                                               │
+│  • Paquetes Oracle                                                           │
+│                                                                               │
+│  Sub-total: 70 base + ~12-15 ejercicios Oracle específicos                   │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+
+## RESUMEN DE DISTRIBUCIÓN
+
+┌──────────────────────────────┬──────────────┬─────────────────────────────┐
+│ Especialidad                 │ Ejercicios   │ Distribución                │
+├──────────────────────────────┼──────────────┼─────────────────────────────┤
+│ SQL Base (Estándar)          │ 70           │ 60 Nivel1 + 5 Nivel2 +      │
+│                              │              │ 5 Nivel3                    │
+├──────────────────────────────┼──────────────┼─────────────────────────────┤
+│ PostgreSQL                   │ 70 + 12 = 82 │ 70 base + 12 específicos     │
+├──────────────────────────────┼──────────────┼─────────────────────────────┤
+│ SQL Server                   │ 70 + 11 = 81 │ 70 base + 11 específicos     │
+├──────────────────────────────┼──────────────┼─────────────────────────────┤
+│ MySQL                        │ 70 + 11 = 81 │ 70 base + 11 específicos     │
+├──────────────────────────────┼──────────────┼─────────────────────────────┤
+│ Oracle                       │ 70 + 13 = 83 │ 70 base + 13 específicos     │
+├──────────────────────────────┼──────────────┼─────────────────────────────┤
+│                    TOTAL     │ 398          │                             │
+└──────────────────────────────┴──────────────┴─────────────────────────────┘
+
+================================================================================
+
+## ESTRUCTURA DE DATOS PROPUESTA
+
+### Areas.js
+```
+'sql-base'           → Curso Base SQL
+'postgresql'         → PostgreSQL
+'sql-server'         → SQL Server
+'mysql'              → MySQL
+'oracle'             → Oracle
+```
+
+### Niveles.js
+- Mantener nivel1-nivel8 con areaId dinámico
+- Cada área tendrá sus propios niveles
+
+### Ejercicios.js
+- 70 ejercicios base con areaId: 'sql-base'
+- 70 ejercicios base con areaId: 'postgresql' (copiados + adaptados)
+- 70 ejercicios base con areaId: 'sql-server' (copiados + adaptados)
+- 70 ejercicios base con areaId: 'mysql' (copiados + adaptados)
+- 70 ejercicios base con areaId: 'oracle' (copiados + adaptados)
+- + Ejercicios específicos de cada motor
+
+### UI (Nueva)
+PantallaBaseDatos.jsx
+- Tarjeta: "Curso Base SQL" (70 ejercicios)
+- Sección: "ESPECIALIDADES"
+  - Tarjeta: PostgreSQL (82 ejercicios)
+  - Tarjeta: SQL Server (81 ejercicios)
+  - Tarjeta: MySQL (81 ejercicios)
+  - Tarjeta: Oracle (83 ejercicios)
+
+================================================================================
+
+## VENTAJAS DE ESTA REORGANIZACIÓN
+
+✅ El usuario puede empezar con SQL Estándar (base sólida)
+✅ Luego especializarse en su motor de BD preferido
+✅ Reutilización de ejercicios base (DRY principle)
+✅ Conceptos comunes en todos los motores
+✅ Características específicas claramente separadas
+✅ Progresión clara de dificultad en cada especialidad
+✅ El progreso se guarda por areaId (usuario puede estar en nivel3 de SQL Base y nivel1 de PostgreSQL)
+
+================================================================================
