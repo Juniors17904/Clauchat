@@ -99,7 +99,8 @@ export default function App() {
     return (
       <PantallaBaseDatos
         onSeleccionar={(especialidad) => {
-          setAreaActual(especialidad);
+          setPantalla('niveles');
+          window.history.pushState({ pantalla: 'niveles' }, '');
         }}
         onVolver={() => setPantalla('areas')}
         onContinuar={irAContinuar}
