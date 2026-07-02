@@ -51,14 +51,14 @@ const AREA_ESTILOS = {
   'inteligencia-artificial': {
     color: '#d29922',
     Icono: () => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <path d="M4.5 16.5c-1.5-1-2.5-4-2.5-4s1-3 2.5-4" />
-        <path d="M19.5 16.5c1.5-1 2.5-4 2.5-4s-1-3-2.5-4" />
-        <path d="M12 2v7" />
-        <path d="M12 15c3.314 0 6-1.343 6-3s-2.686-3-6-3-6 1.343-6 3 2.686 3 6 3z" />
-        <path d="M8 19l-1 3h2" />
-        <path d="M12 19v3" />
-        <path d="M16 19l1 3h-2" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <path d="M16 4c2 0 3 1 3 3v7c0 2-1 3-2 4l-6 0c-2-1-3-2-3-4V7c0-2 1-3 3-3l5 0z" />
+        <path d="M19 8l2 2l-2 2" />
+        <circle cx="14" cy="11" r="1.3" />
+        <path d="M8 16l-2.5 3l0-3z" />
+        <path d="M14 16l2.5 3l0-3z" />
+        <path d="M9 20c-0.5 1-1 1.5-1 2" />
+        <path d="M13 20l0 2" />
       </svg>
     ),
   },
