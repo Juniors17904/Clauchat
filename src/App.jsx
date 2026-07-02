@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import PantallaAreas from './vistas/pantallas/PantallaAreas';
+import PantallaBaseDatos from './vistas/pantallas/PantallaBaseDatos';
 import PantallaNiveles from './vistas/pantallas/PantallaNiveles';
 import PantallaTemas from './vistas/pantallas/PantallaTemas';
 import PantallaConcepto from './vistas/pantallas/PantallaConcepto';
@@ -33,8 +34,13 @@ export default function App() {
 
   const irANiveles = (area) => {
     setAreaActual(area);
-    setPantalla('niveles');
-    window.history.pushState({ pantalla: 'niveles' }, '');
+    if (area.id === 'bases-de-datos') {
+      setPantalla('base-datos');
+      window.history.pushState({ pantalla: 'base-datos' }, '');
+    } else {
+      setPantalla('niveles');
+      window.history.pushState({ pantalla: 'niveles' }, '');
+    }
   };
 
   const irATemas = (nivel) => {
@@ -87,6 +93,18 @@ export default function App() {
 
   if (pantalla === 'arbol') {
     return <PantallaArbol onVolver={() => setPantalla('areas')} />;
+  }
+
+  if (pantalla === 'base-datos') {
+    return (
+      <PantallaBaseDatos
+        onSeleccionar={(especialidad) => {
+          setAreaActual(especialidad);
+        }}
+        onVolver={() => setPantalla('areas')}
+        onContinuar={irAContinuar}
+      />
+    );
   }
 
   if (pantalla === 'editor') {

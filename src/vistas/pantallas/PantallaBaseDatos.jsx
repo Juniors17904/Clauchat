@@ -72,7 +72,7 @@ const ESPECIALIDADES = {
   },
 };
 
-function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar }) {
+function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolver }) {
   const [seleccionada, setSeleccionada] = useState('sql-base');
 
   const handleSeleccionar = (id) => {
@@ -84,6 +84,14 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar }) {
 
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-5 pb-4">
+      {/* Header con botón Volver */}
+      <button
+        onClick={onVolver}
+        className="text-[#8b949e] hover:text-white transition-colors mb-4 flex items-center gap-2 text-sm"
+      >
+        ← Volver
+      </button>
+
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-3">
