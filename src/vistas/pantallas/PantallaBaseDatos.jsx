@@ -95,7 +95,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-3xl">🛢️</span>
+          <img src="/iconos/bases-de-datos.png" alt="database" className="w-10 h-10 object-contain" />
           <h1 className="text-2xl font-bold text-white">Bases de Datos</h1>
         </div>
         <p className="text-sm text-[#8b949e] font-sans leading-relaxed">
