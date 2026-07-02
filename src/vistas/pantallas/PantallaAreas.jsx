@@ -31,34 +31,37 @@ const AREA_ESTILOS = {
   'programacion': {
     color: '#8250df',
     Icono: () => (
-      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <rect x="6" y="12" width="52" height="32" rx="4" />
-        <line x1="6" y1="46" x2="58" y2="46" />
-        <line x1="20" y1="20" x2="12" y2="32" />
-        <line x1="28" y1="20" x2="28" y2="32" />
-        <line x1="36" y1="20" x2="44" y2="32" />
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <rect x="8" y="10" width="48" height="36" rx="2" />
+        <line x1="8" y1="50" x2="56" y2="50" />
+        <line x1="20" y1="55" x2="20" y2="50" />
+        <line x1="44" y1="55" x2="44" y2="50" />
+        <line x1="22" y1="26" x2="28" y2="32" />
+        <line x1="28" y1="26" x2="28" y2="32" />
+        <line x1="34" y1="26" x2="40" y2="32" />
       </svg>
     ),
   },
   'redes': {
     color: '#388bfd',
     Icono: () => (
-      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <circle cx="32" cy="32" r="26" />
-        <path d="M32 6v52" />
-        <ellipse cx="32" cy="32" rx="26" ry="10" />
-        <ellipse cx="32" cy="20" rx="26" ry="8" />
-        <ellipse cx="32" cy="44" rx="26" ry="8" />
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <circle cx="32" cy="32" r="24" />
+        <path d="M32 8 L32 56" />
+        <path d="M8 32 L56 32" />
+        <ellipse cx="32" cy="32" rx="24" ry="8" />
+        <ellipse cx="32" cy="20" rx="24" ry="6" />
+        <ellipse cx="32" cy="44" rx="24" ry="6" />
       </svg>
     ),
   },
   'inteligencia-artificial': {
     color: '#d29922',
     Icono: () => (
-      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <path d="M44 12 L56 24 L48 44 L32 56 L20 44 L16 24 Z" />
-        <circle cx="36" cy="32" r="4" />
-        <path d="M32 48 L32 56 M28 52 L24 56 M36 52 L40 56" />
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <path d="M32 8 L40 28 L40 48 L24 48 L24 28 Z" />
+        <circle cx="32" cy="22" r="3" />
+        <path d="M20 50 L24 58 M32 50 L32 58 M44 50 L40 58" />
       </svg>
     ),
   },
