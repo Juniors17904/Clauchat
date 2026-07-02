@@ -104,7 +104,11 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
       </div>
 
       {/* Tarjeta Curso Base SQL */}
-      <div className="mb-6 rounded-2xl border bg-[#161b22] p-5 overflow-hidden" style={{ borderColor: '#3fb95040' }}>
+      <div
+        onClick={() => handleSeleccionar('sql-base')}
+        className="mb-6 rounded-2xl border bg-[#161b22] p-5 overflow-hidden cursor-pointer active:scale-[0.98] transition-all"
+        style={{ borderColor: '#3fb95040' }}
+      >
         <div className="flex items-start gap-4 mb-4">
           <div className="text-4xl">📘</div>
           <div className="flex-1">
@@ -148,7 +152,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
 
         {/* Botón Continuar */}
         <button
-          onClick={() => onContinuar?.()}
+          onClick={(e) => { e.stopPropagation(); onContinuar?.(); }}
           className="w-full py-2 px-4 bg-[#3fb950] text-white font-semibold rounded-lg hover:bg-[#3fb950]/90 active:scale-[0.98] transition-all text-sm font-sans"
         >
           ▶ Continuar
