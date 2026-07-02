@@ -19,7 +19,7 @@ const COLORES_NIVEL = {
 const AREA_ESTILOS = {
   'bases-de-datos': {
     color: '#3fb950',
-    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-16 h-16 object-contain" />,
+    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-14 h-14 object-contain" />,
   },
   'programacion': {
     color: '#8250df',
@@ -59,7 +59,7 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
               className={`w-full flex items-center gap-4 px-5 py-5 text-left transition-all
                 ${area.disponible ? 'active:scale-[0.98] cursor-pointer' : 'cursor-not-allowed'}`}
             >
-              <div className={`${area.id === 'bases-de-datos' ? 'w-16 h-16' : 'w-14 h-14'} rounded-xl flex items-center justify-center flex-shrink-0`} style={{ backgroundColor: '#21262d', color }}>
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#21262d', color }}>
                 <Icono />
               </div>
               <div className="min-w-0 flex-1">
