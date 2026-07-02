@@ -30,27 +30,11 @@ const AREA_ESTILOS = {
   },
   'programacion': {
     color: '#8250df',
-    Icono: () => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <rect x="2" y="3" width="20" height="14" rx="2" />
-        <path d="M2 17h20" />
-        <path d="M6 21h12" />
-        <path d="M7 9l-2 2 2 2" />
-        <line x1="12" y1="7" x2="12" y2="13" />
-        <path d="M17 9l2 2-2 2" />
-      </svg>
-    ),
+    Icono: () => <img src="/iconos/programacion.png" alt="laptop" className="w-10 h-10 object-contain" />,
   },
   'redes': {
     color: '#388bfd',
-    Icono: () => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M2 12h20" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        <ellipse cx="12" cy="12" rx="10" ry="3" />
-      </svg>
-    ),
+    Icono: () => <img src="/iconos/redes.png" alt="globo" className="w-10 h-10 object-contain" />,
   },
   'inteligencia-artificial': {
     color: '#d29922',
