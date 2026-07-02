@@ -31,19 +31,35 @@ const AREA_ESTILOS = {
   'programacion': {
     color: '#8250df',
     Icono: () => (
-      <img src="/iconos/programacion.jpg" alt="Programación" className="w-10 h-10 object-contain" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <path d="M2 17h20" />
+        <path d="M6 21h12" />
+      </svg>
     ),
   },
   'redes': {
     color: '#388bfd',
     Icono: () => (
-      <img src="/iconos/redes.jpg" alt="Redes" className="w-10 h-10 object-contain" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M2 12h20" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      </svg>
     ),
   },
   'inteligencia-artificial': {
     color: '#d29922',
     Icono: () => (
-      <img src="/iconos/inteligencia-artificial.jpg" alt="Inteligencia Artificial" className="w-10 h-10 object-contain" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+        <path d="M4.5 16.5c-1.5-1-2.5-4-2.5-4s1-3 2.5-4" />
+        <path d="M19.5 16.5c1.5-1 2.5-4 2.5-4s-1-3-2.5-4" />
+        <path d="M12 2v7" />
+        <path d="M12 15c3.314 0 6-1.343 6-3s-2.686-3-6-3-6 1.343-6 3 2.686 3 6 3z" />
+        <path d="M8 19l-1 3h2" />
+        <path d="M12 19v3" />
+        <path d="M16 19l1 3h-2" />
+      </svg>
     ),
   },
 };
