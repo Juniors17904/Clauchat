@@ -91,6 +91,8 @@ export default function App() {
     window.history.pushState({ pantalla: 'editor' }, '');
   };
 
+  const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
+
   if (pantalla === 'arbol') {
     return <PantallaArbol onVolver={() => setPantalla('areas')} />;
   }
@@ -104,6 +106,7 @@ export default function App() {
         }}
         onVolver={() => setPantalla('areas')}
         onContinuar={irAContinuar}
+        ultimaPosicion={ultimaPosicion}
       />
     );
   }
@@ -154,8 +157,6 @@ export default function App() {
       />
     );
   }
-
-  const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
 
   return (
     <PantallaAreas

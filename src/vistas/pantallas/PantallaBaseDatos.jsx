@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { NIVELES } from '../../datos/niveles';
 
 const ESPECIALIDADES = {
   'sql-base': {
@@ -159,6 +160,14 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onVolve
         >
           ▶ Continuar
         </button>
+        {ultimaPosicion && (() => {
+          const nivel = NIVELES.find(n => n.id === ultimaPosicion.tema.nivelId);
+          return (
+            <p className="text-center text-[#8b949e] text-xs font-sans mt-2">
+              Nivel {nivel?.orden} · Tema {ultimaPosicion.tema.orden} · Ejercicio {ultimaPosicion.completados + 1}/{ultimaPosicion.total}
+            </p>
+          );
+        })()}
       </div>
 
       {/* Sección Especializaciones */}
