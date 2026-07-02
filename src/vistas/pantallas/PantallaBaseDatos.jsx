@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NIVELES } from '../../datos/niveles';
+import { EJERCICIOS } from '../../datos/ejercicios';
 
 const ESPECIALIDADES = {
   'sql-base': {
@@ -73,8 +74,19 @@ const ESPECIALIDADES = {
   },
 };
 
-function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpezar, onVolver }) {
+function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpezar, onVolver, controladorPerfil }) {
   const [seleccionada, setSeleccionada] = useState('sql-base');
+
+  const nivelesDelArea = NIVELES.filter(n => n.areaId === 'bases-de-datos');
+  const idsNiveles = new Set(nivelesDelArea.map(n => n.id));
+  const ejerciciosDelArea = EJERCICIOS.filter(e => idsNiveles.has(e.nivelId));
+  const totalEjercicios = ejerciciosDelArea.length;
+  const totalNiveles = nivelesDelArea.length;
+  const completados = controladorPerfil
+    ? ejerciciosDelArea.filter(e => controladorPerfil.estaCompletado(e.id)).length
+    : 0;
+  const porcentaje = totalEjercicios > 0 ? Math.round((completados / totalEjercicios) * 100) : 0;
+  const horasEstimadas = Math.max(1, Math.round(totalEjercicios * 5 / 60));
 
   const handleSeleccionar = (id) => {
     if (!ESPECIALIDADES[id].bloqueado) {
@@ -124,7 +136,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
             </p>
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="text-2xl font-bold text-[#3fb950]">32%</p>
+            <p className="text-2xl font-bold text-[#3fb950]">{porcentaje}%</p>
             <p className="text-xs text-[#8b949e] font-sans">Completado</p>
           </div>
         </div>
@@ -133,7 +145,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
         <div className="w-full h-2 bg-[#21262d] rounded-full mb-4 overflow-hidden">
           <div
             className="h-full bg-[#3fb950] rounded-full transition-all"
-            style={{ width: '32%' }}
+            style={{ width: `${porcentaje}%` }}
           />
         </div>
 
@@ -141,15 +153,15 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
         <div className="flex items-center justify-between mb-4 text-xs text-[#8b949e] font-sans">
           <div className="flex items-center gap-1">
             <span>📚</span>
-            <span>8 niveles</span>
+            <span>{totalNiveles} niveles</span>
           </div>
           <div className="flex items-center gap-1">
             <span>📝</span>
-            <span>120 ejercicios</span>
+            <span>{totalEjercicios} ejercicios</span>
           </div>
           <div className="flex items-center gap-1">
             <span>⏱️</span>
-            <span>18 horas</span>
+            <span>{horasEstimadas} horas</span>
           </div>
         </div>
 

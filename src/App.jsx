@@ -116,6 +116,7 @@ export default function App() {
         onContinuar={irAContinuar}
         onEmpezar={irAEmpezar}
         ultimaPosicion={ultimaPosicion}
+        controladorPerfil={ctrlPerfil.current}
       />
     );
   }
