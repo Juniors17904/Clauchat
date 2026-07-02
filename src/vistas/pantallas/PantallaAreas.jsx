@@ -19,14 +19,7 @@ const COLORES_NIVEL = {
 const AREA_ESTILOS = {
   'bases-de-datos': {
     color: '#3fb950',
-    Icono: () => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-        <ellipse cx="12" cy="5" rx="9" ry="3" />
-        <path d="M3 5v4c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-        <path d="M3 9v4c0 1.66 4 3 9 3s9-1.34 9-3V9" />
-        <path d="M3 13v4c0 1.66 4 3 9 3s9-1.34 9-3v-4" />
-      </svg>
-    ),
+    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-10 h-10 object-contain" />,
   },
   'programacion': {
     color: '#8250df',
