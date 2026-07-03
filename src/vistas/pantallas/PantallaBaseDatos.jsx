@@ -23,13 +23,9 @@ const ESPECIALIDADES = {
     icono: '/iconos/postgresql.png',
     color: '#336791',
     recomendado: false,
-    niveles: 4,
-    ejercicios: 35,
-    horas: 12,
-    progreso: 0,
-    bloqueado: true,
-    estado: 'bloqueado',
-    requisito: 'Completa el Curso Base',
+    bloqueado: false,
+    estado: 'proximamente',
+    requisito: 'Próximamente',
   },
   'sql-server': {
     nombre: 'SQL Server',
@@ -37,13 +33,9 @@ const ESPECIALIDADES = {
     icono: '/iconos/sql-server.png',
     color: '#0078D4',
     recomendado: false,
-    niveles: 4,
-    ejercicios: 32,
-    horas: 11,
-    progreso: 0,
-    bloqueado: true,
-    estado: 'bloqueado',
-    requisito: 'Completa el Curso Base',
+    bloqueado: false,
+    estado: 'proximamente',
+    requisito: 'Próximamente',
   },
   'mysql': {
     nombre: 'MySQL',
@@ -51,13 +43,9 @@ const ESPECIALIDADES = {
     icono: '/iconos/mysql.png',
     color: '#00758F',
     recomendado: false,
-    niveles: 4,
-    ejercicios: 30,
-    horas: 10,
-    progreso: 0,
-    bloqueado: true,
-    estado: 'bloqueado',
-    requisito: 'Completa el Curso Base',
+    bloqueado: false,
+    estado: 'proximamente',
+    requisito: 'Próximamente',
   },
   'oracle': {
     nombre: 'Oracle',
@@ -89,7 +77,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
     ? ejerciciosDelArea.filter(e => controladorPerfil.estaCompletado(e.id)).length
     : 0;
   const porcentaje = totalEjercicios > 0 ? Math.round((completados / totalEjercicios) * 100) : 0;
-  const horasEstimadas = Math.max(1, Math.round(totalEjercicios * 5 / 60));
+  const horasEstimadas = Math.max(1, Math.round(totalEjercicios * 10 / 60));
 
   const handleSeleccionar = (id) => {
     if (!ESPECIALIDADES[id].bloqueado) {
