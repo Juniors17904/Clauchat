@@ -80,10 +80,11 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
   const horasEstimadas = Math.max(1, Math.round(totalEjercicios * 10 / 60));
 
   const handleSeleccionar = (id) => {
-    if (!ESPECIALIDADES[id].bloqueado) {
-      setSeleccionada(id);
-      onSeleccionar?.(ESPECIALIDADES[id]);
-    }
+    const esp = ESPECIALIDADES[id];
+    if (esp.bloqueado && esp.estado === 'bloqueado') return;
+    setSeleccionada(id);
+    const areaId = id === 'sql-base' ? 'bases-de-datos' : id;
+    onSeleccionar?.(areaId);
   };
 
   return (

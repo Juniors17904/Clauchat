@@ -1,5 +1,12 @@
 import { AreaEstudio } from '../modelos/area_estudio';
 
+export const AREAS_ESPECIALIZACION = [
+  new AreaEstudio({ id: 'postgresql', nombre: 'PostgreSQL', descripcion: 'Sintaxis y funciones propias de PostgreSQL.', icono: '🐘' }),
+  new AreaEstudio({ id: 'sql-server', nombre: 'SQL Server', descripcion: 'T-SQL y funciones propias de SQL Server.', icono: '🪟' }),
+  new AreaEstudio({ id: 'mysql', nombre: 'MySQL', descripcion: 'Funciones y sintaxis propias de MySQL.', icono: '🐬' }),
+  new AreaEstudio({ id: 'oracle', nombre: 'Oracle', descripcion: 'PL/SQL y funciones propias de Oracle.', icono: '🔴' }),
+];
+
 export const AREAS = [
   new AreaEstudio({
     id: 'bases-de-datos',

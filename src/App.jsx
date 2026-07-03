@@ -10,7 +10,7 @@ import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
 import { NIVELES } from './datos/niveles';
-import { AREAS } from './datos/areas';
+import { AREAS, AREAS_ESPECIALIZACION } from './datos/areas';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 
 export default function App() {
@@ -108,7 +108,10 @@ export default function App() {
   if (pantalla === 'base-datos') {
     return (
       <PantallaBaseDatos
-        onSeleccionar={(especialidad) => {
+        onSeleccionar={(areaId) => {
+          const area = [...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === areaId);
+          if (!area) return;
+          setAreaActual(area);
           setPantalla('niveles');
           window.history.pushState({ pantalla: 'niveles' }, '');
         }}
