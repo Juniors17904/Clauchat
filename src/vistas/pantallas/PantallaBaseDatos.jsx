@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NIVELES } from '../../datos/niveles';
 import { EJERCICIOS } from '../../datos/ejercicios';
+import { TEMAS } from '../../datos/temas';
 
 const ESPECIALIDADES = {
   'sql-base': {
@@ -79,9 +80,11 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
 
   const nivelesDelArea = NIVELES.filter(n => n.areaId === 'bases-de-datos');
   const idsNiveles = new Set(nivelesDelArea.map(n => n.id));
+  const temasDelArea = TEMAS.filter(t => idsNiveles.has(t.nivelId));
   const ejerciciosDelArea = EJERCICIOS.filter(e => idsNiveles.has(e.nivelId));
-  const totalEjercicios = ejerciciosDelArea.length;
   const totalNiveles = nivelesDelArea.length;
+  const totalTemas = temasDelArea.length;
+  const totalEjercicios = ejerciciosDelArea.length;
   const completados = controladorPerfil
     ? ejerciciosDelArea.filter(e => controladorPerfil.estaCompletado(e.id)).length
     : 0;
@@ -153,6 +156,10 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
           <div className="flex items-center gap-1">
             <span>📚</span>
             <span>{totalNiveles} niveles</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span>📖</span>
+            <span>{totalTemas} temas</span>
           </div>
           <div className="flex items-center gap-1">
             <span>📝</span>
