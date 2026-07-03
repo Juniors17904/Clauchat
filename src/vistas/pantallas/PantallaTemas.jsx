@@ -1,6 +1,13 @@
 import { TEMAS } from '../../datos/temas';
 import { EJERCICIOS } from '../../datos/ejercicios';
 
+const MOTORES_INFO = [
+  { id: 'pg', icono: '/iconos/postgresql.png', nombre: 'PostgreSQL' },
+  { id: 'ss', icono: '/iconos/sql-server.png', nombre: 'SQL Server' },
+  { id: 'my', icono: '/iconos/mysql.png', nombre: 'MySQL' },
+  { id: 'or', icono: '/iconos/oracle.png', nombre: 'Oracle' },
+];
+
 const COLORES = {
   1: '#3fb950',
   2: '#39c5cf',
@@ -81,6 +88,11 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver, controla
                     {tema.nombre}
                   </p>
                   <p className="text-[#8b949e] text-xs mt-0.5 truncate">{tema.descripcion}</p>
+                  <div className="flex gap-1 mt-1.5">
+                    {(tema.motores ? MOTORES_INFO.filter(m => tema.motores.includes(m.id)) : MOTORES_INFO).map(m => (
+                      <img key={m.id} src={m.icono} alt={m.nombre} title={m.nombre} className="w-4 h-4 rounded-full object-contain opacity-50" />
+                    ))}
+                  </div>
                 </div>
 
                 {disponible ? (

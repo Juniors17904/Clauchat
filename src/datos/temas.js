@@ -36,7 +36,7 @@ const TEMAS_BASE = [
     }),
   }),
   new Tema({
-    id: 'n1-t5', nombre: 'LIMIT', descripcion: 'Limitar el número de filas', nivelId: 'nivel1', orden: 5,
+    id: 'n1-t5', nombre: 'LIMIT', descripcion: 'Limitar el número de filas', nivelId: 'nivel1', orden: 5, motores: ['pg', 'my'],
     concepto: new ConceptoTema({
       queEs: 'LIMIT restringe cuántas filas devuelve la consulta. Siempre va al final. Se usa junto con ORDER BY para obtener los "top N" de algo.',
       sintaxis: 'SELECT columnas\nFROM tabla\nORDER BY columna DESC\nLIMIT n',
@@ -96,7 +96,7 @@ const TEMAS_BASE = [
   new Tema({ id: 'n3-t1', nombre: 'INNER JOIN',     descripcion: 'Unión de filas con coincidencia en ambas tablas', nivelId: 'nivel3', orden: 1 }),
   new Tema({ id: 'n3-t2', nombre: 'LEFT JOIN',      descripcion: 'Todas las filas de la izquierda',                 nivelId: 'nivel3', orden: 2 }),
   new Tema({ id: 'n3-t3', nombre: 'RIGHT JOIN',     descripcion: 'Todas las filas de la derecha',                   nivelId: 'nivel3', orden: 3 }),
-  new Tema({ id: 'n3-t4', nombre: 'FULL OUTER JOIN', descripcion: 'Todas las filas de ambas tablas',                nivelId: 'nivel3', orden: 4 }),
+  new Tema({ id: 'n3-t4', nombre: 'FULL OUTER JOIN', descripcion: 'Todas las filas de ambas tablas',                nivelId: 'nivel3', orden: 4, motores: ['pg', 'ss', 'or'] }),
   new Tema({ id: 'n3-t5', nombre: 'SELF JOIN',      descripcion: 'Una tabla unida consigo misma',                   nivelId: 'nivel3', orden: 5 }),
   new Tema({ id: 'n3-t6', nombre: 'CROSS JOIN',        descripcion: 'Producto cartesiano',                        nivelId: 'nivel3', orden: 6 }),
   new Tema({ id: 'n3-t7', nombre: 'UNION / UNION ALL', descripcion: 'Combinar resultados de varias consultas',    nivelId: 'nivel3', orden: 7 }),
@@ -124,7 +124,7 @@ const TEMAS_BASE = [
   new Tema({ id: 'n6-t4', nombre: 'LAG / LEAD',                      descripcion: 'Acceder a filas anteriores/siguientes', nivelId: 'nivel6', orden: 4 }),
   new Tema({ id: 'n6-t5', nombre: 'FIRST_VALUE / LAST_VALUE',        descripcion: 'Primer y último valor de partición',  nivelId: 'nivel6', orden: 5 }),
   new Tema({ id: 'n6-t6', nombre: 'ROLLUP / CUBE',                   descripcion: 'Subtotales y totales cruzados',       nivelId: 'nivel6', orden: 6 }),
-  new Tema({ id: 'n6-t7', nombre: 'PIVOT / UNPIVOT',                 descripcion: 'Transponer filas y columnas',         nivelId: 'nivel6', orden: 7 }),
+  new Tema({ id: 'n6-t7', nombre: 'PIVOT / UNPIVOT',                 descripcion: 'Transponer filas y columnas',         nivelId: 'nivel6', orden: 7, motores: ['ss', 'or'] }),
 
   // ── NIVEL 7 — Performance ────────────────────────────────────────────────
   new Tema({ id: 'n7-t1', nombre: 'Índices (CREATE INDEX)',          descripcion: 'Acelerar consultas con índices',      nivelId: 'nivel7', orden: 1 }),
@@ -132,7 +132,7 @@ const TEMAS_BASE = [
   new Tema({ id: 'n7-t3', nombre: 'Query optimization',              descripcion: 'Técnicas para optimizar consultas',   nivelId: 'nivel7', orden: 3 }),
   new Tema({ id: 'n7-t4', nombre: 'Particionamiento de tablas',      descripcion: 'Dividir tablas grandes',              nivelId: 'nivel7', orden: 4 }),
   new Tema({ id: 'n7-t5', nombre: 'Vistas (CREATE VIEW)',            descripcion: 'Consultas guardadas reutilizables',   nivelId: 'nivel7', orden: 5 }),
-  new Tema({ id: 'n7-t6', nombre: 'Vistas materializadas',           descripcion: 'Vistas con datos precalculados',      nivelId: 'nivel7', orden: 6 }),
+  new Tema({ id: 'n7-t6', nombre: 'Vistas materializadas',           descripcion: 'Vistas con datos precalculados',      nivelId: 'nivel7', orden: 6, motores: ['pg', 'or'] }),
 
   // ── NIVEL 8 — Administración ─────────────────────────────────────────────
   new Tema({ id: 'n8-t1', nombre: 'Transacciones',                   descripcion: 'BEGIN, COMMIT, ROLLBACK',             nivelId: 'nivel8', orden: 1 }),
