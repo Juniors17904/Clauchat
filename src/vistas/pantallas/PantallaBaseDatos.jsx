@@ -218,12 +218,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
                       </div>
                     )}
                     {esp.estado === 'proximamente' && (
-                      <div className="flex flex-col items-center gap-1">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" className="text-[#d29922]">
-                          <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-4h-2V5h2v6z" />
-                        </svg>
-                        <p className="text-xs text-[#d29922] font-sans">Próximamente</p>
-                      </div>
+                      <p className="text-xs text-[#8b949e] font-sans">Próximamente</p>
                     )}
                     {esp.estado === 'continuar' && (
                       <svg width="20" height="20" viewBox="0 0 8 14" fill="none" className="flex-shrink-0" style={{ color: esp.color }}>
