@@ -1,7 +1,7 @@
 import { Tema } from '../modelos/tema';
 import { ConceptoTema } from '../modelos/concepto_tema';
 
-export const TEMAS = [
+const TEMAS_BASE = [
   // ── NIVEL 1 — Fundamentos ────────────────────────────────────────────────
   new Tema({
     id: 'n1-t1', nombre: 'SELECT, FROM', descripcion: 'Consultas básicas de selección', nivelId: 'nivel1', orden: 1,
@@ -143,3 +143,22 @@ export const TEMAS = [
   new Tema({ id: 'n8-t6', nombre: 'Backup y restore',                descripcion: 'Respaldo y recuperación de datos',    nivelId: 'nivel8', orden: 6 }),
   new Tema({ id: 'n8-t7', nombre: 'Replicación',                     descripcion: 'Copiar datos entre servidores',       nivelId: 'nivel8', orden: 7 }),
 ];
+
+const ESPECIALIDADES = {
+  'postgresql': 'pg',
+  'sql-server': 'ss',
+  'mysql': 'my',
+  'oracle': 'or',
+};
+
+const temasEspecialidades = Object.entries(ESPECIALIDADES).flatMap(([, prefijo]) =>
+  TEMAS_BASE.map(t => new Tema({
+    id: `${prefijo}-${t.id}`,
+    nombre: t.nombre,
+    descripcion: t.descripcion,
+    nivelId: `${prefijo}-${t.nivelId}`,
+    orden: t.orden,
+  }))
+);
+
+export const TEMAS = [...TEMAS_BASE, ...temasEspecialidades];

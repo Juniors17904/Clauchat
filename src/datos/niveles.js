@@ -1,6 +1,6 @@
 import { NivelEstudio } from '../modelos/nivel_estudio';
 
-export const NIVELES = [
+const NIVELES_BASE = [
   new NivelEstudio({
     id: 'nivel1',
     nombre: 'Nivel 1 — Fundamentos',
@@ -58,3 +58,22 @@ export const NIVELES = [
     areaId: 'bases-de-datos',
   }),
 ];
+
+const ESPECIALIDADES = {
+  'postgresql': 'pg',
+  'sql-server': 'ss',
+  'mysql': 'my',
+  'oracle': 'or',
+};
+
+const nivelesEspecialidades = Object.entries(ESPECIALIDADES).flatMap(([areaId, prefijo]) =>
+  NIVELES_BASE.map(n => new NivelEstudio({
+    id: `${prefijo}-${n.id}`,
+    nombre: n.nombre,
+    descripcion: n.descripcion,
+    orden: n.orden,
+    areaId,
+  }))
+);
+
+export const NIVELES = [...NIVELES_BASE, ...nivelesEspecialidades];
