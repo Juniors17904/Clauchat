@@ -5,8 +5,8 @@ import { TEMAS } from '../../datos/temas';
 
 const ESPECIALIDADES = {
   'sql-base': {
-    nombre: 'Curso Base SQL',
-    descripcion: 'Aprende SQL estándar. Este curso es la base para cualquier motor de base de datos.',
+    nombre: 'SQL Estándar',
+    descripcion: 'Aprende SQL puro. Este curso es la base para cualquier motor de base de datos.',
     icono: '/iconos/sql-base.png',
     color: '#3fb950',
     recomendado: true,
@@ -66,7 +66,7 @@ const ESPECIALIDADES = {
 function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpezar, onVolver, controladorPerfil }) {
   const [seleccionada, setSeleccionada] = useState('sql-base');
 
-  const nivelesDelArea = NIVELES.filter(n => n.areaId === 'bases-de-datos');
+  const nivelesDelArea = NIVELES.filter(n => n.areaId === 'sql-estandar');
   const idsNiveles = new Set(nivelesDelArea.map(n => n.id));
   const temasDelArea = TEMAS.filter(t => idsNiveles.has(t.nivelId));
   const ejerciciosDelArea = EJERCICIOS.filter(e => idsNiveles.has(e.nivelId));
@@ -83,7 +83,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
     const esp = ESPECIALIDADES[id];
     if (esp.bloqueado && esp.estado === 'bloqueado') return;
     setSeleccionada(id);
-    const areaId = id === 'sql-base' ? 'bases-de-datos' : id;
+    const areaId = id === 'sql-base' ? 'sql-estandar' : id;
     onSeleccionar?.(areaId);
   };
 
@@ -120,10 +120,10 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <h2 className="text-lg font-bold text-white">Curso Base SQL</h2>
+              <h2 className="text-lg font-bold text-white">SQL Estándar</h2>
             </div>
             <p className="text-xs text-[#8b949e] font-sans">
-              Aprende SQL estándar. Este curso es la base para cualquier motor de base de datos.
+              Aprende SQL puro. Este curso es la base para cualquier motor de base de datos.
             </p>
           </div>
           <div className="text-right flex-shrink-0">
@@ -239,7 +239,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
         <div className="flex items-start gap-3">
           <span className="text-lg mt-1">💡</span>
           <div>
-            <p className="text-sm font-semibold text-[#388bfd] font-sans mb-1">¿Por qué existe un Curso Base?</p>
+            <p className="text-sm font-semibold text-[#388bfd] font-sans mb-1">¿Por qué empezar con SQL Estándar?</p>
             <p className="text-xs text-[#8b949e] font-sans leading-relaxed">
               El 80-90% de SQL es igual en todos los motores. Primero aprenderás SQL estándar y después las diferencias de cada sistema gestor.
             </p>

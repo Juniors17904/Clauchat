@@ -81,7 +81,7 @@ export default function App() {
     if (!pos) return;
     const deTema = EJERCICIOS.filter(e => e.temaId === pos.tema.id);
     const nivel = NIVELES.find(n => n.id === pos.tema.nivelId) ?? null;
-    const area = nivel ? (AREAS.find(a => a.id === nivel.areaId) ?? null) : null;
+    const area = nivel ? ([...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === nivel.areaId) ?? null) : null;
     setAreaActual(area);
     setNivelActual(nivel);
     setTemaActual(pos.tema);
@@ -92,7 +92,7 @@ export default function App() {
   };
 
   const irAEmpezar = () => {
-    const area = AREAS.find(a => a.id === 'bases-de-datos') ?? null;
+    const area = AREAS_ESPECIALIZACION.find(a => a.id === 'sql-estandar') ?? null;
     if (!area) return;
     setAreaActual(area);
     setPantalla('niveles');
