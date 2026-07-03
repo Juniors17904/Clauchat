@@ -204,11 +204,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
                   {/* Contenido */}
                   <div className="flex-1 min-w-0">
                     <h4 className="text-white font-semibold font-sans">{esp.nombre}</h4>
-                    {esp.estado === 'proximamente' ? (
-                      <p className="text-xs text-[#d29922] font-sans mt-1">Próximamente</p>
-                    ) : (
-                      <p className="text-xs text-[#8b949e] font-sans mt-1">{esp.descripcion}</p>
-                    )}
+                    <p className="text-xs text-[#8b949e] font-sans mt-1">{esp.descripcion}</p>
                   </div>
 
                   {/* Estado */}
