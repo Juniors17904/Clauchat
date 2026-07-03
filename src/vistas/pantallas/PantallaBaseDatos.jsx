@@ -129,7 +129,6 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <h2 className="text-lg font-bold text-white">Curso Base SQL</h2>
-              <span className="px-2 py-1 text-xs font-semibold text-white bg-[#3fb950] rounded">RECOMENDADO</span>
             </div>
             <p className="text-xs text-[#8b949e] font-sans">
               Aprende SQL estándar. Este curso es la base para cualquier motor de base de datos.
