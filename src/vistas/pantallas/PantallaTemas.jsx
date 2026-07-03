@@ -67,7 +67,10 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver, controla
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
                     </div>
                   ) : (
-                    <div className="w-5 h-5 rounded-full flex-shrink-0 border-2 border-[#30363d]" />
+                    <svg width="20" height="20" viewBox="0 0 20 20" className="flex-shrink-0" style={{ transform: 'rotate(-90deg)' }}>
+                      <circle cx="10" cy="10" r="7.5" fill="none" stroke="#21262d" strokeWidth="2.5" />
+                      <circle cx="10" cy="10" r="7.5" fill="none" stroke="#30363d" strokeWidth="2.5" strokeDasharray="47.12" strokeDashoffset="42" strokeLinecap="round" />
+                    </svg>
                   )
                 ) : (
                   <span className="text-[#484f58] text-xs flex-shrink-0">🔒</span>
