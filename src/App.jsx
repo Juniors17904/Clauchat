@@ -154,6 +154,7 @@ export default function App() {
         nivel={nivelActual}
         onSeleccionar={irAConcepto}
         onVolver={() => setPantalla('niveles')}
+        controladorPerfil={ctrlPerfil.current}
       />
     );
   }
@@ -164,6 +165,7 @@ export default function App() {
         area={areaActual}
         onSeleccionar={irATemas}
         onVolver={() => setPantalla('areas')}
+        controladorPerfil={ctrlPerfil.current}
       />
     );
   }

@@ -1,4 +1,6 @@
 import { NIVELES } from '../../datos/niveles';
+import { TEMAS } from '../../datos/temas';
+import { EJERCICIOS } from '../../datos/ejercicios';
 
 const COLORES = {
   1: '#3fb950',
@@ -11,7 +13,7 @@ const COLORES = {
   8: '#f85149',
 };
 
-export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
+export default function PantallaNiveles({ area, onSeleccionar, onVolver, controladorPerfil }) {
   const niveles = NIVELES.filter(n => n.areaId === area.id);
 
   return (
@@ -39,16 +41,22 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
         <div className="space-y-2">
           {niveles.map(nivel => {
             const color = COLORES[nivel.orden];
+            const temasDelNivel = TEMAS.filter(t => t.nivelId === nivel.id);
+            const ejerciciosDelNivel = EJERCICIOS.filter(e => e.nivelId === nivel.id);
+            const totalEjercicios = ejerciciosDelNivel.length;
+            const completados = controladorPerfil
+              ? ejerciciosDelNivel.filter(e => controladorPerfil.estaCompletado(e.id)).length
+              : 0;
+            const porcentaje = totalEjercicios > 0 ? Math.round((completados / totalEjercicios) * 100) : 0;
+
             return (
               <button
                 key={nivel.id}
                 onClick={() => onSeleccionar(nivel)}
                 className="w-full flex items-center gap-4 pr-4 pl-0 py-0 rounded-xl bg-[#161b22] border border-[#30363d] hover:border-[#30363d] hover:bg-[#1c2128] transition-all text-left overflow-hidden group"
               >
-                {/* Borde izquierdo de color */}
                 <div className="w-1 self-stretch flex-shrink-0 rounded-l-xl" style={{ backgroundColor: color }} />
 
-                {/* Número grande */}
                 <span
                   className="text-2xl font-bold font-mono w-8 flex-shrink-0 leading-none"
                   style={{ color }}
@@ -56,13 +64,30 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver }) {
                   {String(nivel.orden).padStart(2, '0')}
                 </span>
 
-                {/* Texto */}
                 <div className="flex-1 min-w-0 py-4">
                   <p className="text-white font-medium text-sm">{nivel.nombre}</p>
                   <p className="text-[#8b949e] text-xs mt-0.5 truncate">{nivel.descripcion}</p>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-[#484f58] font-mono">
+                    <span>{temasDelNivel.length} temas</span>
+                    <span>·</span>
+                    <span>{totalEjercicios} ejercicios</span>
+                    {completados > 0 && (
+                      <>
+                        <span>·</span>
+                        <span style={{ color }}>{completados}/{totalEjercicios}</span>
+                      </>
+                    )}
+                  </div>
+                  {completados > 0 && (
+                    <div className="w-full h-1 bg-[#21262d] rounded-full mt-2 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${porcentaje}%`, backgroundColor: color }}
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {/* Flecha */}
                 <span className="text-[#484f58] group-hover:text-[#8b949e] transition-colors text-base">›</span>
               </button>
             );
