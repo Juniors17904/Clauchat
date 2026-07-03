@@ -144,21 +144,81 @@ const TEMAS_BASE = [
   new Tema({ id: 'n8-t7', nombre: 'Replicación',                     descripcion: 'Copiar datos entre servidores',       nivelId: 'nivel8', orden: 7 }),
 ];
 
-const ESPECIALIDADES = {
-  'postgresql': 'pg',
-  'sql-server': 'ss',
-  'mysql': 'my',
-  'oracle': 'or',
-};
+// ── POSTGRESQL ──────────────────────────────────────────────────────────────
+const TEMAS_PG = [
+  new Tema({ id: 'pg-n1-t1', nombre: 'LIMIT / OFFSET',              descripcion: 'Paginación al estilo PostgreSQL',              nivelId: 'pg-nivel1', orden: 1 }),
+  new Tema({ id: 'pg-n5-t1', nombre: '|| (concatenación)',           descripcion: 'Concatenar texto con operador ||',             nivelId: 'pg-nivel5', orden: 1 }),
+  new Tema({ id: 'pg-n5-t2', nombre: 'AGE(), EXTRACT(), INTERVAL',  descripcion: 'Funciones de fecha propias de PostgreSQL',     nivelId: 'pg-nivel5', orden: 2 }),
+  new Tema({ id: 'pg-n5-t3', nombre: 'TO_CHAR(), TO_DATE()',        descripcion: 'Conversión y formato de tipos',                nivelId: 'pg-nivel5', orden: 3 }),
+  new Tema({ id: 'pg-n6-t1', nombre: 'CROSSTAB',                    descripcion: 'Tablas cruzadas con tablefunc',                nivelId: 'pg-nivel6', orden: 1 }),
+  new Tema({ id: 'pg-n6-t2', nombre: 'LATERAL JOIN',                descripcion: 'Subconsultas laterales',                       nivelId: 'pg-nivel6', orden: 2 }),
+  new Tema({ id: 'pg-n7-t1', nombre: 'EXPLAIN ANALYZE',             descripcion: 'Plan de ejecución con tiempos reales',         nivelId: 'pg-nivel7', orden: 1 }),
+  new Tema({ id: 'pg-n7-t2', nombre: 'Vistas materializadas',       descripcion: 'REFRESH MATERIALIZED VIEW',                    nivelId: 'pg-nivel7', orden: 2 }),
+  new Tema({ id: 'pg-n7-t3', nombre: 'Índices GIN y GiST',         descripcion: 'Índices especializados de PostgreSQL',          nivelId: 'pg-nivel7', orden: 3 }),
+  new Tema({ id: 'pg-n7-t4', nombre: 'VACUUM',                      descripcion: 'Mantenimiento y limpieza de tablas',           nivelId: 'pg-nivel7', orden: 4 }),
+  new Tema({ id: 'pg-n8-t1', nombre: 'PL/pgSQL',                    descripcion: 'Lenguaje procedural de PostgreSQL',            nivelId: 'pg-nivel8', orden: 1 }),
+  new Tema({ id: 'pg-n8-t2', nombre: 'pg_dump / pg_restore',        descripcion: 'Backup y restauración',                        nivelId: 'pg-nivel8', orden: 2 }),
+  new Tema({ id: 'pg-n8-t3', nombre: 'Replicación lógica',          descripcion: 'Publicaciones y suscripciones',                nivelId: 'pg-nivel8', orden: 3 }),
+  new Tema({ id: 'pg-n8-t4', nombre: 'Extensiones',                 descripcion: 'pg_trgm, PostGIS, uuid-ossp',                  nivelId: 'pg-nivel8', orden: 4 }),
+];
 
-const temasEspecialidades = Object.entries(ESPECIALIDADES).flatMap(([, prefijo]) =>
-  TEMAS_BASE.map(t => new Tema({
-    id: `${prefijo}-${t.id}`,
-    nombre: t.nombre,
-    descripcion: t.descripcion,
-    nivelId: `${prefijo}-${t.nivelId}`,
-    orden: t.orden,
-  }))
-);
+// ── SQL SERVER ──────────────────────────────────────────────────────────────
+const TEMAS_SS = [
+  new Tema({ id: 'ss-n1-t1', nombre: 'TOP',                         descripcion: 'Limitar filas al estilo SQL Server',           nivelId: 'ss-nivel1', orden: 1 }),
+  new Tema({ id: 'ss-n1-t2', nombre: 'OFFSET FETCH',                descripcion: 'Paginación con ORDER BY',                      nivelId: 'ss-nivel1', orden: 2 }),
+  new Tema({ id: 'ss-n5-t1', nombre: 'GETDATE(), SYSDATETIME()',    descripcion: 'Funciones de fecha de SQL Server',              nivelId: 'ss-nivel5', orden: 1 }),
+  new Tema({ id: 'ss-n5-t2', nombre: 'DATEDIFF(), DATEADD()',       descripcion: 'Aritmética de fechas',                         nivelId: 'ss-nivel5', orden: 2 }),
+  new Tema({ id: 'ss-n5-t3', nombre: 'FORMAT(), CONVERT()',         descripcion: 'Formato y conversión de tipos',                nivelId: 'ss-nivel5', orden: 3 }),
+  new Tema({ id: 'ss-n5-t4', nombre: 'STRING_AGG()',                descripcion: 'Concatenar valores agrupados',                 nivelId: 'ss-nivel5', orden: 4 }),
+  new Tema({ id: 'ss-n6-t1', nombre: 'PIVOT / UNPIVOT',             descripcion: 'Transponer filas y columnas',                  nivelId: 'ss-nivel6', orden: 1 }),
+  new Tema({ id: 'ss-n6-t2', nombre: 'CROSS APPLY / OUTER APPLY',   descripcion: 'Aplicar funciones tabla por fila',             nivelId: 'ss-nivel6', orden: 2 }),
+  new Tema({ id: 'ss-n6-t3', nombre: 'MERGE',                       descripcion: 'INSERT, UPDATE o DELETE en una sentencia',     nivelId: 'ss-nivel6', orden: 3 }),
+  new Tema({ id: 'ss-n7-t1', nombre: 'Execution Plans',             descripcion: 'SET STATISTICS y planes gráficos',             nivelId: 'ss-nivel7', orden: 1 }),
+  new Tema({ id: 'ss-n7-t2', nombre: 'Índices columnstore',         descripcion: 'Índices orientados a columnas',                nivelId: 'ss-nivel7', orden: 2 }),
+  new Tema({ id: 'ss-n7-t3', nombre: 'Extended Events',             descripcion: 'Monitoreo y diagnóstico',                      nivelId: 'ss-nivel7', orden: 3 }),
+  new Tema({ id: 'ss-n8-t1', nombre: 'T-SQL (procedimientos)',      descripcion: 'Procedimientos almacenados en T-SQL',          nivelId: 'ss-nivel8', orden: 1 }),
+  new Tema({ id: 'ss-n8-t2', nombre: 'SQL Agent',                   descripcion: 'Programar tareas automáticas',                 nivelId: 'ss-nivel8', orden: 2 }),
+  new Tema({ id: 'ss-n8-t3', nombre: 'BACKUP / RESTORE',            descripcion: 'Respaldo y recuperación SQL Server',           nivelId: 'ss-nivel8', orden: 3 }),
+  new Tema({ id: 'ss-n8-t4', nombre: 'Always On',                   descripcion: 'Alta disponibilidad y replicación',            nivelId: 'ss-nivel8', orden: 4 }),
+];
 
-export const TEMAS = [...TEMAS_BASE, ...temasEspecialidades];
+// ── MYSQL ───────────────────────────────────────────────────────────────────
+const TEMAS_MY = [
+  new Tema({ id: 'my-n1-t1', nombre: 'LIMIT con OFFSET',            descripcion: 'Paginación al estilo MySQL',                   nivelId: 'my-nivel1', orden: 1 }),
+  new Tema({ id: 'my-n5-t1', nombre: 'NOW(), CURDATE()',            descripcion: 'Funciones de fecha de MySQL',                  nivelId: 'my-nivel5', orden: 1 }),
+  new Tema({ id: 'my-n5-t2', nombre: 'DATE_FORMAT()',               descripcion: 'Formatear fechas con patrones',                nivelId: 'my-nivel5', orden: 2 }),
+  new Tema({ id: 'my-n5-t3', nombre: 'IFNULL(), COALESCE()',        descripcion: 'Manejo de nulos en MySQL',                     nivelId: 'my-nivel5', orden: 3 }),
+  new Tema({ id: 'my-n5-t4', nombre: 'GROUP_CONCAT()',              descripcion: 'Concatenar valores de un grupo',               nivelId: 'my-nivel5', orden: 4 }),
+  new Tema({ id: 'my-n5-t5', nombre: 'CONCAT(), CONCAT_WS()',      descripcion: 'Concatenar cadenas de texto',                  nivelId: 'my-nivel5', orden: 5 }),
+  new Tema({ id: 'my-n6-t1', nombre: 'Variables de usuario',        descripcion: 'Usar @variables en consultas',                 nivelId: 'my-nivel6', orden: 1 }),
+  new Tema({ id: 'my-n6-t2', nombre: 'CTEs en MySQL 8+',            descripcion: 'WITH ... AS en versiones recientes',           nivelId: 'my-nivel6', orden: 2 }),
+  new Tema({ id: 'my-n7-t1', nombre: 'EXPLAIN en MySQL',            descripcion: 'Interpretar planes de ejecución',              nivelId: 'my-nivel7', orden: 1 }),
+  new Tema({ id: 'my-n7-t2', nombre: 'InnoDB vs MyISAM',            descripcion: 'Motores de almacenamiento',                    nivelId: 'my-nivel7', orden: 2 }),
+  new Tema({ id: 'my-n7-t3', nombre: 'SHOW INDEX / STATUS',         descripcion: 'Inspeccionar índices y tablas',                nivelId: 'my-nivel7', orden: 3 }),
+  new Tema({ id: 'my-n8-t1', nombre: 'DELIMITER y procedures',      descripcion: 'Procedimientos almacenados MySQL',             nivelId: 'my-nivel8', orden: 1 }),
+  new Tema({ id: 'my-n8-t2', nombre: 'mysqldump',                   descripcion: 'Backup y restauración',                        nivelId: 'my-nivel8', orden: 2 }),
+  new Tema({ id: 'my-n8-t3', nombre: 'Replicación master-replica',  descripcion: 'Copiar datos entre servidores MySQL',          nivelId: 'my-nivel8', orden: 3 }),
+  new Tema({ id: 'my-n8-t4', nombre: 'AUTO_INCREMENT',              descripcion: 'IDs autoincremntales en MySQL',                nivelId: 'my-nivel8', orden: 4 }),
+];
+
+// ── ORACLE ──────────────────────────────────────────────────────────────────
+const TEMAS_OR = [
+  new Tema({ id: 'or-n1-t1', nombre: 'ROWNUM',                      descripcion: 'Limitar filas al estilo Oracle clásico',       nivelId: 'or-nivel1', orden: 1 }),
+  new Tema({ id: 'or-n1-t2', nombre: 'FETCH FIRST',                 descripcion: 'Paginación moderna (Oracle 12c+)',             nivelId: 'or-nivel1', orden: 2 }),
+  new Tema({ id: 'or-n5-t1', nombre: 'SYSDATE, SYSTIMESTAMP',       descripcion: 'Funciones de fecha de Oracle',                 nivelId: 'or-nivel5', orden: 1 }),
+  new Tema({ id: 'or-n5-t2', nombre: 'NVL(), NVL2()',               descripcion: 'Manejo de nulos en Oracle',                    nivelId: 'or-nivel5', orden: 2 }),
+  new Tema({ id: 'or-n5-t3', nombre: 'DECODE()',                    descripcion: 'Condicional inline de Oracle',                 nivelId: 'or-nivel5', orden: 3 }),
+  new Tema({ id: 'or-n5-t4', nombre: 'TO_CHAR(), TO_DATE()',        descripcion: 'Conversión y formato de tipos',                nivelId: 'or-nivel5', orden: 4 }),
+  new Tema({ id: 'or-n6-t1', nombre: 'PIVOT / UNPIVOT',             descripcion: 'Transponer filas y columnas',                  nivelId: 'or-nivel6', orden: 1 }),
+  new Tema({ id: 'or-n6-t2', nombre: 'CONNECT BY',                  descripcion: 'Consultas jerárquicas',                        nivelId: 'or-nivel6', orden: 2 }),
+  new Tema({ id: 'or-n6-t3', nombre: 'MODEL clause',                descripcion: 'Cálculos multidimensionales',                  nivelId: 'or-nivel6', orden: 3 }),
+  new Tema({ id: 'or-n7-t1', nombre: 'EXPLAIN PLAN',                descripcion: 'Plan de ejecución Oracle',                     nivelId: 'or-nivel7', orden: 1 }),
+  new Tema({ id: 'or-n7-t2', nombre: 'Bitmap indexes',              descripcion: 'Índices para columnas de baja cardinalidad',   nivelId: 'or-nivel7', orden: 2 }),
+  new Tema({ id: 'or-n7-t3', nombre: 'Vistas materializadas',       descripcion: 'Vistas precalculadas en Oracle',               nivelId: 'or-nivel7', orden: 3 }),
+  new Tema({ id: 'or-n8-t1', nombre: 'PL/SQL',                      descripcion: 'Lenguaje procedural de Oracle',                nivelId: 'or-nivel8', orden: 1 }),
+  new Tema({ id: 'or-n8-t2', nombre: 'RMAN',                        descripcion: 'Recovery Manager para backups',                nivelId: 'or-nivel8', orden: 2 }),
+  new Tema({ id: 'or-n8-t3', nombre: 'Data Guard',                  descripcion: 'Alta disponibilidad y disaster recovery',      nivelId: 'or-nivel8', orden: 3 }),
+  new Tema({ id: 'or-n8-t4', nombre: 'Sequences',                   descripcion: 'Generadores de IDs secuenciales',             nivelId: 'or-nivel8', orden: 4 }),
+];
+
+export const TEMAS = [...TEMAS_BASE, ...TEMAS_PG, ...TEMAS_SS, ...TEMAS_MY, ...TEMAS_OR];
