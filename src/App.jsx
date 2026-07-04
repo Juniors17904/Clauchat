@@ -26,7 +26,32 @@ export default function App() {
   useEffect(() => {
     window.history.replaceState({ pantalla: 'areas' }, '');
     const manejarRetroceso = (e) => {
-      setPantalla(e.state?.pantalla ?? 'areas');
+      const estado = e.state ?? { pantalla: 'areas' };
+
+      if (estado.areaId) {
+        const area = [...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === estado.areaId);
+        setAreaActual(area ?? null);
+      } else {
+        setAreaActual(null);
+      }
+
+      if (estado.nivelId) {
+        setNivelActual(NIVELES.find(n => n.id === estado.nivelId) ?? null);
+      } else {
+        setNivelActual(null);
+      }
+
+      if (estado.temaId) {
+        const tema = TEMAS.find(t => t.id === estado.temaId);
+        setTemaActual(tema ?? null);
+        if (tema) {
+          setEjerciciosOrdenados([...EJERCICIOS.filter(ej => ej.temaId === tema.id)].sort(() => Math.random() - 0.5));
+        }
+      } else {
+        setTemaActual(null);
+      }
+
+      setPantalla(estado.pantalla);
     };
     window.addEventListener('popstate', manejarRetroceso);
     return () => window.removeEventListener('popstate', manejarRetroceso);
@@ -39,14 +64,14 @@ export default function App() {
       window.history.pushState({ pantalla: 'base-datos' }, '');
     } else {
       setPantalla('niveles');
-      window.history.pushState({ pantalla: 'niveles' }, '');
+      window.history.pushState({ pantalla: 'niveles', areaId: area.id }, '');
     }
   };
 
   const irATemas = (nivel) => {
     setNivelActual(nivel);
     setPantalla('temas');
-    window.history.pushState({ pantalla: 'temas' }, '');
+    window.history.pushState({ pantalla: 'temas', areaId: areaActual?.id, nivelId: nivel.id }, '');
   };
 
   const irAConcepto = (tema) => {
@@ -55,20 +80,18 @@ export default function App() {
       .sort(() => Math.random() - 0.5);
     setEjerciciosOrdenados(mezclados);
     setPantalla('concepto');
-    window.history.pushState({ pantalla: 'concepto' }, '');
+    window.history.pushState({ pantalla: 'concepto', areaId: areaActual?.id, nivelId: nivelActual?.id, temaId: tema.id }, '');
   };
 
   const iniciarEjercicios = () => {
     if (ejerciciosOrdenados.length === 0) return;
     setEjercicioActual(ejerciciosOrdenados[0]);
     setPantalla('editor');
-    window.history.pushState({ pantalla: 'editor' }, '');
+    window.history.pushState({ pantalla: 'editor', areaId: areaActual?.id, nivelId: nivelActual?.id, temaId: temaActual?.id }, '');
   };
 
   const irAEditor = (ejercicio) => {
     setEjercicioActual(ejercicio);
-    setPantalla('editor');
-    window.history.pushState({ pantalla: 'editor' }, '');
   };
 
   const irAArbol = () => {
@@ -88,7 +111,7 @@ export default function App() {
     setEjerciciosOrdenados(deTema);
     setEjercicioActual(pos.ejercicio);
     setPantalla('editor');
-    window.history.pushState({ pantalla: 'editor' }, '');
+    window.history.pushState({ pantalla: 'editor', areaId: area?.id, nivelId: nivel?.id, temaId: pos.tema.id }, '');
   };
 
   const irAEmpezar = () => {
@@ -96,13 +119,13 @@ export default function App() {
     if (!area) return;
     setAreaActual(area);
     setPantalla('niveles');
-    window.history.pushState({ pantalla: 'niveles' }, '');
+    window.history.pushState({ pantalla: 'niveles', areaId: area.id }, '');
   };
 
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
 
   if (pantalla === 'arbol') {
-    return <PantallaArbol onVolver={() => setPantalla('areas')} />;
+    return <PantallaArbol onVolver={() => window.history.back()} />;
   }
 
   if (pantalla === 'base-datos') {
@@ -115,7 +138,7 @@ export default function App() {
           setPantalla('niveles');
           window.history.pushState({ pantalla: 'niveles' }, '');
         }}
-        onVolver={() => setPantalla('areas')}
+        onVolver={() => window.history.back()}
         onContinuar={irAContinuar}
         onEmpezar={irAEmpezar}
         ultimaPosicion={ultimaPosicion}
@@ -132,9 +155,9 @@ export default function App() {
       <PantallaEditor
         ejercicio={ejercicioActual}
         progreso={{ actual: indiceActual + 1, total: ejerciciosOrdenados.length }}
-        onVolver={() => setPantalla('concepto')}
+        onVolver={() => window.history.back()}
         onSiguiente={siguienteEjercicio ? () => irAEditor(siguienteEjercicio) : null}
-        onTerminar={() => setPantalla('temas')}
+        onTerminar={() => window.history.go(-2)}
         onCompletado={(id) => ctrlPerfil.current.marcarCompletado(id)}
       />
     );
@@ -145,7 +168,7 @@ export default function App() {
       <PantallaConcepto
         tema={temaActual}
         totalEjercicios={ejerciciosOrdenados.length}
-        onVolver={() => setPantalla('temas')}
+        onVolver={() => window.history.back()}
         onEmpezar={iniciarEjercicios}
       />
     );
@@ -156,7 +179,7 @@ export default function App() {
       <PantallaTemas
         nivel={nivelActual}
         onSeleccionar={irAConcepto}
-        onVolver={() => setPantalla('niveles')}
+        onVolver={() => window.history.back()}
         controladorPerfil={ctrlPerfil.current}
       />
     );
@@ -167,7 +190,7 @@ export default function App() {
       <PantallaNiveles
         area={areaActual}
         onSeleccionar={irATemas}
-        onVolver={() => setPantalla('areas')}
+        onVolver={() => window.history.back()}
         controladorPerfil={ctrlPerfil.current}
       />
     );
