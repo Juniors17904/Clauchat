@@ -90,7 +90,7 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver, controla
                   <p className="text-[#8b949e] text-xs mt-0.5 truncate">{tema.descripcion}</p>
                   <div className="flex gap-1 mt-1.5">
                     {(tema.motores ? MOTORES_INFO.filter(m => tema.motores.includes(m.id)) : MOTORES_INFO).map(m => (
-                      <img key={m.id} src={m.icono} alt={m.nombre} title={m.nombre} className="w-4 h-4 rounded-full object-contain opacity-50" />
+                      <img key={m.id} src={m.icono} alt={m.nombre} title={m.nombre} className="w-5 h-5 rounded-full object-contain opacity-50" />
                     ))}
                   </div>
                 </div>
