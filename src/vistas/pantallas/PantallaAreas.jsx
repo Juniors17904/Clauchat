@@ -153,7 +153,7 @@ function TabFavoritos() {
   );
 }
 
-function TabAjustes({ controladorPerfil, onVerArbol }) {
+function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
   const [nombre, setNombre] = useState(controladorPerfil.nombre);
   const [editando, setEditando] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
@@ -191,6 +191,19 @@ function TabAjustes({ controladorPerfil, onVerArbol }) {
           </button>
         )}
       </div>
+
+      {onRecordatorios && (
+        <button
+          onClick={onRecordatorios}
+          className="w-full py-3 border border-[#30363d] rounded-xl text-[#8b949e] hover:text-white hover:border-[#8b949e] text-sm font-sans transition-colors flex items-center justify-center gap-2"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          Recordatorios
+        </button>
+      )}
 
       {onVerArbol && (
         <button
@@ -272,7 +285,7 @@ const TABS_NAV = [
   },
 ];
 
-export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, needRefresh, onActualizar, ultimaPosicion, onContinuar }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, needRefresh, onActualizar, ultimaPosicion, onContinuar }) {
   const [tabActual, setTabActual] = useState('inicio');
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
@@ -377,7 +390,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         )}
         {tabActual === 'progreso' && <TabProgreso controladorPerfil={controladorPerfil} />}
         {tabActual === 'favoritos' && <TabFavoritos />}
-        {tabActual === 'ajustes' && <TabAjustes controladorPerfil={controladorPerfil} onVerArbol={() => { onVerArbol?.(); }} />}
+        {tabActual === 'ajustes' && <TabAjustes controladorPerfil={controladorPerfil} onVerArbol={() => { onVerArbol?.(); }} onRecordatorios={onRecordatorios} />}
       </div>
 
       {/* Barra de navegación inferior */}

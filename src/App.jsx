@@ -7,11 +7,13 @@ import PantallaTemas from './vistas/pantallas/PantallaTemas';
 import PantallaConcepto from './vistas/pantallas/PantallaConcepto';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
+import PantallaRecordatorios from './vistas/pantallas/PantallaRecordatorios';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
 import { NIVELES } from './datos/niveles';
 import { AREAS, AREAS_ESPECIALIZACION } from './datos/areas';
 import { ControladorPerfil } from './controladores/controlador_perfil';
+import { ControladorRecordatorios } from './controladores/controlador_recordatorios';
 
 export default function App() {
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
@@ -22,6 +24,7 @@ export default function App() {
   const [ejercicioActual, setEjercicioActual] = useState(null);
   const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
   const ctrlPerfil = useRef(new ControladorPerfil());
+  const ctrlRecordatorios = useRef(new ControladorRecordatorios());
 
   useEffect(() => {
     window.history.replaceState({ pantalla: 'areas' }, '');
@@ -99,6 +102,11 @@ export default function App() {
     window.history.pushState({ pantalla: 'arbol' }, '');
   };
 
+  const irARecordatorios = () => {
+    setPantalla('recordatorios');
+    window.history.pushState({ pantalla: 'recordatorios' }, '');
+  };
+
   const irAContinuar = () => {
     const pos = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
     if (!pos) return;
@@ -123,6 +131,15 @@ export default function App() {
   };
 
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
+
+  if (pantalla === 'recordatorios') {
+    return (
+      <PantallaRecordatorios
+        controladorRecordatorios={ctrlRecordatorios.current}
+        onVolver={() => window.history.back()}
+      />
+    );
+  }
 
   if (pantalla === 'arbol') {
     return <PantallaArbol onVolver={() => window.history.back()} />;
@@ -201,6 +218,7 @@ export default function App() {
       onSeleccionar={irANiveles}
       controladorPerfil={ctrlPerfil.current}
       onVerArbol={irAArbol}
+      onRecordatorios={irARecordatorios}
       needRefresh={needRefresh}
       onActualizar={() => updateServiceWorker(true)}
       ultimaPosicion={ultimaPosicion}
