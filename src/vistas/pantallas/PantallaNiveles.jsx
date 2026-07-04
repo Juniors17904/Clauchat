@@ -36,7 +36,7 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver, control
           <p className="text-[#8b949e] text-xs mb-1 font-mono uppercase tracking-widest">Área</p>
           <div className="flex items-center gap-3">
             {ICONOS_MOTOR[area.id] ? (
-              <img src={ICONOS_MOTOR[area.id]} alt={area.nombre} className="w-10 h-10 object-contain" />
+              <img src={ICONOS_MOTOR[area.id]} alt={area.nombre} className="w-14 h-14 object-contain" />
             ) : (
               <svg viewBox="0 0 24 24" fill="none" stroke="#388bfd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
                 <ellipse cx="12" cy="5" rx="9" ry="3" />
