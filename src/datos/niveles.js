@@ -66,14 +66,30 @@ const ESPECIALIDADES = {
   'oracle': 'or',
 };
 
+const DESCRIPCIONES_POR_MOTOR = {
+  pg: {
+    1: 'LIMIT/OFFSET, ILIKE, :: (type casting)',
+    2: 'string_agg(), array_agg()',
+    3: 'Sin temas específicos — igual que SQL estándar',
+    4: 'Sin temas específicos — igual que SQL estándar',
+    5: '||, AGE(), EXTRACT(), INTERVAL, GENERATE_SERIES()',
+    6: 'JSONB, ARRAYS, DISTINCT ON, UPSERT, RETURNING, CROSSTAB, LATERAL',
+    7: 'EXPLAIN ANALYZE, Vistas materializadas, GIN/GiST, VACUUM',
+    8: 'PL/pgSQL, pg_dump, Replicación, Extensiones, LISTEN/NOTIFY, FDW',
+  },
+};
+
 const nivelesEspecialidades = Object.entries(ESPECIALIDADES).flatMap(([areaId, prefijo]) =>
-  NIVELES_BASE.map(n => new NivelEstudio({
-    id: `${prefijo}-${n.id}`,
-    nombre: n.nombre,
-    descripcion: n.descripcion,
-    orden: n.orden,
-    areaId,
-  }))
+  NIVELES_BASE.map(n => {
+    const descEspecifica = DESCRIPCIONES_POR_MOTOR[prefijo]?.[n.orden];
+    return new NivelEstudio({
+      id: `${prefijo}-${n.id}`,
+      nombre: n.nombre,
+      descripcion: descEspecifica || n.descripcion,
+      orden: n.orden,
+      areaId,
+    });
+  })
 );
 
 export const NIVELES = [...NIVELES_BASE, ...nivelesEspecialidades];
