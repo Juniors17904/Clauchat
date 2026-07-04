@@ -153,7 +153,7 @@ export default function App() {
           if (!area) return;
           setAreaActual(area);
           setPantalla('niveles');
-          window.history.pushState({ pantalla: 'niveles' }, '');
+          window.history.pushState({ pantalla: 'niveles', areaId: area.id }, '');
         }}
         onVolver={() => window.history.back()}
         onContinuar={irAContinuar}
@@ -164,7 +164,7 @@ export default function App() {
     );
   }
 
-  if (pantalla === 'editor') {
+  if (pantalla === 'editor' && ejercicioActual) {
     const indiceActual = ejerciciosOrdenados.findIndex(e => e.id === ejercicioActual?.id);
     const siguienteEjercicio = ejerciciosOrdenados[indiceActual + 1] ?? null;
 
@@ -180,7 +180,7 @@ export default function App() {
     );
   }
 
-  if (pantalla === 'concepto') {
+  if (pantalla === 'concepto' && temaActual) {
     return (
       <PantallaConcepto
         tema={temaActual}
@@ -191,7 +191,7 @@ export default function App() {
     );
   }
 
-  if (pantalla === 'temas') {
+  if (pantalla === 'temas' && nivelActual) {
     return (
       <PantallaTemas
         nivel={nivelActual}
@@ -202,7 +202,7 @@ export default function App() {
     );
   }
 
-  if (pantalla === 'niveles') {
+  if (pantalla === 'niveles' && areaActual) {
     return (
       <PantallaNiveles
         area={areaActual}
