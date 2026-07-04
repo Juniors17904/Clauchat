@@ -2,6 +2,13 @@ import { NIVELES } from '../../datos/niveles';
 import { TEMAS } from '../../datos/temas';
 import { EJERCICIOS } from '../../datos/ejercicios';
 
+const ICONOS_MOTOR = {
+  'postgresql': '/iconos/postgresql.png',
+  'sql-server': '/iconos/sql-server.png',
+  'mysql': '/iconos/mysql.png',
+  'oracle': '/iconos/oracle.png',
+};
+
 const COLORES = {
   1: '#3fb950',
   2: '#39c5cf',
@@ -28,12 +35,16 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver, control
         <div className="mb-8">
           <p className="text-[#8b949e] text-xs mb-1 font-mono uppercase tracking-widest">Área</p>
           <div className="flex items-center gap-3">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#388bfd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-              <ellipse cx="12" cy="5" rx="9" ry="3" />
-              <path d="M3 5v4c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-              <path d="M3 9v4c0 1.66 4 3 9 3s9-1.34 9-3V9" />
-              <path d="M3 13v4c0 1.66 4 3 9 3s9-1.34 9-3v-4" />
-            </svg>
+            {ICONOS_MOTOR[area.id] ? (
+              <img src={ICONOS_MOTOR[area.id]} alt={area.nombre} className="w-7 h-7 object-contain" />
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="#388bfd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+                <ellipse cx="12" cy="5" rx="9" ry="3" />
+                <path d="M3 5v4c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                <path d="M3 9v4c0 1.66 4 3 9 3s9-1.34 9-3V9" />
+                <path d="M3 13v4c0 1.66 4 3 9 3s9-1.34 9-3v-4" />
+              </svg>
+            )}
             <h2 className="text-2xl font-bold text-white">{area.nombre}</h2>
           </div>
         </div>
