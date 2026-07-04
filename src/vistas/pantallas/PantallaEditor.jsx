@@ -184,6 +184,9 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     setIndicePista(i => Math.min(i + 1, ejercicio.pistas.length - 1));
   };
 
+  const porcentaje = progreso ? Math.round((progreso.actual / progreso.total) * 100) : 0;
+  const lineas = Math.max(6, consulta.split('\n').length);
+
   if (errorCarga) {
     const esCacheVieja = errorCarga.includes('fetch') || errorCarga.includes('import');
     return (
@@ -212,14 +215,13 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   }
 
   return (
-    <div className="bg-[#0d1117] flex flex-col font-mono overflow-hidden select-none" style={{ height: alturaPantalla }}>
+    <div className="bg-[#0d1117] flex flex-col overflow-hidden select-none" style={{ height: alturaPantalla }}>
 
-      {/* Header — dos filas */}
-      <div className={`border-b flex-shrink-0 transition-colors duration-300 ${esCorrecto && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
-
+      {/* Header */}
+      <div className={`flex-shrink-0 border-b transition-colors duration-300 ${esCorrecto && resultado !== null ? 'bg-[#0d2117] border-[#238636]' : 'bg-[#161b22] border-[#30363d]'}`}>
         {esCorrecto && resultado !== null ? (
           <div className="flex items-center gap-3 px-4 py-3">
-            <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
+            <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-lg transition-colors flex-shrink-0">←</button>
             <p className="text-[#3fb950] text-sm font-sans flex-1">¡Correcto! 😊</p>
             <button
               onClick={onSiguiente ?? onTerminar ?? onVolver}
@@ -229,85 +231,118 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             </button>
           </div>
         ) : (
-          <>
-            {/* Fila 1 — tema como título principal centrado */}
-            <div className="relative flex items-center px-4 pt-3 pb-1">
-              <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
-              <span className="absolute left-0 right-0 text-center text-[#e6edf3] text-base font-semibold font-sans pointer-events-none px-10">
-                {tema ? tema.nombre : 'Práctica libre'}
-              </span>
+          <div className="flex items-start justify-between px-4 py-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-lg transition-colors flex-shrink-0 mt-0.5">←</button>
+              <div className="min-w-0">
+                <h1 className="text-[#e6edf3] text-base font-semibold font-sans truncate">
+                  {tema ? tema.nombre : 'Práctica libre'}
+                </h1>
+                <p className="text-[#484f58] text-xs font-sans mt-0.5">
+                  {baseDatos ? `BD: ${baseDatos.nombre}` : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
+                </p>
+              </div>
             </div>
-
-            {/* Fila 2 — BD y nivel como subtítulo */}
-            <div className="text-center pb-2">
-              <span className="text-[#484f58] text-[10px] font-mono uppercase tracking-widest">
-                {baseDatos ? `BD: ${baseDatos.nombre}` : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
-              </span>
-            </div>
-
-            {/* Fila 3 — controles espaciados */}
-            <div className="flex items-center justify-between px-5 pb-2.5 pt-0.5">
-              <button onClick={reiniciar} title="Reiniciar" className="text-[#484f58] hover:text-[#8b949e] transition-colors">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-                  <path fillRule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+            <div className="flex items-start gap-4 flex-shrink-0 ml-3">
+              <button onClick={reiniciar} className="flex flex-col items-center gap-1 text-[#8b949e] hover:text-white transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 4 23 10 17 10" />
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                 </svg>
+                <span className="text-[9px] font-sans">Reiniciar</span>
               </button>
-              <span className="text-[#484f58] text-xs font-mono tabular-nums">{formatearTiempo(segundos)}</span>
-              {progreso && (
-                <span className="text-[#8b949e] text-xs font-mono">{progreso.actual}/{progreso.total}</span>
-              )}
-              <CaritaEstado estado={estadoCarita} />
-              <button onClick={() => setDiagramaAbierto(true)} title="Ver diagrama" className="text-[#8b949e] hover:text-[#388bfd] transition-colors">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5h-2v12h2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
+              <button onClick={siguientePista} className={`flex flex-col items-center gap-1 transition-colors ${mostrarPista ? 'text-[#d29922]' : 'text-[#8b949e] hover:text-[#d29922]'}`}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18h6" />
+                  <path d="M10 22h4" />
+                  <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" />
                 </svg>
+                <span className="text-[9px] font-sans">Pista</span>
               </button>
-              <button onClick={() => setDrawerAbierto(true)} title="Explorar tablas" className="text-[#8b949e] hover:text-[#388bfd] transition-colors">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 3H1v2h14V5zm0 3H1v2h14V8zm0 3H1v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3z"/>
+              <button onClick={() => setDrawerAbierto(true)} className="flex flex-col items-center gap-1 text-[#8b949e] hover:text-[#388bfd] transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
                 </svg>
+                <span className="text-[9px] font-sans">Tablas</span>
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
 
-      {/* Header — barra de progreso */}
-      {progreso && (
-        <div className="h-[2px] bg-[#21262d] flex-shrink-0">
-          <div
-            className="h-full transition-all duration-700 ease-out"
-            style={{
-              width: `${(progreso.actual / progreso.total) * 100}%`,
-              backgroundColor: esCorrecto && resultado !== null ? '#3fb950' : '#388bfd',
-            }}
-          />
-        </div>
-      )}
+      {/* Contenido scrolleable */}
+      <div className="flex-1 overflow-auto">
 
-      {/* Enunciado */}
-      {ejercicio && (
-        <div className="px-4 py-3 bg-[#161b22] border-b border-[#30363d] flex-shrink-0">
-          <p className="text-[#e6edf3] text-sm font-sans">{ejercicio.enunciado}</p>
-          {mostrarPista && (
-            <p className="text-[#d29922] text-xs mt-2 font-sans">
-              💡 {ejercicio.pistas[indicePista]}
-            </p>
-          )}
-          {ejercicio.pistas?.length > 0 && (
-            <button onClick={siguientePista} className="text-[#8b949e] hover:text-[#d29922] text-xs mt-2 transition-colors font-sans">
-              {mostrarPista && indicePista < ejercicio.pistas.length - 1 ? 'Otra pista' : mostrarPista ? 'Ocultar pista' : '💡 Pista'}
-            </button>
-          )}
-        </div>
-      )}
+        {/* Barra de progreso */}
+        {progreso && (
+          <div className="flex items-center gap-3 px-4 py-2.5">
+            <span className="text-[#8b949e] text-xs font-sans whitespace-nowrap">Ejercicio {progreso.actual} de {progreso.total}</span>
+            <div className="flex-1 h-2 bg-[#21262d] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700 ease-out"
+                style={{
+                  width: `${porcentaje}%`,
+                  backgroundColor: esCorrecto && resultado !== null ? '#3fb950' : '#3fb950',
+                }}
+              />
+            </div>
+            <span className="text-[#3fb950] text-xs font-mono font-semibold">{porcentaje}%</span>
+            <span className="text-[#484f58] text-[10px] font-mono tabular-nums">{formatearTiempo(segundos)}</span>
+          </div>
+        )}
 
-      {/* Editor SQL */}
-      <div className="flex-[40] flex flex-col min-h-0">
-        <div className="flex-1 relative min-h-0">
+        {/* Tarjeta del ejercicio */}
+        {ejercicio && (
+          <div className="mx-4 mb-3 border border-[#30363d] rounded-xl bg-[#161b22] p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3fb950" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              <span className="text-[#3fb950] text-sm font-sans font-semibold">Ejercicio</span>
+              {progreso && (
+                <span className="text-[10px] font-mono bg-[#21262d] text-[#8b949e] w-5 h-5 rounded-full flex items-center justify-center">{progreso.actual}</span>
+              )}
+            </div>
+            <p className="text-[#e6edf3] text-sm font-sans leading-relaxed">{ejercicio.enunciado}</p>
+            {mostrarPista && ejercicio.pistas?.length > 0 && (
+              <div className="flex items-start gap-2.5 mt-3 pt-3 border-t border-[#21262d]">
+                <div className="w-7 h-7 rounded-full bg-[#d29922]/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm">💡</span>
+                </div>
+                <div>
+                  <span className="text-[#d29922] text-xs font-sans font-semibold">Pista</span>
+                  <p className="text-[#8b949e] text-xs font-sans mt-0.5">{ejercicio.pistas[indicePista]}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tarjeta del editor */}
+        <div className="mx-4 mb-3 border border-[#30363d] rounded-xl bg-[#161b22] overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#30363d]">
+            <div className="flex items-center gap-2">
+              <span className="text-[#388bfd] text-sm font-mono font-bold">&lt;/&gt;</span>
+              <span className="text-[#388bfd] text-xs font-sans font-semibold">Escribe tu consulta SQL</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setDiagramaAbierto(true)} title="Ver diagrama" className="text-[#484f58] hover:text-[#388bfd] transition-colors">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5h-2v12h2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
+                </svg>
+              </button>
+              <CaritaEstado estado={estadoCarita} />
+            </div>
+          </div>
+
           {cargando ? (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex items-center justify-center py-12">
               <p
                 className="text-[#484f58] text-sm font-sans transition-opacity duration-200"
                 style={{ opacity: opacidadMensaje }}
@@ -316,41 +351,60 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               </p>
             </div>
           ) : (
-            <textarea
-              ref={textareaRef}
-              value={consulta}
-              onChange={handleCambio}
-              onKeyDown={handleKeyDown}
-              placeholder="Escribe tu consulta SQL aquí..."
-              className="w-full h-full bg-[#0d1117] text-[#e6edf3] text-sm resize-none focus:outline-none px-4 py-4 leading-6 placeholder-[#484f58] select-text"
-              spellCheck={false}
-            />
+            <div className="flex">
+              <div className="flex flex-col items-end pl-3 pr-2 pt-3 pb-3 text-[#484f58] text-xs font-mono select-none border-r border-[#21262d]" style={{ lineHeight: '1.5rem' }}>
+                {Array.from({ length: lineas }, (_, i) => (
+                  <span key={i}>{i + 1}</span>
+                ))}
+              </div>
+              <textarea
+                ref={textareaRef}
+                value={consulta}
+                onChange={handleCambio}
+                onKeyDown={handleKeyDown}
+                placeholder="Escribe tu consulta aquí..."
+                className="flex-1 bg-transparent text-[#e6edf3] text-xs font-mono resize-none focus:outline-none pl-3 pr-4 py-3 placeholder-[#484f58] select-text"
+                style={{ lineHeight: '1.5rem', minHeight: '9rem' }}
+                spellCheck={false}
+              />
+            </div>
           )}
+
+          <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
         </div>
 
-        {/* Autocompletado */}
-        <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
-
-        {/* Barra inferior */}
-        <div className="flex items-center justify-between px-4 py-2 border-t border-[#30363d] bg-[#161b22] flex-shrink-0">
-          <p className="text-[#484f58] text-xs font-sans hidden sm:block">Ctrl+Enter para ejecutar</p>
+        {/* Botón ejecutar */}
+        <div className="px-4 pb-3">
           <button
             onClick={ejecutar}
             disabled={!consulta.trim()}
-            className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs rounded-md transition-colors font-sans"
+            className="w-full py-3.5 bg-[#238636] hover:bg-[#2ea043] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-xl transition-colors font-sans flex items-center justify-center gap-2"
           >
-            ▶ Ejecutar
+            <span>▶</span> Ejecutar consulta
           </button>
         </div>
-      </div>
 
-      {/* Panel de resultados */}
-      <div className={`${resultado ? 'flex-[60]' : 'flex-none'} border-t border-[#30363d] bg-[#161b22] min-h-0 flex flex-col`}>
-        <div className="px-4 py-1.5 border-b border-[#30363d] flex-shrink-0">
-          <p className="text-[#8b949e] text-xs font-sans">Resultados</p>
-        </div>
-        <div className="flex-1 overflow-auto select-text">
-          <PanelResultados resultado={resultado} />
+        {/* Panel de resultados */}
+        <div className="mx-4 mb-4 border border-[#30363d] rounded-xl bg-[#161b22] overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5">
+            <div className="flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="3" y1="15" x2="21" y2="15" />
+                <line x1="9" y1="3" x2="9" y2="21" />
+              </svg>
+              <span className="text-[#8b949e] text-xs font-sans font-medium">Resultados</span>
+            </div>
+            {!resultado && (
+              <span className="text-[#484f58] text-[10px] font-sans">Ejecuta una consulta para ver los resultados</span>
+            )}
+          </div>
+          {resultado && (
+            <div className="border-t border-[#30363d] max-h-64 overflow-auto">
+              <PanelResultados resultado={resultado} />
+            </div>
+          )}
         </div>
       </div>
 
