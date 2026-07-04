@@ -198,7 +198,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
               >
                 <div className="flex items-center gap-3 p-4 border-l-4" style={{ borderLeftColor: esp.color }}>
                   {/* Ícono */}
-                  <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                  <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
                     <img src={esp.icono} alt={esp.nombre} className="w-full h-full object-contain" />
                   </div>
 
