@@ -7,6 +7,7 @@ import AutocompletadorSQL from '../editor/AutocompletadorSQL';
 import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
+import { FormateadorSQL } from '../../modelos/formateador_sql';
 
 const formatearTiempo = (seg) => {
   const m = Math.floor(seg / 60);
@@ -52,6 +53,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const textareaRef = useRef(null);
   const ultimaConsulta = useRef('');
   const lineNumsRef = useRef(null);
+  const formateador = useRef(new FormateadorSQL());
 
   useEffect(() => {
     const ctrl = controlador.current;
@@ -190,6 +192,13 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     if (lineNumsRef.current) {
       lineNumsRef.current.scrollTop = e.target.scrollTop;
     }
+  };
+
+  const formatearConsulta = () => {
+    if (!consulta.trim()) return;
+    const formateada = formateador.current.formatear(consulta);
+    setConsulta(formateada);
+    textareaRef.current?.focus();
   };
 
   if (errorCarga) {
@@ -359,6 +368,14 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3fb950" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                 <span className="text-[#3fb950] text-xs font-semibold">Escribe tu consulta SQL</span>
               </div>
+              <button
+                onClick={formatearConsulta}
+                disabled={!consulta.trim()}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-[#30363d] bg-[#21262d] text-[#8b949e] text-[11px] hover:text-[#3fb950] hover:border-[#3fb950] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.272 1.278L21 12l-5.816 1.91a2 2 0 0 0-1.275 1.278L12 21l-1.91-5.812a2 2 0 0 0-1.277-1.278L3 12l5.813-1.91a2 2 0 0 0 1.278-1.277L12 3z"/></svg>
+                Formatear SQL
+              </button>
             </div>
             <div className="flex" style={{ height: 160 }}>
               <div
