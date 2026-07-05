@@ -223,7 +223,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     <div className="bg-[#0d1117] flex flex-col font-sans overflow-hidden select-none" style={{ height: alturaPantalla }}>
 
       {/* ===== HEADER ===== */}
-      <div className={`flex-shrink-0 transition-colors duration-300 ${esCorrecto && resultado !== null ? 'bg-[#0d2117] border-b border-[#238636]' : 'bg-[#161b22] border-b border-[#30363d]'}`}>
+      <div className={`flex-shrink-0 transition-colors duration-300 ${esCorrecto && resultado !== null ? 'bg-[#0d2117] border-b border-[#238636]' : 'bg-[#0d1117] border-b border-[#30363d]'}`}>
         {esCorrecto && resultado !== null ? (
           <div className="flex items-center gap-3 px-4 py-3">
             <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
