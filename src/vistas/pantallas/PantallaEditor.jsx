@@ -400,13 +400,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               </div>
             </div>
             <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
-            {/* Mini-toolbar: Reiniciar, Tablas, Diagrama */}
+            {/* Mini-toolbar: Tablas, Diagrama ER, Reiniciar */}
             <div className="flex items-center border-t border-[#30363d]">
-              <button onClick={reiniciar} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                Reiniciar
-              </button>
-              <div className="w-px h-5 bg-[#30363d]" />
               <button onClick={() => setDrawerAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                 Tablas
@@ -415,6 +410,11 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               <button onClick={() => setDiagramaAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 Diagrama ER
+              </button>
+              <div className="w-px h-5 bg-[#30363d]" />
+              <button onClick={reiniciar} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                Reiniciar
               </button>
             </div>
           </div>
