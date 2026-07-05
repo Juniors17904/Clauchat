@@ -98,6 +98,21 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   }, []);
 
   useEffect(() => {
+    if (!drawerAbierto && !diagramaAbierto) return;
+    const estadoActual = window.history.state;
+    window.history.pushState({ ...estadoActual, panelEditor: true }, '');
+    const manejarRetroceso = (e) => {
+      if (drawerAbierto) setDrawerAbierto(false);
+      if (diagramaAbierto) setDiagramaAbierto(false);
+    };
+    window.addEventListener('popstate', manejarRetroceso);
+    return () => {
+      window.removeEventListener('popstate', manejarRetroceso);
+      if (window.history.state?.panelEditor) window.history.back();
+    };
+  }, [drawerAbierto, diagramaAbierto]);
+
+  useEffect(() => {
     if (!cargando) return;
     let indice = 0;
     setMensajeCarga(MENSAJES_CARGA[0]);
