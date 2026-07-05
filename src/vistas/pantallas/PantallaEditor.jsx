@@ -245,51 +245,24 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             </button>
           </div>
         ) : (
-          <>
-            <div className="flex items-start justify-between px-3 pt-3 pb-1 gap-2">
-              <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                <button onClick={onVolver} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] flex-shrink-0">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-                </button>
-                <div className="min-w-0">
-                  <p className="text-[#e6edf3] text-[15px] font-semibold leading-tight truncate">
-                    {tema ? tema.nombre : 'Práctica libre'}
-                  </p>
-                  <p className="text-[#8b949e] text-xs mt-0.5">
-                    {baseDatos ? `BD: ${baseDatos.nombre}` : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-1.5 flex-shrink-0">
-                <button onClick={reiniciar} className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg bg-[#21262d] border border-[#30363d] min-w-[46px]">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                  <span className="text-[9px] text-[#8b949e]">Reiniciar</span>
-                </button>
-                <button onClick={siguientePista} className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg bg-[#21262d] border border-[#30363d] min-w-[46px]">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
-                  <span className="text-[9px] text-[#8b949e]">Pista</span>
-                </button>
-                <button onClick={() => setDrawerAbierto(true)} className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg bg-[#21262d] border border-[#30363d] min-w-[46px]">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                  <span className="text-[9px] text-[#8b949e]">Tablas</span>
-                </button>
-              </div>
+          <div className="flex items-center gap-2.5 px-3 py-2.5">
+            <button onClick={onVolver} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div className="min-w-0 flex-1">
+              <p className="text-[#e6edf3] text-[14px] font-semibold leading-tight truncate">
+                {tema ? tema.nombre : 'Práctica libre'}
+              </p>
+              <p className="text-[#8b949e] text-[11px] mt-0.5 truncate">
+                {baseDatos ? `BD: ${baseDatos.nombre}` : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
+              </p>
             </div>
-            <div className="flex items-center justify-between px-3 pb-2 mt-1 border-t border-[#21262d]">
-              <div className="flex items-center gap-3 pt-2">
-                <span className="text-[#8b949e] text-xs font-mono tabular-nums flex items-center gap-1">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  {formatearTiempo(segundos)}
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5 pt-2">
-                <CaritaEstado estado={estadoCarita} />
-                <button onClick={() => setDiagramaAbierto(true)} className="w-7 h-7 flex items-center justify-center rounded-md bg-[#21262d] border border-[#30363d]">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                </button>
-              </div>
-            </div>
-          </>
+            <span className="text-[#8b949e] text-xs font-mono tabular-nums flex items-center gap-1 flex-shrink-0">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              {formatearTiempo(segundos)}
+            </span>
+            <CaritaEstado estado={estadoCarita} />
+          </div>
         )}
       </div>
 
@@ -340,24 +313,27 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                   <line x1="37" y1="7" x2="43" y2="7"/>
                 </svg>
               </div>
-            </div>
-          )}
-
-          {/* Pista */}
-          {mostrarPista && ejercicio?.pistas && (
-            <div className="flex items-start gap-2.5 px-3.5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(210,153,34,0.12)' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d29922" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
-              </div>
-              <div>
-                <p className="text-[#d29922] text-xs font-semibold">Pista</p>
-                <p className="text-[#8b949e] text-xs leading-relaxed">{ejercicio.pistas[indicePista]}</p>
-                {indicePista < ejercicio.pistas.length - 1 && (
-                  <button onClick={siguientePista} className="text-[#d29922] text-[11px] mt-1 opacity-70 hover:opacity-100 transition-opacity">
-                    Otra pista →
-                  </button>
-                )}
-              </div>
+              {/* Botón Pista dentro de la tarjeta */}
+              {ejercicio?.pistas?.length > 0 && (
+                <button
+                  onClick={siguientePista}
+                  className="mt-3 flex items-center gap-1.5 text-[#d29922] text-xs hover:text-[#e3b341] transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+                  {mostrarPista ? 'Ocultar pista' : 'Ver pista'}
+                </button>
+              )}
+              {/* Contenido de la pista expandida */}
+              {mostrarPista && ejercicio?.pistas && (
+                <div className="mt-2 pt-2 border-t border-[#30363d]">
+                  <p className="text-[#8b949e] text-xs leading-relaxed">{ejercicio.pistas[indicePista]}</p>
+                  {indicePista < ejercicio.pistas.length - 1 && (
+                    <button onClick={siguientePista} className="text-[#d29922] text-[11px] mt-1 opacity-70 hover:opacity-100 transition-opacity">
+                      Otra pista →
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -409,6 +385,23 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               </div>
             </div>
             <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
+            {/* Mini-toolbar: Reiniciar, Tablas, Diagrama */}
+            <div className="flex items-center border-t border-[#30363d]">
+              <button onClick={reiniciar} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                Reiniciar
+              </button>
+              <div className="w-px h-5 bg-[#30363d]" />
+              <button onClick={() => setDrawerAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Tablas
+              </button>
+              <div className="w-px h-5 bg-[#30363d]" />
+              <button onClick={() => setDiagramaAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Diagrama ER
+              </button>
+            </div>
           </div>
 
           {/* Botón ejecutar */}
