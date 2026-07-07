@@ -43,6 +43,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [opacidadMensaje, setOpacidadMensaje] = useState(1);
   const [segundos, setSegundos] = useState(0);
   const [resultadosAbiertos, setResultadosAbiertos] = useState(true);
+  const [panelAjustesAbierto, setPanelAjustesAbierto] = useState(false);
+  const [nivelZoom, setNivelZoom] = useState(12);
 
   const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
@@ -98,19 +100,20 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   }, []);
 
   useEffect(() => {
-    if (!drawerAbierto && !diagramaAbierto) return;
+    if (!drawerAbierto && !diagramaAbierto && !panelAjustesAbierto) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, panelEditor: true }, '');
-    const manejarRetroceso = (e) => {
+    const manejarRetroceso = () => {
       if (drawerAbierto) setDrawerAbierto(false);
       if (diagramaAbierto) setDiagramaAbierto(false);
+      if (panelAjustesAbierto) setPanelAjustesAbierto(false);
     };
     window.addEventListener('popstate', manejarRetroceso);
     return () => {
       window.removeEventListener('popstate', manejarRetroceso);
       if (window.history.state?.panelEditor) window.history.back();
     };
-  }, [drawerAbierto, diagramaAbierto]);
+  }, [drawerAbierto, diagramaAbierto, panelAjustesAbierto]);
 
   useEffect(() => {
     if (!cargando) return;
@@ -261,9 +264,6 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           </div>
         ) : (
           <div className="flex items-center gap-2.5 px-3 py-2.5">
-            <button onClick={onVolver} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] flex-shrink-0">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            </button>
             <div className="min-w-0 flex-1">
               <p className="text-[#e6edf3] text-[14px] font-semibold leading-tight truncate">
                 {tema ? tema.nombre : 'Práctica libre'}
@@ -277,6 +277,9 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               {formatearTiempo(segundos)}
             </span>
             <CaritaEstado estado={estadoCarita} />
+            <button onClick={() => setPanelAjustesAbierto(true)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#8b949e] hover:text-[#e6edf3] transition-colors flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
           </div>
         )}
       </div>
@@ -375,7 +378,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                 style={{ backgroundColor: 'rgba(13,17,23,0.5)' }}
               >
                 {(consulta || ' ').split('\n').map((_, i) => (
-                  <div key={i} className="text-[#484f58] text-[11px] font-mono leading-6 h-6">{i + 1}</div>
+                  <div key={i} className="text-[#484f58] font-mono" style={{ fontSize: Math.max(9, nivelZoom - 2), lineHeight: '1.8em', height: `${nivelZoom * 1.8}px` }}>{i + 1}</div>
                 ))}
               </div>
               <div className="flex-1">
@@ -393,7 +396,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                     onKeyDown={handleKeyDown}
                     onScroll={handleEditorScroll}
                     placeholder="Escribe tu consulta aquí..."
-                    className="w-full h-full bg-transparent text-[#e6edf3] text-xs font-mono resize-none focus:outline-none px-3 py-3 leading-6 placeholder-[#484f58] select-text"
+                    className="w-full h-full bg-transparent text-[#e6edf3] font-mono resize-none focus:outline-none px-3 py-3 placeholder-[#484f58] select-text"
+                    style={{ fontSize: nivelZoom, lineHeight: '1.8em' }}
                     spellCheck={false}
                   />
                 )}
@@ -453,6 +457,53 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             )}
           </div>
 
+        </div>
+      </div>
+
+      {/* Panel de ajustes */}
+      {panelAjustesAbierto && (
+        <div className="fixed inset-0 z-20" onClick={() => setPanelAjustesAbierto(false)} />
+      )}
+      <div className={`fixed top-0 right-0 h-full w-64 bg-[#161b22] border-l border-[#30363d] z-30 flex flex-col transition-transform duration-300 ease-in-out ${panelAjustesAbierto ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d]">
+          <div className="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span className="text-[#e6edf3] text-sm font-semibold">Ajustes</span>
+          </div>
+          <button onClick={() => setPanelAjustesAbierto(false)} className="text-[#8b949e] hover:text-white text-lg leading-none transition-colors">×</button>
+        </div>
+        <div className="px-4 py-4 space-y-5">
+          <button
+            onClick={() => { setPanelAjustesAbierto(false); onVolver(); }}
+            className="w-full py-2.5 bg-[#21262d] border border-[#30363d] rounded-lg text-[#e6edf3] text-sm font-medium hover:bg-[#30363d] transition-colors flex items-center justify-center gap-2"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Cambiar tema
+          </button>
+          <div>
+            <p className="text-[#8b949e] text-xs font-semibold mb-2.5">Zoom del editor</p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setNivelZoom(z => Math.max(8, z - 2))}
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] text-lg font-bold hover:bg-[#30363d] transition-colors"
+              >
+                −
+              </button>
+              <div className="flex-1 text-center">
+                <span className="text-[#e6edf3] text-sm font-mono">{nivelZoom}px</span>
+              </div>
+              <button
+                onClick={() => setNivelZoom(z => Math.min(22, z + 2))}
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] text-lg font-bold hover:bg-[#30363d] transition-colors"
+              >
+                +
+              </button>
+            </div>
+            <div className="flex justify-between mt-2">
+              <span className="text-[#484f58] text-[10px]">Pequeño</span>
+              <span className="text-[#484f58] text-[10px]">Grande</span>
+            </div>
+          </div>
         </div>
       </div>
 
