@@ -8,6 +8,7 @@ import PanelResultados from '../editor/PanelResultados';
 import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 import { FormateadorSQL } from '../../modelos/formateador_sql';
+import { ResaltadorSintaxis } from '../../modelos/resaltador_sintaxis';
 
 const formatearTiempo = (seg) => {
   const m = Math.floor(seg / 60);
@@ -45,6 +46,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [resultadosAbiertos, setResultadosAbiertos] = useState(true);
   const [panelAjustesAbierto, setPanelAjustesAbierto] = useState(false);
   const [nivelZoom, setNivelZoom] = useState(12);
+  const [editorEnfocado, setEditorEnfocado] = useState(false);
+  const [mostrarSignos, setMostrarSignos] = useState(true);
 
   const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
@@ -56,6 +59,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const ultimaConsulta = useRef('');
   const lineNumsRef = useRef(null);
   const formateador = useRef(new FormateadorSQL());
+  const resaltador = useRef(new ResaltadorSintaxis());
+  const capaResaltadoRef = useRef(null);
 
   useEffect(() => {
     const ctrl = controlador.current;
@@ -148,12 +153,39 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     textareaRef.current?.focus();
   };
 
+  const actualizarVisibilidadSignos = (texto, posicion) => {
+    if (!texto || posicion === 0) { setMostrarSignos(true); return; }
+    const charAntes = texto[posicion - 1];
+    setMostrarSignos(!charAntes || /[\s,;()=<>!%*'+\-\n]/.test(charAntes));
+  };
+
+  const insertarSigno = (signo) => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const inicio = ta.selectionStart;
+    const fin = ta.selectionEnd;
+    const nueva = consulta.slice(0, inicio) + signo + consulta.slice(fin);
+    setConsulta(nueva);
+    setSugerencias(controlador.current.sugerirAutocompletado(nueva, tablas));
+    controlador.current.evaluarEstado(nueva).then(nuevoEstado => {
+      if (ultimaConsulta.current === nueva || ultimaConsulta.current === consulta) setEstado(nuevoEstado);
+    });
+    ultimaConsulta.current = nueva;
+    requestAnimationFrame(() => {
+      ta.focus();
+      const pos = inicio + signo.length;
+      ta.setSelectionRange(pos, pos);
+      actualizarVisibilidadSignos(nueva, pos);
+    });
+  };
+
   const handleCambio = async (e) => {
     const valor = e.target.value;
     ultimaConsulta.current = valor;
     setConsulta(valor);
     setResultado(null);
     setSugerencias(controlador.current.sugerirAutocompletado(valor, tablas));
+    actualizarVisibilidadSignos(valor, e.target.selectionStart);
     const nuevoEstado = await controlador.current.evaluarEstado(valor);
     if (ultimaConsulta.current === valor) setEstado(nuevoEstado);
   };
@@ -210,6 +242,15 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     if (lineNumsRef.current) {
       lineNumsRef.current.scrollTop = e.target.scrollTop;
     }
+    if (capaResaltadoRef.current) {
+      capaResaltadoRef.current.scrollTop = e.target.scrollTop;
+      capaResaltadoRef.current.scrollLeft = e.target.scrollLeft;
+    }
+  };
+
+  const handleSeleccion = () => {
+    const ta = textareaRef.current;
+    if (ta) actualizarVisibilidadSignos(consulta, ta.selectionStart);
   };
 
   const formatearConsulta = () => {
@@ -381,7 +422,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                   <div key={i} className="text-[#484f58] font-mono" style={{ fontSize: Math.max(9, nivelZoom - 2), lineHeight: '1.8em', height: `${nivelZoom * 1.8}px` }}>{i + 1}</div>
                 ))}
               </div>
-              <div className="flex-1">
+              <div className="flex-1 relative">
                 {cargando ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <p className="text-[#484f58] text-sm transition-opacity duration-200" style={{ opacity: opacidadMensaje }}>
@@ -389,21 +430,48 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                     </p>
                   </div>
                 ) : (
-                  <textarea
-                    ref={textareaRef}
-                    value={consulta}
-                    onChange={handleCambio}
-                    onKeyDown={handleKeyDown}
-                    onScroll={handleEditorScroll}
-                    placeholder="Escribe tu consulta aquí..."
-                    className="w-full h-full bg-transparent text-[#e6edf3] font-mono resize-none focus:outline-none px-3 py-3 placeholder-[#484f58] select-text"
-                    style={{ fontSize: nivelZoom, lineHeight: '1.8em' }}
-                    spellCheck={false}
-                  />
+                  <>
+                    <pre
+                      ref={capaResaltadoRef}
+                      aria-hidden="true"
+                      className="absolute inset-0 font-mono px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
+                      style={{ fontSize: nivelZoom, lineHeight: '1.8em' }}
+                      dangerouslySetInnerHTML={{ __html: resaltador.current.resaltar(consulta) + '\n' }}
+                    />
+                    <textarea
+                      ref={textareaRef}
+                      value={consulta}
+                      onChange={handleCambio}
+                      onKeyDown={handleKeyDown}
+                      onScroll={handleEditorScroll}
+                      onFocus={() => { setEditorEnfocado(true); setMostrarSignos(true); }}
+                      onBlur={() => setTimeout(() => setEditorEnfocado(false), 150)}
+                      onSelect={handleSeleccion}
+                      placeholder="Escribe tu consulta aquí..."
+                      className="relative w-full h-full bg-transparent font-mono resize-none focus:outline-none px-3 py-3 placeholder-[#484f58] select-text"
+                      style={{ fontSize: nivelZoom, lineHeight: '1.8em', color: 'transparent', caretColor: '#e6edf3' }}
+                      spellCheck={false}
+                    />
+                  </>
                 )}
               </div>
             </div>
             <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
+            {/* Barra de signos rápidos */}
+            {editorEnfocado && mostrarSignos && (
+              <div className="flex items-center gap-1 px-2 py-1.5 border-t border-[#30363d] overflow-x-auto">
+                {[';', '*', '=', '>', '<', '(', ')', "'", ',', '%', '_', '!='].map(s => (
+                  <button
+                    key={s}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => insertarSigno(s)}
+                    className="min-w-[30px] h-7 px-1.5 rounded bg-[#21262d] border border-[#30363d] text-[#e6edf3] text-xs font-mono hover:bg-[#30363d] transition-colors flex-shrink-0 flex items-center justify-center"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
             {/* Mini-toolbar: Tablas, Diagrama ER, Reiniciar */}
             <div className="flex items-center border-t border-[#30363d]">
               <button onClick={() => setDrawerAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
