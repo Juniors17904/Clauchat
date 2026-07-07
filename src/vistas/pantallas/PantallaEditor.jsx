@@ -362,10 +362,10 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               <button
                 onClick={formatearConsulta}
                 disabled={!consulta.trim()}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-[#30363d] bg-[#21262d] text-[#8b949e] text-[11px] hover:text-[#3fb950] hover:border-[#3fb950] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1f6feb] text-white text-[11px] font-semibold hover:bg-[#388bfd] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.272 1.278L21 12l-5.816 1.91a2 2 0 0 0-1.275 1.278L12 21l-1.91-5.812a2 2 0 0 0-1.277-1.278L3 12l5.813-1.91a2 2 0 0 0 1.278-1.277L12 3z"/></svg>
-                Formatear SQL
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.272 1.278L21 12l-5.816 1.91a2 2 0 0 0-1.275 1.278L12 21l-1.91-5.812a2 2 0 0 0-1.277-1.278L3 12l5.813-1.91a2 2 0 0 0 1.278-1.277L12 3z"/></svg>
+                Formatear
               </button>
             </div>
             <div className="flex" style={{ height: 160 }}>
