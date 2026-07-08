@@ -48,6 +48,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [nivelZoom, setNivelZoom] = useState(12);
   const [editorEnfocado, setEditorEnfocado] = useState(false);
   const [mostrarSignos, setMostrarSignos] = useState(true);
+  const [resaltadoActivo, setResaltadoActivo] = useState(false);
 
   const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
@@ -184,6 +185,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     ultimaConsulta.current = valor;
     setConsulta(valor);
     setResultado(null);
+    setResaltadoActivo(false);
     setSugerencias(controlador.current.sugerirAutocompletado(valor, tablas));
     actualizarVisibilidadSignos(valor, e.target.selectionStart);
     const nuevoEstado = await controlador.current.evaluarEstado(valor);
@@ -257,6 +259,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     if (!consulta.trim()) return;
     const formateada = formateador.current.formatear(consulta);
     setConsulta(formateada);
+    setResaltadoActivo(true);
     textareaRef.current?.focus();
   };
 
@@ -431,13 +434,15 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                   </div>
                 ) : (
                   <>
-                    <pre
-                      ref={capaResaltadoRef}
-                      aria-hidden="true"
-                      className="absolute inset-0 font-mono px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
-                      style={{ fontSize: nivelZoom, lineHeight: '1.8em' }}
-                      dangerouslySetInnerHTML={{ __html: resaltador.current.resaltar(consulta) + '\n' }}
-                    />
+                    {resaltadoActivo && (
+                      <pre
+                        ref={capaResaltadoRef}
+                        aria-hidden="true"
+                        className="absolute inset-0 font-mono px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
+                        style={{ fontSize: nivelZoom, lineHeight: '1.8em' }}
+                        dangerouslySetInnerHTML={{ __html: resaltador.current.resaltar(consulta) + '\n' }}
+                      />
+                    )}
                     <textarea
                       ref={textareaRef}
                       value={consulta}
@@ -449,7 +454,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                       onSelect={handleSeleccion}
                       placeholder="Escribe tu consulta aquí..."
                       className="relative w-full h-full bg-transparent font-mono resize-none focus:outline-none px-3 py-3 placeholder-[#484f58] select-text"
-                      style={{ fontSize: nivelZoom, lineHeight: '1.8em', color: 'transparent', caretColor: '#e6edf3' }}
+                      style={{ fontSize: nivelZoom, lineHeight: '1.8em', color: resaltadoActivo ? 'transparent' : '#e6edf3', caretColor: '#e6edf3' }}
                       spellCheck={false}
                     />
                   </>
