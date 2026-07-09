@@ -59,7 +59,7 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
               className={`w-full flex items-center gap-4 px-5 py-5 text-left transition-all
                 ${area.disponible ? 'active:scale-[0.98] cursor-pointer' : 'cursor-not-allowed'}`}
             >
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#21262d', color }}>
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'var(--fondo-elevado)', color }}>
                 <Icono />
               </div>
               <div className="min-w-0 flex-1">
@@ -350,7 +350,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
       {/* Hero con imagen */}
       <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
         <img src="/hero-bg.png" alt="" className="w-full h-full object-cover object-center" draggable="false" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-[#0d1117]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20" style={{ '--tw-gradient-to': 'var(--fondo-base)' }} />
         <button
           onClick={() => setTabActual('ajustes')}
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:border-white/50 transition-colors backdrop-blur-sm"
@@ -374,8 +374,8 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           </button>
         )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-          <h1 className="text-4xl font-bold text-white tracking-tight font-sans drop-shadow-lg">DevLab</h1>
-          <p className="text-white/60 mt-1 text-sm font-sans">Elige un área de estudio</p>
+          <h1 className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg" style={{ color: '#fff' }}>DevLab</h1>
+          <p className="mt-1 text-sm font-sans" style={{ color: 'rgba(255,255,255,0.6)' }}>Elige un área de estudio</p>
         </div>
       </div>
 
