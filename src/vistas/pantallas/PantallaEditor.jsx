@@ -26,7 +26,8 @@ const MENSAJES_CARGA = [
   'Casi listo...',
 ];
 
-const SIGNOS_RAPIDOS = [';', '*', '=', '>', '<', '(', ')', "'", ',', '%', '_', '!='];
+const SIGNOS_RAPIDOS = [',', '*', '=', "'", '(', ')', '>', '<', '!=', ';', '%', '_'];
+const SIGNOS_CON_ESPACIO = new Set([',', '=', '>', '<', '!=']);
 
 export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguiente, onTerminar, onCompletado }) {
   const [consulta, setConsulta] = useState('');
@@ -176,7 +177,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     if (!ta) return;
     const inicio = ta.selectionStart;
     const fin = ta.selectionEnd;
-    const nueva = consulta.slice(0, inicio) + signo + consulta.slice(fin);
+    const textoInsertar = SIGNOS_CON_ESPACIO.has(signo) ? signo + ' ' : signo;
+    const nueva = consulta.slice(0, inicio) + textoInsertar + consulta.slice(fin);
     setConsulta(nueva);
     setResaltadoActivo(false);
     setSugerencias(controlador.current.sugerirAutocompletado(nueva, tablas));
@@ -186,7 +188,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     ultimaConsulta.current = nueva;
     requestAnimationFrame(() => {
       ta.focus();
-      const pos = inicio + signo.length;
+      const pos = inicio + textoInsertar.length;
       ta.setSelectionRange(pos, pos);
       actualizarVisibilidadSignos(nueva, pos);
     });
