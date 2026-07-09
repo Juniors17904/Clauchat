@@ -348,20 +348,24 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
       </div>
 
       {/* ===== BARRA DE PROGRESO ===== */}
-      {progreso && (
-        <div className="flex items-center gap-2.5 px-3.5 py-2 flex-shrink-0" style={{ backgroundColor: 'var(--fondo-base)' }}>
-          <span className="text-[11px] whitespace-nowrap flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>Ejercicio {progreso.actual} de {progreso.total}</span>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
-            <div
-              className="h-full rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${(progreso.actual / progreso.total) * 100}%`, backgroundColor: 'var(--acento)' }}
-            />
+      {progreso && (() => {
+        const completados = esCorrecto ? progreso.actual : progreso.actual - 1;
+        const porcentaje = Math.round((completados / progreso.total) * 100);
+        return (
+          <div className="flex items-center gap-2.5 px-3.5 py-2 flex-shrink-0" style={{ backgroundColor: 'var(--fondo-base)' }}>
+            <span className="text-[11px] whitespace-nowrap flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>Ejercicio {progreso.actual} de {progreso.total}</span>
+            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+              <div
+                className="h-full rounded-full transition-all duration-700 ease-out"
+                style={{ width: `${porcentaje}%`, backgroundColor: 'var(--acento)' }}
+              />
+            </div>
+            <span className="text-[11px] font-semibold flex-shrink-0 min-w-[28px] text-right font-mono tabular-nums" style={{ color: 'var(--acento)' }}>
+              {porcentaje}%
+            </span>
           </div>
-          <span className="text-[11px] font-semibold flex-shrink-0 min-w-[28px] text-right font-mono tabular-nums" style={{ color: 'var(--acento)' }}>
-            {Math.round((progreso.actual / progreso.total) * 100)}%
-          </span>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ===== CONTENIDO SCROLLEABLE ===== */}
       <div className="flex-1 overflow-auto min-h-0">
