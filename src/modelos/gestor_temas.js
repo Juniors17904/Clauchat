@@ -3,16 +3,20 @@ import { TemaVisual } from './tema_visual.js';
 export class GestorTemas {
   #temas;
   #temaActual;
+  #esGlobal;
 
   constructor() {
     this.#temas = this.#crearTemas();
     const idGuardado = localStorage.getItem('tema-visual') || 'verde';
     this.#temaActual = this.#temas.find(t => t.id === idGuardado) || this.#temas[0];
+    this.#esGlobal = localStorage.getItem('tema-global') === 'true';
     this.#aplicar(this.#temaActual);
+    if (this.#esGlobal) this.#inyectarCSSGlobal();
   }
 
   get temas() { return [...this.#temas]; }
   get temaActual() { return this.#temaActual; }
+  get esGlobal() { return this.#esGlobal; }
 
   cambiar(id) {
     const tema = this.#temas.find(t => t.id === id);
@@ -20,6 +24,16 @@ export class GestorTemas {
     this.#temaActual = tema;
     localStorage.setItem('tema-visual', id);
     this.#aplicar(tema);
+  }
+
+  alternarGlobal() {
+    this.#esGlobal = !this.#esGlobal;
+    localStorage.setItem('tema-global', String(this.#esGlobal));
+    if (this.#esGlobal) {
+      this.#inyectarCSSGlobal();
+    } else {
+      this.#quitarCSSGlobal();
+    }
   }
 
   #aplicar(tema) {
@@ -30,6 +44,87 @@ export class GestorTemas {
     for (const [clave, valor] of Object.entries(tema.fuentes)) {
       root.style.setProperty(`--${clave}`, valor);
     }
+  }
+
+  #inyectarCSSGlobal() {
+    if (document.getElementById('tema-global-css')) return;
+    const estilo = document.createElement('style');
+    estilo.id = 'tema-global-css';
+    estilo.textContent = this.#cssGlobal();
+    document.head.appendChild(estilo);
+  }
+
+  #quitarCSSGlobal() {
+    document.getElementById('tema-global-css')?.remove();
+  }
+
+  #cssGlobal() {
+    const reglas = [
+      ['bg', '0d1117', 'background-color', '--fondo-base'],
+      ['bg', '161b22', 'background-color', '--fondo-panel'],
+      ['bg', '1c2128', 'background-color', '--fondo-panel'],
+      ['bg', '21262d', 'background-color', '--fondo-elevado'],
+      ['bg', '238636', 'background-color', '--acento-btn'],
+      ['bg', '3fb950', 'background-color', '--acento'],
+      ['bg', '388bfd', 'background-color', '--acento'],
+      ['bg', '3d0e0e', 'background-color', '--error-fondo'],
+      ['bg', 'f85149', 'background-color', '--error'],
+      ['bg', 'd29922', 'background-color', '--advertencia'],
+      ['border', '30363d', 'border-color', '--borde'],
+      ['border', '21262d', 'border-color', '--borde'],
+      ['border', '3fb950', 'border-color', '--acento'],
+      ['border', '388bfd', 'border-color', '--acento'],
+      ['border', '484f58', 'border-color', '--texto-tenue'],
+      ['border', 'f85149', 'border-color', '--error'],
+      ['border', 'd29922', 'border-color', '--advertencia'],
+      ['text', 'e6edf3', 'color', '--texto-primario'],
+      ['text', 'c9d1d9', 'color', '--texto-primario'],
+      ['text', '8b949e', 'color', '--texto-secundario'],
+      ['text', '484f58', 'color', '--texto-tenue'],
+      ['text', '30363d', 'color', '--texto-tenue'],
+      ['text', '3fb950', 'color', '--acento'],
+      ['text', '388bfd', 'color', '--acento'],
+      ['text', 'f85149', 'color', '--error'],
+      ['text', 'd29922', 'color', '--advertencia'],
+      ['text', 'e3b341', 'color', '--advertencia'],
+    ];
+
+    const hover = [
+      ['bg', '1c2128', 'background-color', '--fondo-elevado'],
+      ['bg', '161b22', 'background-color', '--fondo-panel'],
+      ['bg', '2ea043', 'background-color', '--acento-hover'],
+      ['bg', '30363d', 'background-color', '--fondo-elevado'],
+      ['bg', '3fb950', 'background-color', '--acento'],
+      ['bg', 'da3633', 'background-color', '--error'],
+      ['bg', 'f85149', 'background-color', '--error'],
+      ['border', '30363d', 'border-color', '--borde'],
+      ['border', '3fb950', 'border-color', '--acento'],
+      ['border', '388bfd', 'border-color', '--acento'],
+      ['border', '8b949e', 'border-color', '--texto-secundario'],
+      ['text', '8b949e', 'color', '--texto-secundario'],
+    ];
+
+    const fondosAcento = ['238636', '3fb950', '388bfd', 'f85149', 'd29922'];
+
+    let css = '';
+
+    for (const [tipo, hex, prop, variable] of reglas) {
+      css += `[class~="${tipo}-[#${hex}]"]{${prop}:var(${variable})!important}\n`;
+    }
+
+    for (const [tipo, hex, prop, variable] of hover) {
+      css += `[class~="hover:${tipo}-[#${hex}]"]:hover{${prop}:var(${variable})!important}\n`;
+    }
+
+    css += `.text-white{color:var(--texto-primario)!important}\n`;
+    css += `.hover\\:text-white:hover{color:var(--texto-primario)!important}\n`;
+
+    for (const hex of fondosAcento) {
+      css += `[class~="bg-[#${hex}]"][class~="text-white"]{color:#fff!important}\n`;
+      css += `[class~="bg-[#${hex}]"] .text-white{color:#fff!important}\n`;
+    }
+
+    return css;
   }
 
   #crearTemas() {

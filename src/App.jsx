@@ -14,6 +14,7 @@ import { NIVELES } from './datos/niveles';
 import { AREAS, AREAS_ESPECIALIZACION } from './datos/areas';
 import { ControladorPerfil } from './controladores/controlador_perfil';
 import { ControladorRecordatorios } from './controladores/controlador_recordatorios';
+import { GestorTemas } from './modelos/gestor_temas';
 
 export default function App() {
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
@@ -25,6 +26,7 @@ export default function App() {
   const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
   const ctrlPerfil = useRef(new ControladorPerfil());
   const ctrlRecordatorios = useRef(new ControladorRecordatorios());
+  useRef(new GestorTemas());
 
   useEffect(() => {
     window.history.replaceState({ pantalla: 'areas' }, '');

@@ -53,6 +53,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [mostrarSignos, setMostrarSignos] = useState(true);
   const [resaltadoActivo, setResaltadoActivo] = useState(false);
   const [temaId, setTemaId] = useState('verde');
+  const [temaGlobal, setTemaGlobal] = useState(false);
 
   const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
@@ -70,6 +71,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
   useEffect(() => {
     setTemaId(gestorTemas.current.temaActual.id);
+    setTemaGlobal(gestorTemas.current.esGlobal);
   }, []);
 
   useEffect(() => {
@@ -594,6 +596,24 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                 );
               })}
             </div>
+          </div>
+
+          {/* Toggle tema global */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold" style={{ color: 'var(--texto-secundario)' }}>Aplicar a toda la app</p>
+              <p className="text-[10px] mt-0.5" style={{ color: 'var(--texto-tenue)' }}>Cambia colores en todas las pantallas</p>
+            </div>
+            <button
+              onClick={() => { gestorTemas.current.alternarGlobal(); setTemaGlobal(gestorTemas.current.esGlobal); }}
+              className="relative w-10 h-[22px] rounded-full transition-colors duration-200 flex-shrink-0"
+              style={{ backgroundColor: temaGlobal ? 'var(--acento)' : 'var(--fondo-elevado)' }}
+            >
+              <div
+                className="absolute top-[3px] w-4 h-4 rounded-full transition-all duration-200"
+                style={{ left: temaGlobal ? 21 : 3, backgroundColor: temaGlobal ? '#fff' : 'var(--texto-tenue)' }}
+              />
+            </button>
           </div>
 
           {/* Zoom del editor */}
