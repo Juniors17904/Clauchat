@@ -9,6 +9,7 @@ import DrawerExplorador from '../editor/DrawerExplorador';
 import DiagramaBD from '../editor/DiagramaBD';
 import { FormateadorSQL } from '../../modelos/formateador_sql';
 import { ResaltadorSintaxis } from '../../modelos/resaltador_sintaxis';
+import { GestorTemas } from '../../modelos/gestor_temas';
 
 const formatearTiempo = (seg) => {
   const m = Math.floor(seg / 60);
@@ -24,6 +25,8 @@ const MENSAJES_CARGA = [
   'Verificando relaciones...',
   'Casi listo...',
 ];
+
+const SIGNOS_RAPIDOS = [';', '*', '=', '>', '<', '(', ')', "'", ',', '%', '_', '!='];
 
 export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguiente, onTerminar, onCompletado }) {
   const [consulta, setConsulta] = useState('');
@@ -49,6 +52,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [editorEnfocado, setEditorEnfocado] = useState(false);
   const [mostrarSignos, setMostrarSignos] = useState(true);
   const [resaltadoActivo, setResaltadoActivo] = useState(false);
+  const [temaId, setTemaId] = useState('verde');
 
   const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
@@ -62,6 +66,11 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const formateador = useRef(new FormateadorSQL());
   const resaltador = useRef(new ResaltadorSintaxis());
   const capaResaltadoRef = useRef(null);
+  const gestorTemas = useRef(new GestorTemas());
+
+  useEffect(() => {
+    setTemaId(gestorTemas.current.temaActual.id);
+  }, []);
 
   useEffect(() => {
     const ctrl = controlador.current;
@@ -167,6 +176,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     const fin = ta.selectionEnd;
     const nueva = consulta.slice(0, inicio) + signo + consulta.slice(fin);
     setConsulta(nueva);
+    setResaltadoActivo(false);
     setSugerencias(controlador.current.sugerirAutocompletado(nueva, tablas));
     controlador.current.evaluarEstado(nueva).then(nuevoEstado => {
       if (ultimaConsulta.current === nueva || ultimaConsulta.current === consulta) setEstado(nuevoEstado);
@@ -263,25 +273,31 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     textareaRef.current?.focus();
   };
 
+  const cambiarTemaVisual = (id) => {
+    gestorTemas.current.cambiar(id);
+    setTemaId(id);
+  };
+
   if (errorCarga) {
     const esCacheVieja = errorCarga.includes('fetch') || errorCarga.includes('import');
     return (
-      <div className="bg-[#0d1117] flex flex-col" style={{ height: alturaPantalla }}>
-        <div className="fixed top-4 left-4 right-4 bg-[#2d1111] border border-[#f85149] rounded-lg px-4 py-3 z-50 font-sans">
-          <p className="text-[#f85149] text-sm font-bold">Error al cargar</p>
-          <p className="text-[#8b949e] text-xs mt-1">
+      <div className="flex flex-col" style={{ height: alturaPantalla, backgroundColor: 'var(--fondo-base)' }}>
+        <div className="fixed top-4 left-4 right-4 rounded-lg px-4 py-3 z-50" style={{ backgroundColor: 'var(--error-fondo)', borderColor: 'var(--error)', borderWidth: 1, fontFamily: 'var(--fuente-sans)' }}>
+          <p className="text-sm font-bold" style={{ color: 'var(--error)' }}>Error al cargar</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--texto-secundario)' }}>
             {esCacheVieja ? 'La app tiene una versión desactualizada. Recarga para continuar.' : errorCarga}
           </p>
           <div className="flex gap-3 mt-2">
             {esCacheVieja && (
               <button
                 onClick={() => window.location.reload()}
-                className="text-white text-xs bg-[#238636] px-3 py-1 rounded-md"
+                className="text-white text-xs px-3 py-1 rounded-md"
+                style={{ backgroundColor: 'var(--acento-btn)' }}
               >
                 Recargar app
               </button>
             )}
-            <button onClick={onVolver} className="text-[#388bfd] text-xs underline self-center">
+            <button onClick={onVolver} className="text-xs underline self-center" style={{ color: 'var(--acento)' }}>
               Volver
             </button>
           </div>
@@ -291,17 +307,18 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   }
 
   return (
-    <div className="bg-[#0d1117] flex flex-col font-sans overflow-hidden select-none" style={{ height: alturaPantalla }}>
+    <div className="flex flex-col overflow-hidden select-none" style={{ height: alturaPantalla, backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
 
       {/* ===== HEADER ===== */}
-      <div className={`flex-shrink-0 transition-colors duration-300 ${esCorrecto && resultado !== null ? 'bg-[#0d2117] border-b border-[#238636]' : 'bg-[#0d1117] border-b border-[#30363d]'}`}>
+      <div className="flex-shrink-0 transition-colors duration-300 border-b" style={{ backgroundColor: esCorrecto && resultado !== null ? 'var(--exito-fondo)' : 'var(--fondo-base)', borderColor: esCorrecto && resultado !== null ? 'var(--acento-btn)' : 'var(--borde)' }}>
         {esCorrecto && resultado !== null ? (
           <div className="flex items-center gap-3 px-4 py-3">
-            <button onClick={onVolver} className="text-[#8b949e] hover:text-white text-base transition-colors flex-shrink-0">←</button>
-            <p className="text-[#3fb950] text-sm flex-1">¡Correcto! 😊</p>
+            <button onClick={onVolver} className="text-base transition-colors flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>←</button>
+            <p className="text-sm flex-1" style={{ color: 'var(--acento)' }}>¡Correcto! 😊</p>
             <button
               onClick={onSiguiente ?? onTerminar ?? onVolver}
-              className="px-4 py-1.5 bg-[#238636] hover:bg-[#2ea043] text-white text-xs rounded-lg transition-colors flex-shrink-0"
+              className="px-4 py-1.5 text-white text-xs rounded-lg transition-colors flex-shrink-0 hover:brightness-110"
+              style={{ backgroundColor: 'var(--acento-btn)' }}
             >
               {onSiguiente ? 'Siguiente →' : 'Terminar'}
             </button>
@@ -309,19 +326,19 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
         ) : (
           <div className="flex items-center gap-2.5 px-3 py-2.5">
             <div className="min-w-0 flex-1">
-              <p className="text-[#e6edf3] text-[14px] font-semibold leading-tight truncate">
+              <p className="text-[14px] font-semibold leading-tight truncate" style={{ color: 'var(--texto-primario)' }}>
                 {tema ? tema.nombre : 'Práctica libre'}
               </p>
-              <p className="text-[#8b949e] text-[11px] mt-0.5 truncate">
+              <p className="text-[11px] mt-0.5 truncate" style={{ color: 'var(--texto-secundario)' }}>
                 {baseDatos ? `BD: ${baseDatos.nombre}` : ''}{tema ? ` · Nivel ${tema.nivelId.replace('nivel', '')}` : ''}
               </p>
             </div>
-            <span className="text-[#8b949e] text-xs font-mono tabular-nums flex items-center gap-1 flex-shrink-0">
+            <span className="text-xs font-mono tabular-nums flex items-center gap-1 flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               {formatearTiempo(segundos)}
             </span>
             <CaritaEstado estado={estadoCarita} />
-            <button onClick={() => setPanelAjustesAbierto(true)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#8b949e] hover:text-[#e6edf3] transition-colors flex-shrink-0">
+            <button onClick={() => setPanelAjustesAbierto(true)} className="w-8 h-8 flex items-center justify-center rounded-lg border transition-colors flex-shrink-0" style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
           </div>
@@ -330,15 +347,15 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
       {/* ===== BARRA DE PROGRESO ===== */}
       {progreso && (
-        <div className="flex items-center gap-2.5 px-3.5 py-2 bg-[#0d1117] flex-shrink-0">
-          <span className="text-[#8b949e] text-[11px] whitespace-nowrap flex-shrink-0">Ejercicio {progreso.actual} de {progreso.total}</span>
-          <div className="flex-1 h-1.5 bg-[#21262d] rounded-full overflow-hidden">
+        <div className="flex items-center gap-2.5 px-3.5 py-2 flex-shrink-0" style={{ backgroundColor: 'var(--fondo-base)' }}>
+          <span className="text-[11px] whitespace-nowrap flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>Ejercicio {progreso.actual} de {progreso.total}</span>
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
             <div
               className="h-full rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${(progreso.actual / progreso.total) * 100}%`, backgroundColor: '#3fb950' }}
+              style={{ width: `${(progreso.actual / progreso.total) * 100}%`, backgroundColor: 'var(--acento)' }}
             />
           </div>
-          <span className="text-[#3fb950] text-[11px] font-semibold flex-shrink-0 min-w-[28px] text-right font-mono tabular-nums">
+          <span className="text-[11px] font-semibold flex-shrink-0 min-w-[28px] text-right font-mono tabular-nums" style={{ color: 'var(--acento)' }}>
             {Math.round((progreso.actual / progreso.total) * 100)}%
           </span>
         </div>
@@ -350,19 +367,19 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
           {/* Tarjeta del ejercicio */}
           {ejercicio && (
-            <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-3.5 relative overflow-hidden">
+            <div className="border rounded-xl p-3.5 relative overflow-hidden" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
               <div className="flex items-center gap-1.5 mb-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3fb950" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
-                <span className="text-[#3fb950] text-xs font-semibold">Ejercicio</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--acento)' }}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+                <span className="text-xs font-semibold" style={{ color: 'var(--acento)' }}>Ejercicio</span>
                 {progreso && (
-                  <span className="w-5 h-5 rounded-full text-[#3fb950] text-[11px] font-bold flex items-center justify-center" style={{ backgroundColor: 'rgba(63,185,80,0.1)' }}>
+                  <span className="w-5 h-5 rounded-full text-[11px] font-bold flex items-center justify-center" style={{ color: 'var(--acento)', backgroundColor: 'var(--acento-suave)' }}>
                     {progreso.actual}
                   </span>
                 )}
               </div>
-              <p className="text-[#e6edf3] text-sm leading-relaxed pr-20">{ejercicio.enunciado}</p>
+              <p className="text-sm leading-relaxed pr-20" style={{ color: 'var(--texto-primario)' }}>{ejercicio.enunciado}</p>
               <div className="absolute right-2.5 top-9 w-[72px] h-[72px] opacity-[0.08]">
-                <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#8b949e]">
+                <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--texto-secundario)' }}>
                   <rect x="20" y="20" width="40" height="55" rx="2"/>
                   <rect x="28" y="28" width="8" height="8" rx="1"/>
                   <rect x="44" y="28" width="8" height="8" rx="1"/>
@@ -375,22 +392,21 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                   <line x1="37" y1="7" x2="43" y2="7"/>
                 </svg>
               </div>
-              {/* Botón Pista dentro de la tarjeta */}
               {ejercicio?.pistas?.length > 0 && (
                 <button
                   onClick={siguientePista}
-                  className="mt-3 flex items-center gap-1.5 text-[#d29922] text-xs hover:text-[#e3b341] transition-colors"
+                  className="mt-3 flex items-center gap-1.5 text-xs transition-colors"
+                  style={{ color: 'var(--advertencia)' }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
                   {mostrarPista ? 'Ocultar pista' : 'Ver pista'}
                 </button>
               )}
-              {/* Contenido de la pista expandida */}
               {mostrarPista && ejercicio?.pistas && (
-                <div className="mt-2 pt-2 border-t border-[#30363d]">
-                  <p className="text-[#8b949e] text-xs leading-relaxed">{ejercicio.pistas[indicePista]}</p>
+                <div className="mt-2 pt-2 border-t" style={{ borderColor: 'var(--borde)' }}>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>{ejercicio.pistas[indicePista]}</p>
                   {indicePista < ejercicio.pistas.length - 1 && (
-                    <button onClick={siguientePista} className="text-[#d29922] text-[11px] mt-1 opacity-70 hover:opacity-100 transition-opacity">
+                    <button onClick={siguientePista} className="text-[11px] mt-1 opacity-70 hover:opacity-100 transition-opacity" style={{ color: 'var(--advertencia)' }}>
                       Otra pista →
                     </button>
                   )}
@@ -400,16 +416,17 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           )}
 
           {/* Editor SQL */}
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
-            <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-[#30363d]">
+          <div className="border rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+            <div className="flex items-center justify-between px-3.5 py-2.5 border-b" style={{ borderColor: 'var(--borde)' }}>
               <div className="flex items-center gap-1.5">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3fb950" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                <span className="text-[#3fb950] text-xs font-semibold">Escribe tu consulta SQL</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--acento)' }}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <span className="text-xs font-semibold" style={{ color: 'var(--acento)' }}>Escribe tu consulta SQL</span>
               </div>
               <button
                 onClick={formatearConsulta}
                 disabled={!consulta.trim()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#238636] text-white text-[11px] font-semibold hover:bg-[#2ea043] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-[11px] font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110"
+                style={{ backgroundColor: 'var(--acento-btn)' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.272 1.278L21 12l-5.816 1.91a2 2 0 0 0-1.275 1.278L12 21l-1.91-5.812a2 2 0 0 0-1.277-1.278L3 12l5.813-1.91a2 2 0 0 0 1.278-1.277L12 3z"/></svg>
                 Formatear
@@ -418,17 +435,17 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             <div className="flex" style={{ height: 160 }}>
               <div
                 ref={lineNumsRef}
-                className="overflow-hidden py-3 w-8 text-center border-r border-[#30363d] flex-shrink-0 select-none"
-                style={{ backgroundColor: 'rgba(13,17,23,0.5)' }}
+                className="overflow-hidden py-3 w-8 text-center border-r flex-shrink-0 select-none"
+                style={{ backgroundColor: 'color-mix(in srgb, var(--fondo-base) 50%, transparent)', borderColor: 'var(--borde)' }}
               >
                 {(consulta || ' ').split('\n').map((_, i) => (
-                  <div key={i} className="text-[#484f58] font-mono" style={{ fontSize: Math.max(9, nivelZoom - 2), lineHeight: '1.8em', height: `${nivelZoom * 1.8}px` }}>{i + 1}</div>
+                  <div key={i} style={{ color: 'var(--texto-tenue)', fontFamily: 'var(--fuente-mono)', fontSize: Math.max(9, nivelZoom - 2), lineHeight: '1.8em', height: `${nivelZoom * 1.8}px` }}>{i + 1}</div>
                 ))}
               </div>
               <div className="flex-1 relative">
                 {cargando ? (
                   <div className="w-full h-full flex items-center justify-center">
-                    <p className="text-[#484f58] text-sm transition-opacity duration-200" style={{ opacity: opacidadMensaje }}>
+                    <p className="text-sm transition-opacity duration-200" style={{ opacity: opacidadMensaje, color: 'var(--texto-tenue)' }}>
                       {mensajeCarga}
                     </p>
                   </div>
@@ -438,8 +455,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                       <pre
                         ref={capaResaltadoRef}
                         aria-hidden="true"
-                        className="absolute inset-0 font-mono px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
-                        style={{ fontSize: nivelZoom, lineHeight: '1.8em' }}
+                        className="absolute inset-0 px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
+                        style={{ fontFamily: 'var(--fuente-mono)', fontSize: nivelZoom, lineHeight: '1.8em' }}
                         dangerouslySetInnerHTML={{ __html: resaltador.current.resaltar(consulta) + '\n' }}
                       />
                     )}
@@ -453,8 +470,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                       onBlur={() => setTimeout(() => setEditorEnfocado(false), 150)}
                       onSelect={handleSeleccion}
                       placeholder="Escribe tu consulta aquí..."
-                      className="relative w-full h-full bg-transparent font-mono resize-none focus:outline-none px-3 py-3 placeholder-[#484f58] select-text"
-                      style={{ fontSize: nivelZoom, lineHeight: '1.8em', color: resaltadoActivo ? 'transparent' : '#e6edf3', caretColor: '#e6edf3' }}
+                      className="relative w-full h-full bg-transparent resize-none focus:outline-none px-3 py-3 select-text"
+                      style={{ fontFamily: 'var(--fuente-mono)', fontSize: nivelZoom, lineHeight: '1.8em', color: resaltadoActivo ? 'transparent' : 'var(--texto-primario)', caretColor: 'var(--texto-primario)', '--tw-placeholder-opacity': 1 }}
                       spellCheck={false}
                     />
                   </>
@@ -464,13 +481,14 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
             {/* Barra de signos rápidos */}
             {editorEnfocado && mostrarSignos && (
-              <div className="flex items-center gap-1 px-2 py-1.5 border-t border-[#30363d] overflow-x-auto">
-                {[';', '*', '=', '>', '<', '(', ')', "'", ',', '%', '_', '!='].map(s => (
+              <div className="flex items-center gap-1 px-2 py-1.5 border-t overflow-x-auto" style={{ borderColor: 'var(--borde)' }}>
+                {SIGNOS_RAPIDOS.map(s => (
                   <button
                     key={s}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => insertarSigno(s)}
-                    className="min-w-[30px] h-7 px-1.5 rounded bg-[#21262d] border border-[#30363d] text-[#e6edf3] text-xs font-mono hover:bg-[#30363d] transition-colors flex-shrink-0 flex items-center justify-center"
+                    className="min-w-[30px] h-7 px-1.5 rounded border text-xs transition-colors flex-shrink-0 flex items-center justify-center hover:brightness-125"
+                    style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}
                   >
                     {s}
                   </button>
@@ -478,18 +496,18 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               </div>
             )}
             {/* Mini-toolbar: Tablas, Diagrama ER, Reiniciar */}
-            <div className="flex items-center border-t border-[#30363d]">
-              <button onClick={() => setDrawerAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+            <div className="flex items-center border-t" style={{ borderColor: 'var(--borde)' }}>
+              <button onClick={() => setDrawerAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] transition-colors hover:brightness-125" style={{ color: 'var(--texto-secundario)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                 Tablas
               </button>
-              <div className="w-px h-5 bg-[#30363d]" />
-              <button onClick={() => setDiagramaAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+              <div className="w-px h-5" style={{ backgroundColor: 'var(--borde)' }} />
+              <button onClick={() => setDiagramaAbierto(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] transition-colors hover:brightness-125" style={{ color: 'var(--texto-secundario)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 Diagrama ER
               </button>
-              <div className="w-px h-5 bg-[#30363d]" />
-              <button onClick={reiniciar} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[#8b949e] text-[11px] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors">
+              <div className="w-px h-5" style={{ backgroundColor: 'var(--borde)' }} />
+              <button onClick={reiniciar} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] transition-colors hover:brightness-125" style={{ color: 'var(--texto-secundario)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                 Reiniciar
               </button>
@@ -500,31 +518,33 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           <button
             onClick={ejecutar}
             disabled={!consulta.trim()}
-            className="w-full py-3.5 bg-[#238636] hover:bg-[#2ea043] disabled:opacity-40 disabled:cursor-not-allowed text-white text-[15px] font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[15px] font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 hover:brightness-110"
+            style={{ backgroundColor: 'var(--acento-btn)' }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Ejecutar consulta
           </button>
 
           {/* Resultados */}
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden mb-2">
+          <div className="border rounded-xl overflow-hidden mb-2" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
             <button
               onClick={() => setResultadosAbiertos(r => !r)}
               className="w-full flex items-center justify-between px-3.5 py-3"
             >
               <div className="flex items-center gap-2">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-                <span className="text-[#e6edf3] text-[13px] font-medium">Resultados</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--texto-secundario)' }}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                <span className="text-[13px] font-medium" style={{ color: 'var(--texto-primario)' }}>Resultados</span>
               </div>
               <svg
-                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 className={`transition-transform ${resultadosAbiertos ? '' : '-rotate-90'}`}
+                style={{ color: 'var(--texto-secundario)' }}
               >
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </button>
             {resultadosAbiertos && (
-              <div className="border-t border-[#30363d] select-text">
+              <div className="border-t select-text" style={{ borderColor: 'var(--borde)' }}>
                 <PanelResultados resultado={resultado} />
               </div>
             )}
@@ -537,46 +557,82 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
       {panelAjustesAbierto && (
         <div className="fixed inset-0 z-20" onClick={() => setPanelAjustesAbierto(false)} />
       )}
-      <div className={`fixed top-0 right-0 h-full w-64 bg-[#161b22] border-l border-[#30363d] z-30 flex flex-col transition-transform duration-300 ease-in-out ${panelAjustesAbierto ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d]">
+      <div className={`fixed top-0 right-0 h-full w-72 border-l z-30 flex flex-col transition-transform duration-300 ease-in-out ${panelAjustesAbierto ? 'translate-x-0' : 'translate-x-full'}`} style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+        <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: 'var(--borde)' }}>
           <div className="flex items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b949e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            <span className="text-[#e6edf3] text-sm font-semibold">Ajustes</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--texto-secundario)' }}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span className="text-sm font-semibold" style={{ color: 'var(--texto-primario)' }}>Ajustes</span>
           </div>
-          <button onClick={() => setPanelAjustesAbierto(false)} className="text-[#8b949e] hover:text-white text-lg leading-none transition-colors">×</button>
+          <button onClick={() => setPanelAjustesAbierto(false)} className="text-lg leading-none transition-colors" style={{ color: 'var(--texto-secundario)' }}>×</button>
         </div>
-        <div className="px-4 py-4 space-y-5">
-          <button
-            onClick={() => { setPanelAjustesAbierto(false); onVolver(); }}
-            className="w-full py-2.5 bg-[#21262d] border border-[#30363d] rounded-lg text-[#e6edf3] text-sm font-medium hover:bg-[#30363d] transition-colors flex items-center justify-center gap-2"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            Cambiar tema
-          </button>
+        <div className="px-4 py-4 space-y-5 overflow-y-auto flex-1">
+          {/* Selector de tema visual */}
           <div>
-            <p className="text-[#8b949e] text-xs font-semibold mb-2.5">Zoom del editor</p>
+            <p className="text-xs font-semibold mb-2.5" style={{ color: 'var(--texto-secundario)' }}>Tema visual</p>
+            <div className="grid grid-cols-2 gap-2">
+              {gestorTemas.current.temas.map(t => {
+                const c = t.colores;
+                const activo = temaId === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => cambiarTemaVisual(t.id)}
+                    className="p-2 rounded-lg border-2 transition-all text-left"
+                    style={{
+                      backgroundColor: c['fondo-base'],
+                      borderColor: activo ? c['acento'] : c['borde'],
+                    }}
+                  >
+                    <div className="flex gap-1 mb-1.5">
+                      <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['acento'] }} />
+                      <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['sintaxis-clave'] }} />
+                      <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['sintaxis-cadena'] }} />
+                      <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['sintaxis-funcion'] }} />
+                    </div>
+                    <span className="text-[11px] font-medium" style={{ color: c['texto-primario'] }}>{t.nombre}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Zoom del editor */}
+          <div>
+            <p className="text-xs font-semibold mb-2.5" style={{ color: 'var(--texto-secundario)' }}>Zoom del editor</p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setNivelZoom(z => Math.max(8, z - 2))}
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] text-lg font-bold hover:bg-[#30363d] transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-lg border text-lg font-bold transition-colors hover:brightness-125"
+                style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
               >
                 −
               </button>
               <div className="flex-1 text-center">
-                <span className="text-[#e6edf3] text-sm font-mono">{nivelZoom}px</span>
+                <span className="text-sm" style={{ color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}>{nivelZoom}px</span>
               </div>
               <button
                 onClick={() => setNivelZoom(z => Math.min(22, z + 2))}
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#21262d] border border-[#30363d] text-[#e6edf3] text-lg font-bold hover:bg-[#30363d] transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-lg border text-lg font-bold transition-colors hover:brightness-125"
+                style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
               >
                 +
               </button>
             </div>
             <div className="flex justify-between mt-2">
-              <span className="text-[#484f58] text-[10px]">Pequeño</span>
-              <span className="text-[#484f58] text-[10px]">Grande</span>
+              <span className="text-[10px]" style={{ color: 'var(--texto-tenue)' }}>Pequeño</span>
+              <span className="text-[10px]" style={{ color: 'var(--texto-tenue)' }}>Grande</span>
             </div>
           </div>
+
+          {/* Volver a temas */}
+          <button
+            onClick={() => { setPanelAjustesAbierto(false); onVolver(); }}
+            className="w-full py-2.5 border rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 hover:brightness-125"
+            style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Volver a ejercicios
+          </button>
         </div>
       </div>
 

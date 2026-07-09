@@ -43,24 +43,24 @@ export class ResaltadorSintaxis {
       if (salto) {
         resultado += '\n';
       } else if (cadena) {
-        resultado += `<span style="color:#a5d6ff">${this.#escapar(cadena)}</span>`;
+        resultado += `<span style="color:var(--sintaxis-cadena)">${this.#escapar(cadena)}</span>`;
       } else if (numero) {
-        resultado += `<span style="color:#79c0ff">${this.#escapar(numero)}</span>`;
+        resultado += `<span style="color:var(--sintaxis-numero)">${this.#escapar(numero)}</span>`;
       } else if (palabra) {
         const upper = palabra.toUpperCase();
         if (this.#palabrasClave.has(upper)) {
-          resultado += `<span style="color:#ff7b72">${this.#escapar(palabra)}</span>`;
+          resultado += `<span style="color:var(--sintaxis-clave)">${this.#escapar(palabra)}</span>`;
         } else if (this.#funciones.has(upper)) {
-          resultado += `<span style="color:#d2a8ff">${this.#escapar(palabra)}</span>`;
+          resultado += `<span style="color:var(--sintaxis-funcion)">${this.#escapar(palabra)}</span>`;
         } else {
-          resultado += `<span style="color:#e6edf3">${this.#escapar(palabra)}</span>`;
+          resultado += `<span style="color:var(--texto-primario)">${this.#escapar(palabra)}</span>`;
         }
       } else if (operador) {
-        resultado += `<span style="color:#79c0ff">${this.#escapar(operador)}</span>`;
+        resultado += `<span style="color:var(--sintaxis-operador)">${this.#escapar(operador)}</span>`;
       } else if (asterisco) {
-        resultado += `<span style="color:#79c0ff">${asterisco}</span>`;
+        resultado += `<span style="color:var(--sintaxis-operador)">${asterisco}</span>`;
       } else if (puntuacion) {
-        resultado += `<span style="color:#8b949e">${this.#escapar(puntuacion)}</span>`;
+        resultado += `<span style="color:var(--sintaxis-puntuacion)">${this.#escapar(puntuacion)}</span>`;
       } else {
         resultado += this.#escapar(token);
       }
