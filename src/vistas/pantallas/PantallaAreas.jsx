@@ -6,14 +6,14 @@ import { EJERCICIOS } from '../../datos/ejercicios';
 const UMBRAL_PULL = 65;
 
 const COLORES_NIVEL = {
-  1: { barra: '#3fb950', texto: 'text-[#3fb950]' },
-  2: { barra: '#39c5cf', texto: 'text-[#39c5cf]' },
-  3: { barra: '#388bfd', texto: 'text-[#388bfd]' },
-  4: { barra: '#8250df', texto: 'text-[#8250df]' },
-  5: { barra: '#d29922', texto: 'text-[#d29922]' },
-  6: { barra: '#e3b341', texto: 'text-[#e3b341]' },
-  7: { barra: '#f78166', texto: 'text-[#f78166]' },
-  8: { barra: '#f85149', texto: 'text-[#f85149]' },
+  1: { barra: '#3fb950', texto: '#3fb950' },
+  2: { barra: '#39c5cf', texto: '#39c5cf' },
+  3: { barra: '#388bfd', texto: '#388bfd' },
+  4: { barra: '#8250df', texto: '#8250df' },
+  5: { barra: '#d29922', texto: '#d29922' },
+  6: { barra: '#e3b341', texto: '#e3b341' },
+  7: { barra: '#f78166', texto: '#f78166' },
+  8: { barra: '#f85149', texto: '#f85149' },
 };
 
 const AREA_ESTILOS = {
@@ -39,7 +39,6 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-5 pb-4 space-y-3">
 
-      {/* Tarjetas de áreas */}
       {AREAS.map(area => {
         const estilos = AREA_ESTILOS[area.id] ?? AREA_ESTILOS['bases-de-datos'];
         const { color, Icono } = estilos;
@@ -49,10 +48,9 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
         return (
           <div
             key={area.id}
-            className="rounded-2xl border bg-[#161b22] overflow-hidden"
-            style={{ borderColor: `${color}40` }}
+            className="rounded-2xl border overflow-hidden"
+            style={{ backgroundColor: 'var(--fondo-panel)', borderColor: `${color}40` }}
           >
-            {/* Fila principal */}
             <button
               onClick={() => area.disponible && onSeleccionar(area)}
               disabled={!area.disponible}
@@ -63,8 +61,8 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
                 <Icono />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-white font-semibold text-base font-sans">{area.nombre}</p>
-                <p className={`text-xs mt-1 font-sans leading-relaxed ${esIA ? '' : 'text-[#8b949e]'}`} style={esIA ? { color } : {}}>
+                <p className="font-semibold text-base font-sans" style={{ color: 'var(--texto-primario)' }}>{area.nombre}</p>
+                <p className="text-xs mt-1 font-sans leading-relaxed" style={{ color: esIA ? color : 'var(--texto-secundario)' }}>
                   {area.descripcion}
                 </p>
               </div>
@@ -83,17 +81,16 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
               )}
             </button>
 
-            {/* Continuar — solo dentro de Bases de Datos si hay progreso */}
             {tieneContinuar && (
               <button
                 onClick={onContinuar}
-                className="w-full flex items-center gap-3 px-5 py-3 border-t text-left transition-colors hover:bg-[#3fb950]/5 active:bg-[#3fb950]/10"
+                className="w-full flex items-center gap-3 px-5 py-3 border-t text-left transition-colors"
                 style={{ borderColor: `${color}25` }}
               >
-                <span className="text-[#3fb950] text-sm">▶</span>
-                <span className="text-[#3fb950] text-xs font-sans font-medium">Continuar</span>
-                <span className="text-[#484f58] text-xs font-sans">· {ultimaPosicion.tema.nombre}</span>
-                <span className="ml-auto text-[#484f58] text-xs font-mono">{ultimaPosicion.completados}/{ultimaPosicion.total}</span>
+                <span className="text-sm" style={{ color: 'var(--acento)' }}>▶</span>
+                <span className="text-xs font-sans font-medium" style={{ color: 'var(--acento)' }}>Continuar</span>
+                <span className="text-xs font-sans" style={{ color: 'var(--texto-tenue)' }}>· {ultimaPosicion.tema.nombre}</span>
+                <span className="ml-auto text-xs font-mono" style={{ color: 'var(--texto-tenue)' }}>{ultimaPosicion.completados}/{ultimaPosicion.total}</span>
               </button>
             )}
           </div>
@@ -110,11 +107,11 @@ function TabProgreso({ controladorPerfil }) {
 
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-6 pb-4">
-      <h2 className="text-[#e6edf3] text-lg font-semibold font-sans mb-1">Mi Progreso</h2>
-      <p className="text-[#8b949e] text-xs font-sans mb-6">{totalCompletados} de {totalEjercicios} ejercicios completados</p>
+      <h2 className="text-lg font-semibold font-sans mb-1" style={{ color: 'var(--texto-primario)' }}>Mi Progreso</h2>
+      <p className="text-xs font-sans mb-6" style={{ color: 'var(--texto-secundario)' }}>{totalCompletados} de {totalEjercicios} ejercicios completados</p>
 
       {resumen.filter(n => n.completados > 0).length === 0 ? (
-        <p className="text-[#484f58] text-sm font-sans text-center mt-12">Aún no has completado ningún ejercicio.</p>
+        <p className="text-sm font-sans text-center mt-12" style={{ color: 'var(--texto-tenue)' }}>Aún no has completado ningún ejercicio.</p>
       ) : (
         <div className="space-y-5">
           {resumen.filter(n => n.completados > 0).map(({ nombre, orden, completados, total }) => {
@@ -123,13 +120,13 @@ function TabProgreso({ controladorPerfil }) {
             return (
               <div key={nombre}>
                 <div className="flex justify-between items-center mb-2">
-                  <p className="text-[#e6edf3] text-sm font-sans">{nombre}</p>
+                  <p className="text-sm font-sans" style={{ color: 'var(--texto-primario)' }}>{nombre}</p>
                   <p className="text-xs font-mono">
-                    <span className={color.texto}>{completados}</span>
-                    <span className="text-[#484f58]">/{total}</span>
+                    <span style={{ color: color.texto }}>{completados}</span>
+                    <span style={{ color: 'var(--texto-tenue)' }}>/{total}</span>
                   </p>
                 </div>
-                <div className="h-2 bg-[#21262d] rounded-full overflow-hidden">
+                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
                   <div className="h-full rounded-full transition-all duration-500" style={{ width: `${porcentaje}%`, backgroundColor: color.barra }} />
                 </div>
               </div>
@@ -144,11 +141,11 @@ function TabProgreso({ controladorPerfil }) {
 function TabFavoritos() {
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-8 text-center pt-20">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#30363d" strokeWidth="1.5" className="mb-4">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" className="mb-4" style={{ stroke: 'var(--borde)' }}>
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
-      <p className="text-[#484f58] text-sm font-sans">Favoritos próximamente</p>
-      <p className="text-[#30363d] text-xs font-sans mt-2">Podrás guardar tus ejercicios y temas favoritos aquí</p>
+      <p className="text-sm font-sans" style={{ color: 'var(--texto-tenue)' }}>Favoritos próximamente</p>
+      <p className="text-xs font-sans mt-2" style={{ color: 'var(--borde)' }}>Podrás guardar tus ejercicios y temas favoritos aquí</p>
     </div>
   );
 }
@@ -165,10 +162,10 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
 
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-6 pb-4 space-y-6">
-      <h2 className="text-[#e6edf3] text-lg font-semibold font-sans">Ajustes</h2>
+      <h2 className="text-lg font-semibold font-sans" style={{ color: 'var(--texto-primario)' }}>Ajustes</h2>
 
       <div>
-        <p className="text-[#8b949e] text-xs mb-2 font-sans">Tu nombre</p>
+        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Tu nombre</p>
         {editando ? (
           <input
             autoFocus
@@ -177,17 +174,19 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
             onBlur={() => setEditando(false)}
             onKeyDown={e => e.key === 'Enter' && setEditando(false)}
             placeholder="Escribe tu nombre..."
-            className="w-full bg-[#0d1117] border border-[#388bfd] rounded-xl px-4 py-3 text-[#e6edf3] text-sm font-sans focus:outline-none"
+            className="w-full border rounded-xl px-4 py-3 text-sm font-sans focus:outline-none"
+            style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--acento)', color: 'var(--texto-primario)' }}
           />
         ) : (
           <button
             onClick={() => setEditando(true)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-[#161b22] border border-[#30363d] rounded-xl hover:border-[#8b949e] transition-colors"
+            className="w-full flex items-center justify-between px-4 py-3 border rounded-xl hover:border-[#8b949e] transition-colors"
+            style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}
           >
-            <span className={`text-sm font-sans ${nombre ? 'text-[#e6edf3]' : 'text-[#484f58]'}`}>
+            <span className="text-sm font-sans" style={{ color: nombre ? 'var(--texto-primario)' : 'var(--texto-tenue)' }}>
               {nombre || 'Escribe tu nombre...'}
             </span>
-            <span className="text-[#484f58] text-xs">✎</span>
+            <span className="text-xs" style={{ color: 'var(--texto-tenue)' }}>✎</span>
           </button>
         )}
       </div>
@@ -195,7 +194,8 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
       {onRecordatorios && (
         <button
           onClick={onRecordatorios}
-          className="w-full py-3 border border-[#30363d] rounded-xl text-[#8b949e] hover:text-white hover:border-[#8b949e] text-sm font-sans transition-colors flex items-center justify-center gap-2"
+          className="w-full py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors flex items-center justify-center gap-2"
+          style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -208,7 +208,8 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
       {onVerArbol && (
         <button
           onClick={onVerArbol}
-          className="w-full py-3 border border-[#30363d] rounded-xl text-[#8b949e] hover:text-white hover:border-[#8b949e] text-sm font-sans transition-colors"
+          className="w-full py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors"
+          style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
         >
           📋 Ver currículo completo
         </button>
@@ -217,17 +218,19 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
       <div className="pt-2">
         {confirmando ? (
           <div className="space-y-3">
-            <p className="text-[#f85149] text-xs font-sans">¿Borrar todo el avance? No se puede deshacer.</p>
+            <p className="text-xs font-sans" style={{ color: 'var(--error)' }}>¿Borrar todo el avance? No se puede deshacer.</p>
             <div className="flex gap-2">
               <button
                 onClick={() => { controladorPerfil.borrarAvance(); setConfirmando(false); }}
-                className="flex-1 py-2.5 bg-[#f85149] hover:bg-[#da3633] text-white text-sm rounded-xl font-sans transition-colors"
+                className="flex-1 py-2.5 text-sm rounded-xl font-sans transition-colors"
+                style={{ backgroundColor: 'var(--error)', color: '#fff' }}
               >
                 Confirmar
               </button>
               <button
                 onClick={() => setConfirmando(false)}
-                className="flex-1 py-2.5 border border-[#30363d] text-[#8b949e] hover:text-white text-sm rounded-xl font-sans transition-colors"
+                className="flex-1 py-2.5 border hover:text-white text-sm rounded-xl font-sans transition-colors"
+                style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
               >
                 Cancelar
               </button>
@@ -236,7 +239,8 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
         ) : (
           <button
             onClick={() => setConfirmando(true)}
-            className="w-full py-3 border border-[#f85149]/40 text-[#f85149] hover:bg-[#f85149]/10 text-sm rounded-xl font-sans transition-colors"
+            className="w-full py-3 border text-sm rounded-xl font-sans transition-colors"
+            style={{ borderColor: 'color-mix(in srgb, var(--error) 40%, transparent)', color: 'var(--error)' }}
           >
             🗑️ Borrar todo el avance
           </button>
@@ -323,31 +327,29 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
 
   return (
     <div
-      className="min-h-[100svh] bg-[#0d1117] flex flex-col select-none relative"
+      className="min-h-[100svh] flex flex-col select-none relative"
+      style={{ backgroundColor: 'var(--fondo-base)' }}
       onTouchStart={manejarTouchStart}
       onTouchMove={manejarTouchMove}
       onTouchEnd={manejarTouchEnd}
     >
-      {/* Banner nueva versión */}
       {needRefresh && !actualizando && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-[#1c2128] border-b border-[#388bfd] px-4 py-2 flex items-center justify-between font-sans">
-          <p className="text-[#388bfd] text-xs">Nueva versión disponible</p>
-          <button onClick={() => { setActualizando(true); onActualizar(); }} className="text-white text-xs bg-[#238636] px-3 py-1 rounded-md transition-colors">
+        <div className="fixed top-0 left-0 right-0 z-50 px-4 py-2 flex items-center justify-between font-sans" style={{ backgroundColor: 'var(--fondo-elevado)', borderBottom: '1px solid var(--acento)' }}>
+          <p className="text-xs" style={{ color: 'var(--acento)' }}>Nueva versión disponible</p>
+          <button onClick={() => { setActualizando(true); onActualizar(); }} className="text-xs px-3 py-1 rounded-md transition-colors" style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}>
             Actualizar
           </button>
         </div>
       )}
 
-      {/* Indicador pull-to-refresh */}
       {(tirando || actualizando) && (
         <div className="fixed top-3 left-0 right-0 flex justify-center z-40 pointer-events-none" style={{ opacity: actualizando ? 1 : opacidadIndicador }}>
-          <p className="text-[#484f58] text-xs font-sans">
+          <p className="text-xs font-sans" style={{ color: 'var(--texto-tenue)' }}>
             {actualizando ? '↻ Actualizando...' : listoParaSoltar ? '↑ Suelta para actualizar' : '↓ Desliza para actualizar'}
           </p>
         </div>
       )}
 
-      {/* Hero con imagen */}
       <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
         <img src="/hero-bg.png" alt="" className="w-full h-full object-cover object-center" draggable="false" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20" style={{ '--tw-gradient-to': 'var(--fondo-base)' }} />
@@ -360,7 +362,6 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           </svg>
         </button>
 
-        {/* Botón instalar app — solo en navegador, desaparece si ya está instalada */}
         {promptInstalar && (
           <button
             onClick={instalarApp}
@@ -379,7 +380,6 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         </div>
       </div>
 
-      {/* Contenido de la tab activa */}
       <div className="flex-1 pb-20">
         {tabActual === 'inicio' && (
           <TabInicio
@@ -393,19 +393,19 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         {tabActual === 'ajustes' && <TabAjustes controladorPerfil={controladorPerfil} onVerArbol={() => { onVerArbol?.(); }} onRecordatorios={onRecordatorios} />}
       </div>
 
-      {/* Barra de navegación inferior */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-[#161b22] border-t border-[#30363d] flex items-center justify-around z-30" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <nav className="fixed bottom-0 left-0 right-0 flex items-center justify-around z-30" style={{ backgroundColor: 'var(--fondo-panel)', borderTop: '1px solid var(--borde)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {TABS_NAV.map(({ id, label, Icono }) => {
           const activo = tabActual === id;
           return (
             <button
               key={id}
               onClick={() => setTabActual(id)}
-              className={`flex flex-col items-center gap-1 py-3 px-5 transition-colors ${activo ? 'text-[#3fb950]' : 'text-[#484f58]'}`}
+              className="flex flex-col items-center gap-1 py-3 px-5 transition-colors"
+              style={{ color: activo ? 'var(--acento)' : 'var(--texto-tenue)' }}
             >
               <Icono activo={activo} />
               <span className="text-[10px] font-sans">{label}</span>
-              {activo && <div className="absolute bottom-0 w-8 h-0.5 bg-[#3fb950] rounded-full" />}
+              {activo && <div className="absolute bottom-0 w-8 h-0.5 rounded-full" style={{ backgroundColor: 'var(--acento)' }} />}
             </button>
           );
         })}
