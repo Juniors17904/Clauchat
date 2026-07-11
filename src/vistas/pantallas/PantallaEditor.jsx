@@ -232,6 +232,12 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   };
 
   const ejecutar = async () => {
+    if (consulta.trim()) {
+      const formateada = formateador.current.formatear(consulta);
+      setConsulta(formateada);
+      sesion.current?.guardarConsulta(formateada);
+      setResaltadoActivo(true);
+    }
     const res = await controlador.current.ejecutarConsulta(consulta);
     setResultado(res);
     if (res.error) {
