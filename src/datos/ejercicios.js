@@ -851,4 +851,426 @@ export const EJERCICIOS = [
       'stock / 30 AS cajas_disponibles',
     ],
   }),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // ██ POSTGRESQL                                                          ██
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── PG · NIVEL 1 · TEMA 1 — LIMIT / OFFSET ─────────────────────────────
+  new Ejercicio({
+    id: 'pg-n1-t1-01',
+    titulo: 'Los 5 mejores promedios',
+    enunciado: 'Obtén nombre, apellido y promedio de los 5 estudiantes con mejor promedio. Ordena de mayor a menor.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t1', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre, apellido, promedio FROM estudiantes ORDER BY promedio DESC LIMIT 5',
+    pistas: [
+      'Usa ORDER BY promedio DESC para ordenar de mayor a menor',
+      'LIMIT 5 al final restringe a 5 resultados',
+      'SELECT nombre, apellido, promedio FROM estudiantes ORDER BY promedio DESC LIMIT 5',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n1-t1-02',
+    titulo: 'Segunda página de estudiantes',
+    enunciado: 'Obtén nombre, apellido y promedio de los estudiantes del 6° al 10° lugar por promedio (de mayor a menor). Usa paginación.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t1', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre, apellido, promedio FROM estudiantes ORDER BY promedio DESC LIMIT 5 OFFSET 5',
+    pistas: [
+      'OFFSET salta las primeras filas antes de aplicar LIMIT',
+      'OFFSET 5 salta los primeros 5 resultados',
+      'SELECT nombre, apellido, promedio FROM estudiantes ORDER BY promedio DESC LIMIT 5 OFFSET 5',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n1-t1-03',
+    titulo: 'Jugadores de la tercera página',
+    enunciado: 'Muestra nombre, apellido y valor_mercado de los jugadores, paginando de 3 en 3 por valor de mercado (de mayor a menor). Obtén la tercera página (posiciones 7 a 9).',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t1', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre, apellido, valor_mercado FROM jugadores ORDER BY valor_mercado DESC LIMIT 3 OFFSET 6',
+    pistas: [
+      'La tercera página de 3 elementos empieza en la posición 7 (OFFSET 6)',
+      'LIMIT 3 OFFSET 6 salta los primeros 6 y toma los siguientes 3',
+      'SELECT nombre, apellido, valor_mercado FROM jugadores ORDER BY valor_mercado DESC LIMIT 3 OFFSET 6',
+    ],
+  }),
+
+  // ── PG · NIVEL 1 · TEMA 2 — ILIKE ──────────────────────────────────────
+  new Ejercicio({
+    id: 'pg-n1-t2-01',
+    titulo: 'Nombres que empiezan con A',
+    enunciado: 'Busca estudiantes cuyo nombre empiece con "a", sin importar si es mayúscula o minúscula. Muestra nombre y apellido.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t2', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT nombre, apellido FROM estudiantes WHERE nombre ILIKE 'a%'",
+    pistas: [
+      'ILIKE funciona igual que LIKE pero ignora mayúsculas/minúsculas',
+      "Usa ILIKE 'a%' para buscar nombres que empiecen con a o A",
+      "SELECT nombre, apellido FROM estudiantes WHERE nombre ILIKE 'a%'",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n1-t2-02',
+    titulo: 'Apellidos que contienen "ez"',
+    enunciado: 'Busca jugadores cuyo apellido contenga "ez" (como Fernández, González), sin importar mayúsculas. Muestra nombre, apellido y posición.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t2', baseDatosId: 'deportes',
+    consultaEsperada: "SELECT nombre, apellido, posicion FROM jugadores WHERE apellido ILIKE '%ez%'",
+    pistas: [
+      'Usa % al inicio y al final para buscar en cualquier posición del texto',
+      "ILIKE '%ez%' busca 'ez' en cualquier parte del apellido",
+      "SELECT nombre, apellido, posicion FROM jugadores WHERE apellido ILIKE '%ez%'",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n1-t2-03',
+    titulo: 'Médicos con apellido que empiece con C',
+    enunciado: 'Busca médicos cuyo apellido empiece con "c", sin importar mayúsculas. Muestra nombre, apellido y turno.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t2', baseDatosId: 'hospital',
+    consultaEsperada: "SELECT nombre, apellido, turno FROM medicos WHERE apellido ILIKE 'c%'",
+    pistas: [
+      'ILIKE es exclusivo de PostgreSQL — en SQL estándar usarías LOWER() con LIKE',
+      "ILIKE 'c%' busca apellidos que empiecen con c o C",
+      "SELECT nombre, apellido, turno FROM medicos WHERE apellido ILIKE 'c%'",
+    ],
+  }),
+
+  // ── PG · NIVEL 1 · TEMA 3 — :: (type casting) ──────────────────────────
+  new Ejercicio({
+    id: 'pg-n1-t3-01',
+    titulo: 'Promedio como entero',
+    enunciado: 'Obtén nombre, promedio original y promedio truncado a entero de los 5 mejores estudiantes. Llama a la columna truncada: promedio_entero.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t3', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre, promedio, promedio::INTEGER AS promedio_entero FROM estudiantes ORDER BY promedio DESC LIMIT 5',
+    pistas: [
+      ':: es el operador de casting de PostgreSQL',
+      'promedio::INTEGER convierte el decimal a entero (trunca)',
+      'SELECT nombre, promedio, promedio::INTEGER AS promedio_entero FROM estudiantes ORDER BY promedio DESC LIMIT 5',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n1-t3-02',
+    titulo: 'Profesores contratados antes de 2013',
+    enunciado: 'Obtén nombre, apellido y fecha_contrato de profesores contratados antes del 2013-01-01. Convierte la fecha de TEXT a DATE con :: para comparar correctamente. Ordena por fecha.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t3', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT nombre, apellido, fecha_contrato FROM profesores WHERE fecha_contrato::DATE < '2013-01-01'::DATE ORDER BY fecha_contrato::DATE",
+    pistas: [
+      'Las fechas están guardadas como TEXT, necesitas convertirlas a DATE',
+      "fecha_contrato::DATE convierte el texto a fecha real",
+      "SELECT nombre, apellido, fecha_contrato FROM profesores WHERE fecha_contrato::DATE < '2013-01-01'::DATE ORDER BY fecha_contrato::DATE",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n1-t3-03',
+    titulo: 'Valor en millones',
+    enunciado: 'Obtén nombre, apellido y valor de mercado en millones (como entero) de los jugadores que valgan más de 10 millones. Llama a la columna: millones. Ordena de mayor a menor.',
+    nivelId: 'pg-nivel1', temaId: 'pg-n1-t3', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT nombre, apellido, (valor_mercado / 1000000)::INTEGER AS millones FROM jugadores WHERE (valor_mercado / 1000000)::INTEGER > 10 ORDER BY valor_mercado DESC',
+    pistas: [
+      'Divide valor_mercado entre 1000000 y luego aplica ::INTEGER',
+      '(valor_mercado / 1000000)::INTEGER convierte a millones enteros',
+      'SELECT nombre, apellido, (valor_mercado / 1000000)::INTEGER AS millones FROM jugadores WHERE (valor_mercado / 1000000)::INTEGER > 10 ORDER BY valor_mercado DESC',
+    ],
+  }),
+
+  // ── PG · NIVEL 2 · TEMA 1 — string_agg() ───────────────────────────────
+  new Ejercicio({
+    id: 'pg-n2-t1-01',
+    titulo: 'Jugadores por posición',
+    enunciado: 'Para cada posición, muestra todos los nombres de jugadores concatenados con ", ". Ordena los nombres dentro de cada grupo alfabéticamente. Llama a la columna: jugadores.',
+    nivelId: 'pg-nivel2', temaId: 'pg-n2-t1', baseDatosId: 'deportes',
+    consultaEsperada: "SELECT posicion, string_agg(nombre, ', ' ORDER BY nombre) AS jugadores FROM jugadores GROUP BY posicion",
+    pistas: [
+      'string_agg(columna, separador) concatena valores de un grupo',
+      'Puedes usar ORDER BY dentro de string_agg para ordenar los valores',
+      "SELECT posicion, string_agg(nombre, ', ' ORDER BY nombre) AS jugadores FROM jugadores GROUP BY posicion",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n2-t1-02',
+    titulo: 'Médicos por turno',
+    enunciado: 'Para cada turno, concatena los nombres de los médicos separados por " - ". Ordena los nombres dentro del grupo. Llama a la columna: medicos. Ordena por turno.',
+    nivelId: 'pg-nivel2', temaId: 'pg-n2-t1', baseDatosId: 'hospital',
+    consultaEsperada: "SELECT turno, string_agg(nombre, ' - ' ORDER BY nombre) AS medicos FROM medicos GROUP BY turno ORDER BY turno",
+    pistas: [
+      'El separador puede ser cualquier texto, no solo coma',
+      "string_agg(nombre, ' - ' ORDER BY nombre) separa con guión",
+      "SELECT turno, string_agg(nombre, ' - ' ORDER BY nombre) AS medicos FROM medicos GROUP BY turno ORDER BY turno",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n2-t1-03',
+    titulo: 'Estudiantes por carrera',
+    enunciado: 'Muestra el nombre de cada carrera y los nombres de sus estudiantes concatenados con ", ". Usa JOIN con la tabla carreras. Llama a la columna de nombres: estudiantes. Ordena por carrera.',
+    nivelId: 'pg-nivel2', temaId: 'pg-n2-t1', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT c.nombre AS carrera, string_agg(e.nombre, ', ' ORDER BY e.nombre) AS estudiantes FROM estudiantes e JOIN carreras c ON e.carrera_id = c.id GROUP BY c.nombre ORDER BY c.nombre",
+    pistas: [
+      'Necesitas un JOIN entre estudiantes y carreras',
+      'Agrupa por c.nombre (nombre de la carrera)',
+      "SELECT c.nombre AS carrera, string_agg(e.nombre, ', ' ORDER BY e.nombre) AS estudiantes FROM estudiantes e JOIN carreras c ON e.carrera_id = c.id GROUP BY c.nombre ORDER BY c.nombre",
+    ],
+  }),
+
+  // ── PG · NIVEL 2 · TEMA 2 — array_agg() ────────────────────────────────
+  new Ejercicio({
+    id: 'pg-n2-t2-01',
+    titulo: 'Posiciones por equipo',
+    enunciado: 'Para cada equipo, genera un array con las posiciones únicas de sus jugadores, ordenadas alfabéticamente. Usa JOIN con equipos. Llama a la columna: posiciones. Ordena por equipo.',
+    nivelId: 'pg-nivel2', temaId: 'pg-n2-t2', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT e.nombre AS equipo, array_agg(DISTINCT j.posicion ORDER BY j.posicion) AS posiciones FROM equipos e JOIN jugadores j ON j.equipo_id = e.id GROUP BY e.nombre ORDER BY e.nombre',
+    pistas: [
+      'array_agg() es como string_agg() pero devuelve un array PostgreSQL',
+      'DISTINCT dentro de array_agg elimina duplicados',
+      'SELECT e.nombre AS equipo, array_agg(DISTINCT j.posicion ORDER BY j.posicion) AS posiciones FROM equipos e JOIN jugadores j ON j.equipo_id = e.id GROUP BY e.nombre ORDER BY e.nombre',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n2-t2-02',
+    titulo: 'Array de jugadores por posición',
+    enunciado: 'Para cada posición, genera un array con los nombres de los jugadores ordenados. Llama a la columna: jugadores. Ordena por posición.',
+    nivelId: 'pg-nivel2', temaId: 'pg-n2-t2', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT posicion, array_agg(nombre ORDER BY nombre) AS jugadores FROM jugadores GROUP BY posicion ORDER BY posicion',
+    pistas: [
+      'array_agg devuelve los valores como un array {val1,val2,...}',
+      'Usa ORDER BY dentro de array_agg para ordenar los elementos',
+      'SELECT posicion, array_agg(nombre ORDER BY nombre) AS jugadores FROM jugadores GROUP BY posicion ORDER BY posicion',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n2-t2-03',
+    titulo: 'Médicos por especialidad',
+    enunciado: 'Para cada especialidad, genera un array con los nombres de sus médicos ordenados. Usa JOIN con especialidades. Llama a la columna: medicos. Ordena por especialidad.',
+    nivelId: 'pg-nivel2', temaId: 'pg-n2-t2', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT e.nombre AS especialidad, array_agg(m.nombre ORDER BY m.nombre) AS medicos FROM especialidades e JOIN medicos m ON m.especialidad_id = e.id GROUP BY e.nombre ORDER BY e.nombre',
+    pistas: [
+      'El JOIN conecta medicos con especialidades por especialidad_id',
+      'array_agg genera un array PostgreSQL nativo',
+      'SELECT e.nombre AS especialidad, array_agg(m.nombre ORDER BY m.nombre) AS medicos FROM especialidades e JOIN medicos m ON m.especialidad_id = e.id GROUP BY e.nombre ORDER BY e.nombre',
+    ],
+  }),
+
+  // ── PG · NIVEL 5 · TEMA 1 — || (concatenación) ─────────────────────────
+  new Ejercicio({
+    id: 'pg-n5-t1-01',
+    titulo: 'Nombre completo con ||',
+    enunciado: 'Genera el nombre completo de los 10 primeros estudiantes (nombre + espacio + apellido) usando el operador ||. Llama a la columna: nombre_completo. Ordena por nombre.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t1', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT nombre || ' ' || apellido AS nombre_completo FROM estudiantes ORDER BY nombre LIMIT 10",
+    pistas: [
+      'En PostgreSQL, || concatena textos (en otros motores se usa CONCAT)',
+      "nombre || ' ' || apellido une los dos con un espacio",
+      "SELECT nombre || ' ' || apellido AS nombre_completo FROM estudiantes ORDER BY nombre LIMIT 10",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t1-02',
+    titulo: 'Formato formal de profesores',
+    enunciado: 'Muestra los profesores en formato "Apellido, Nombre" usando ||. Llama a la columna: nombre_formal. Ordena por apellido.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t1', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT apellido || ', ' || nombre AS nombre_formal FROM profesores ORDER BY apellido",
+    pistas: [
+      "Concatena: apellido || ', ' || nombre",
+      '|| puede unir cualquier cantidad de textos',
+      "SELECT apellido || ', ' || nombre AS nombre_formal FROM profesores ORDER BY apellido",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t1-03',
+    titulo: 'Equipo con ciudad',
+    enunciado: 'Muestra cada equipo en formato "Nombre (Ciudad)" usando ||. Llama a la columna: equipo_ciudad. Ordena por nombre.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t1', baseDatosId: 'deportes',
+    consultaEsperada: "SELECT nombre || ' (' || ciudad || ')' AS equipo_ciudad FROM equipos ORDER BY nombre",
+    pistas: [
+      "Combina: nombre || ' (' || ciudad || ')'",
+      'Los paréntesis son texto literal dentro de comillas simples',
+      "SELECT nombre || ' (' || ciudad || ')' AS equipo_ciudad FROM equipos ORDER BY nombre",
+    ],
+  }),
+
+  // ── PG · NIVEL 5 · TEMA 2 — AGE(), EXTRACT(), INTERVAL ─────────────────
+  new Ejercicio({
+    id: 'pg-n5-t2-01',
+    titulo: 'Año de contratación',
+    enunciado: 'Obtén nombre, apellido y el año de contratación de cada profesor usando EXTRACT. Las fechas están como TEXT, conviértelas a DATE. Llama a la columna: anio_contrato. Ordena por año.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t2', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT nombre, apellido, EXTRACT(YEAR FROM fecha_contrato::DATE) AS anio_contrato FROM profesores ORDER BY anio_contrato',
+    pistas: [
+      'EXTRACT(YEAR FROM fecha) extrae el año de una fecha',
+      'Como fecha_contrato es TEXT, primero conviértela con ::DATE',
+      'SELECT nombre, apellido, EXTRACT(YEAR FROM fecha_contrato::DATE) AS anio_contrato FROM profesores ORDER BY anio_contrato',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t2-02',
+    titulo: 'Mes y día de consultas',
+    enunciado: 'Obtén el motivo, el mes y el día de cada consulta usando EXTRACT. Llama a las columnas: mes y dia. Ordena por fecha. Muestra las primeras 10.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t2', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT motivo, EXTRACT(MONTH FROM fecha::DATE) AS mes, EXTRACT(DAY FROM fecha::DATE) AS dia FROM consultas ORDER BY fecha::DATE LIMIT 10',
+    pistas: [
+      'EXTRACT puede obtener MONTH, DAY, YEAR, HOUR, etc.',
+      'Convierte fecha con ::DATE antes de extraer',
+      'SELECT motivo, EXTRACT(MONTH FROM fecha::DATE) AS mes, EXTRACT(DAY FROM fecha::DATE) AS dia FROM consultas ORDER BY fecha::DATE LIMIT 10',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t2-03',
+    titulo: 'Cinco años después',
+    enunciado: 'Obtén nombre, apellido, fecha de contrato como DATE y la fecha 5 años después. Usa INTERVAL. Llama a las columnas: fecha_inicio y aniversario_5. Muestra los 5 más antiguos.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t2', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT nombre, apellido, fecha_contrato::DATE AS fecha_inicio, (fecha_contrato::DATE + INTERVAL '5 years')::DATE AS aniversario_5 FROM profesores ORDER BY fecha_contrato::DATE LIMIT 5",
+    pistas: [
+      "INTERVAL '5 years' representa un período de 5 años",
+      'Suma una fecha + un intervalo para obtener una nueva fecha',
+      "SELECT nombre, apellido, fecha_contrato::DATE AS fecha_inicio, (fecha_contrato::DATE + INTERVAL '5 years')::DATE AS aniversario_5 FROM profesores ORDER BY fecha_contrato::DATE LIMIT 5",
+    ],
+  }),
+
+  // ── PG · NIVEL 5 · TEMA 3 — TO_CHAR(), TO_DATE() ───────────────────────
+  new Ejercicio({
+    id: 'pg-n5-t3-01',
+    titulo: 'Fecha en formato DD/MM/YYYY',
+    enunciado: 'Muestra el motivo y la fecha de las consultas en formato DD/MM/YYYY usando TO_CHAR. Llama a la columna: fecha_formato. Ordena por fecha. Muestra las primeras 10.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t3', baseDatosId: 'hospital',
+    consultaEsperada: "SELECT motivo, TO_CHAR(fecha::DATE, 'DD/MM/YYYY') AS fecha_formato FROM consultas ORDER BY fecha::DATE LIMIT 10",
+    pistas: [
+      'TO_CHAR convierte un valor a texto con un formato específico',
+      "'DD/MM/YYYY' es el patrón: Día/Mes/Año",
+      "SELECT motivo, TO_CHAR(fecha::DATE, 'DD/MM/YYYY') AS fecha_formato FROM consultas ORDER BY fecha::DATE LIMIT 10",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t3-02',
+    titulo: 'Salario con formato moneda',
+    enunciado: 'Muestra nombre, apellido y salario de profesores formateado con signo $ y separador de miles usando TO_CHAR. Llama a la columna: salario_formato. Ordena por salario descendente.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t3', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT nombre, apellido, TO_CHAR(salario, 'FM$999,999,999') AS salario_formato FROM profesores ORDER BY salario DESC",
+    pistas: [
+      'TO_CHAR también formatea números, no solo fechas',
+      "FM elimina espacios en blanco; 9 representa un dígito; , es separador de miles",
+      "SELECT nombre, apellido, TO_CHAR(salario, 'FM$999,999,999') AS salario_formato FROM profesores ORDER BY salario DESC",
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t3-03',
+    titulo: 'Día de la semana',
+    enunciado: 'Muestra el motivo y el nombre del día de la semana de cada consulta usando TO_CHAR. Llama a la columna: dia_semana. Ordena por fecha. Muestra las primeras 10.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t3', baseDatosId: 'hospital',
+    consultaEsperada: "SELECT motivo, TO_CHAR(fecha::DATE, 'Day') AS dia_semana FROM consultas ORDER BY fecha::DATE LIMIT 10",
+    pistas: [
+      "'Day' en TO_CHAR devuelve el nombre completo del día",
+      "Otros patrones: 'Month', 'Day', 'HH24:MI', 'YYYY'",
+      "SELECT motivo, TO_CHAR(fecha::DATE, 'Day') AS dia_semana FROM consultas ORDER BY fecha::DATE LIMIT 10",
+    ],
+  }),
+
+  // ── PG · NIVEL 5 · TEMA 4 — GENERATE_SERIES() ──────────────────────────
+  new Ejercicio({
+    id: 'pg-n5-t4-01',
+    titulo: 'Números del 1 al 10',
+    enunciado: 'Genera una secuencia de números del 1 al 10 usando generate_series. La columna se debe llamar: numero.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t4', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT generate_series(1, 10) AS numero',
+    pistas: [
+      'generate_series(inicio, fin) genera una secuencia de números',
+      'Úsalo directamente en el SELECT',
+      'SELECT generate_series(1, 10) AS numero',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t4-02',
+    titulo: 'Números pares del 2 al 20',
+    enunciado: 'Genera los números pares del 2 al 20 usando generate_series con un paso de 2. La columna se debe llamar: numero_par.',
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t4', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT generate_series(2, 20, 2) AS numero_par',
+    pistas: [
+      'generate_series acepta un tercer parámetro: el paso (step)',
+      'generate_series(2, 20, 2) genera 2, 4, 6, ..., 20',
+      'SELECT generate_series(2, 20, 2) AS numero_par',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n5-t4-03',
+    titulo: 'Primer día de cada mes de 2024',
+    enunciado: "Genera una lista con el primer día de cada mes del año 2024. Usa generate_series con fechas e intervalo de 1 mes. La columna se debe llamar: primer_dia.",
+    nivelId: 'pg-nivel5', temaId: 'pg-n5-t4', baseDatosId: 'universidad',
+    consultaEsperada: "SELECT generate_series('2024-01-01'::DATE, '2024-12-01'::DATE, '1 month'::INTERVAL)::DATE AS primer_dia",
+    pistas: [
+      'generate_series también funciona con fechas',
+      "Usa '1 month'::INTERVAL como paso entre cada fecha",
+      "SELECT generate_series('2024-01-01'::DATE, '2024-12-01'::DATE, '1 month'::INTERVAL)::DATE AS primer_dia",
+    ],
+  }),
+
+  // ── PG · NIVEL 6 · TEMA 3 — DISTINCT ON ────────────────────────────────
+  new Ejercicio({
+    id: 'pg-n6-t3-01',
+    titulo: 'Mejor estudiante por carrera',
+    enunciado: 'Obtén el estudiante con mejor promedio de cada carrera usando DISTINCT ON. Muestra nombre, apellido, carrera_id y promedio.',
+    nivelId: 'pg-nivel6', temaId: 'pg-n6-t3', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT DISTINCT ON (carrera_id) nombre, apellido, carrera_id, promedio FROM estudiantes ORDER BY carrera_id, promedio DESC',
+    pistas: [
+      'DISTINCT ON (columna) devuelve solo la primera fila de cada grupo',
+      'ORDER BY debe empezar con la misma columna que DISTINCT ON',
+      'SELECT DISTINCT ON (carrera_id) nombre, apellido, carrera_id, promedio FROM estudiantes ORDER BY carrera_id, promedio DESC',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n6-t3-02',
+    titulo: 'Jugador más caro por equipo',
+    enunciado: 'Obtén el jugador más caro de cada equipo usando DISTINCT ON. Muestra nombre, apellido, equipo_id y valor_mercado.',
+    nivelId: 'pg-nivel6', temaId: 'pg-n6-t3', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT DISTINCT ON (equipo_id) nombre, apellido, equipo_id, valor_mercado FROM jugadores ORDER BY equipo_id, valor_mercado DESC',
+    pistas: [
+      'DISTINCT ON es exclusivo de PostgreSQL — no existe en otros motores',
+      'El ORDER BY decide cuál fila gana dentro de cada grupo',
+      'SELECT DISTINCT ON (equipo_id) nombre, apellido, equipo_id, valor_mercado FROM jugadores ORDER BY equipo_id, valor_mercado DESC',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n6-t3-03',
+    titulo: 'Primera consulta por paciente',
+    enunciado: 'Obtén la primera consulta de cada paciente (la más antigua) usando DISTINCT ON. Muestra paciente_id, fecha, motivo y diagnóstico.',
+    nivelId: 'pg-nivel6', temaId: 'pg-n6-t3', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT DISTINCT ON (paciente_id) paciente_id, fecha, motivo, diagnostico FROM consultas ORDER BY paciente_id, fecha',
+    pistas: [
+      'Para obtener la primera consulta, ordena las fechas ascendentemente',
+      'ORDER BY paciente_id, fecha toma la fecha más antigua de cada paciente',
+      'SELECT DISTINCT ON (paciente_id) paciente_id, fecha, motivo, diagnostico FROM consultas ORDER BY paciente_id, fecha',
+    ],
+  }),
+
+  // ── PG · NIVEL 6 · TEMA 7 — LATERAL JOIN ───────────────────────────────
+  new Ejercicio({
+    id: 'pg-n6-t7-01',
+    titulo: 'Top 2 estudiantes por carrera',
+    enunciado: 'Para cada carrera, obtén los 2 estudiantes con mejor promedio usando LATERAL. Muestra nombre de la carrera, nombre del estudiante, apellido y promedio. Ordena por carrera y promedio descendente.',
+    nivelId: 'pg-nivel6', temaId: 'pg-n6-t7', baseDatosId: 'universidad',
+    consultaEsperada: 'SELECT c.nombre AS carrera, e.nombre, e.apellido, e.promedio FROM carreras c, LATERAL (SELECT nombre, apellido, promedio FROM estudiantes WHERE carrera_id = c.id ORDER BY promedio DESC LIMIT 2) e ORDER BY c.nombre, e.promedio DESC',
+    pistas: [
+      'LATERAL permite que una subconsulta referencie columnas de tablas anteriores',
+      'Es como un "para cada" — para cada carrera, ejecuta la subconsulta',
+      'SELECT c.nombre AS carrera, e.nombre, e.apellido, e.promedio FROM carreras c, LATERAL (SELECT nombre, apellido, promedio FROM estudiantes WHERE carrera_id = c.id ORDER BY promedio DESC LIMIT 2) e ORDER BY c.nombre, e.promedio DESC',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n6-t7-02',
+    titulo: 'Última consulta por médico',
+    enunciado: 'Para cada médico, obtén su consulta más reciente usando LATERAL. Muestra nombre y apellido del médico, fecha y motivo. Ordena por nombre del médico.',
+    nivelId: 'pg-nivel6', temaId: 'pg-n6-t7', baseDatosId: 'hospital',
+    consultaEsperada: 'SELECT m.nombre AS medico, m.apellido, con.fecha, con.motivo FROM medicos m, LATERAL (SELECT fecha, motivo FROM consultas WHERE medico_id = m.id ORDER BY fecha DESC LIMIT 1) con ORDER BY m.nombre',
+    pistas: [
+      'La subconsulta LATERAL filtra por medico_id = m.id',
+      'LIMIT 1 dentro del LATERAL trae solo la más reciente',
+      'SELECT m.nombre AS medico, m.apellido, con.fecha, con.motivo FROM medicos m, LATERAL (SELECT fecha, motivo FROM consultas WHERE medico_id = m.id ORDER BY fecha DESC LIMIT 1) con ORDER BY m.nombre',
+    ],
+  }),
+  new Ejercicio({
+    id: 'pg-n6-t7-03',
+    titulo: 'Top 3 jugadores por equipo',
+    enunciado: 'Para cada equipo, obtén los 3 jugadores más valiosos usando LATERAL. Muestra nombre del equipo, nombre y apellido del jugador, y valor_mercado. Ordena por equipo y valor descendente.',
+    nivelId: 'pg-nivel6', temaId: 'pg-n6-t7', baseDatosId: 'deportes',
+    consultaEsperada: 'SELECT eq.nombre AS equipo, j.nombre, j.apellido, j.valor_mercado FROM equipos eq, LATERAL (SELECT nombre, apellido, valor_mercado FROM jugadores WHERE equipo_id = eq.id ORDER BY valor_mercado DESC LIMIT 3) j ORDER BY eq.nombre, j.valor_mercado DESC',
+    pistas: [
+      'LATERAL es similar a CROSS APPLY en SQL Server',
+      'Equipos sin jugadores no aparecerán (es un CROSS JOIN implícito)',
+      'SELECT eq.nombre AS equipo, j.nombre, j.apellido, j.valor_mercado FROM equipos eq, LATERAL (SELECT nombre, apellido, valor_mercado FROM jugadores WHERE equipo_id = eq.id ORDER BY valor_mercado DESC LIMIT 3) j ORDER BY eq.nombre, j.valor_mercado DESC',
+    ],
+  }),
 ];

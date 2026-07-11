@@ -24,8 +24,7 @@ const ESPECIALIDADES = {
     color: '#336791',
     recomendado: false,
     bloqueado: false,
-    estado: 'proximamente',
-    requisito: 'Próximamente',
+    estado: 'continuar',
   },
   'sql-server': {
     nombre: 'SQL Server',
