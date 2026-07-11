@@ -179,7 +179,7 @@ export class GestorTemas {
         'sintaxis-funcion': '#6639ba',
         'sintaxis-operador': '#1f2328',
         'sintaxis-puntuacion': '#656d76',
-        'filtro-icono': 'brightness(1.8) contrast(0.85)',
+        'filtro-icono': 'invert(1) hue-rotate(180deg)',
       }, {
         'fuente-mono': "Consolas,'Cascadia Code','Source Code Pro','DejaVu Sans Mono',monospace",
         'fuente-sans': "system-ui,-apple-system,'Segoe UI',sans-serif",
