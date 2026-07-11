@@ -19,19 +19,19 @@ const COLORES_NIVEL = {
 const AREA_ESTILOS = {
   'bases-de-datos': {
     color: '#3fb950',
-    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-14 h-14 object-contain" />,
+    Icono: () => <img src="/iconos/bases-de-datos.png" alt="database" className="w-14 h-14 object-contain" style={{ filter: 'var(--filtro-icono)' }} />,
   },
   'programacion': {
     color: '#8250df',
-    Icono: () => <img src="/iconos/programacion.png" alt="laptop" className="w-14 h-14 object-contain" />,
+    Icono: () => <img src="/iconos/programacion.png" alt="laptop" className="w-14 h-14 object-contain" style={{ filter: 'var(--filtro-icono)' }} />,
   },
   'redes': {
     color: '#388bfd',
-    Icono: () => <img src="/iconos/redes.png" alt="globo" className="w-14 h-14 object-contain" />,
+    Icono: () => <img src="/iconos/redes.png" alt="globo" className="w-14 h-14 object-contain" style={{ filter: 'var(--filtro-icono)' }} />,
   },
   'inteligencia-artificial': {
     color: '#d29922',
-    Icono: () => <img src="/iconos/cohete-ia.png" alt="cohete" className="w-14 h-14 object-contain" />,
+    Icono: () => <img src="/iconos/cohete-ia.png" alt="cohete" className="w-14 h-14 object-contain" style={{ filter: 'var(--filtro-icono)' }} />,
   },
 };
 

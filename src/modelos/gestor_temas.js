@@ -151,6 +151,7 @@ export class GestorTemas {
         'sintaxis-funcion': '#d2a8ff',
         'sintaxis-operador': '#79c0ff',
         'sintaxis-puntuacion': '#8b949e',
+        'filtro-icono': 'none',
       }, {
         'fuente-mono': "'Cascadia Code','JetBrains Mono','Fira Code',Consolas,monospace",
         'fuente-sans': "system-ui,-apple-system,'Segoe UI',sans-serif",
@@ -178,6 +179,7 @@ export class GestorTemas {
         'sintaxis-funcion': '#6639ba',
         'sintaxis-operador': '#1f2328',
         'sintaxis-puntuacion': '#656d76',
+        'filtro-icono': 'brightness(1.8) contrast(0.85)',
       }, {
         'fuente-mono': "Consolas,'Cascadia Code','Source Code Pro','DejaVu Sans Mono',monospace",
         'fuente-sans': "system-ui,-apple-system,'Segoe UI',sans-serif",
@@ -205,6 +207,7 @@ export class GestorTemas {
         'sintaxis-funcion': '#89b4fa',
         'sintaxis-operador': '#89dceb',
         'sintaxis-puntuacion': '#6c7086',
+        'filtro-icono': 'none',
       }, {
         'fuente-mono': "'JetBrains Mono','Cascadia Code','Fira Code',Consolas,monospace",
         'fuente-sans': "system-ui,-apple-system,'Segoe UI',sans-serif",
@@ -232,6 +235,7 @@ export class GestorTemas {
         'sintaxis-funcion': '#88c0d0',
         'sintaxis-operador': '#81a1c1',
         'sintaxis-puntuacion': '#4c566a',
+        'filtro-icono': 'none',
       }, {
         'fuente-mono': "'Source Code Pro','Fira Code','Cascadia Code',Consolas,monospace",
         'fuente-sans': "system-ui,-apple-system,'Segoe UI',sans-serif",
