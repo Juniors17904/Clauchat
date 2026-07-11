@@ -10,6 +10,7 @@ import DiagramaBD from '../editor/DiagramaBD';
 import { FormateadorSQL } from '../../modelos/formateador_sql';
 import { ResaltadorSintaxis } from '../../modelos/resaltador_sintaxis';
 import { GestorTemas } from '../../modelos/gestor_temas';
+import { SesionEjercicio } from '../../modelos/sesion_ejercicio';
 
 const formatearTiempo = (seg) => {
   const m = Math.floor(seg / 60);
@@ -69,6 +70,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const resaltador = useRef(new ResaltadorSintaxis());
   const capaResaltadoRef = useRef(null);
   const gestorTemas = useRef(new GestorTemas());
+  const sesion = useRef(null);
 
   useEffect(() => {
     setTemaId(gestorTemas.current.temaActual.id);
@@ -85,7 +87,9 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     const baseDatos = ejercicio?.baseDatosId ? obtenerBaseDatos(ejercicio.baseDatosId) : null;
     const cambiaBD = ctrl.baseDatosIdActual !== (ejercicio?.baseDatosId ?? null);
 
-    setConsulta('');
+    sesion.current = ejercicio ? new SesionEjercicio(ejercicio.id) : null;
+    const consultaGuardada = sesion.current?.consulta ?? '';
+    setConsulta(consultaGuardada);
     setResultado(null);
     setEstado('neutral');
     setSugerencias([]);
@@ -150,12 +154,20 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   }, [cargando]);
 
   useEffect(() => {
-    setSegundos(0);
-    const intervalo = setInterval(() => setSegundos(s => s + 1), 1000);
+    const seg = sesion.current?.segundos ?? 0;
+    setSegundos(seg);
+    const intervalo = setInterval(() => {
+      setSegundos(s => {
+        const nuevo = s + 1;
+        sesion.current?.guardarSegundos(nuevo);
+        return nuevo;
+      });
+    }, 1000);
     return () => clearInterval(intervalo);
   }, [ejercicio]);
 
   const reiniciar = () => {
+    sesion.current?.limpiar();
     setConsulta('');
     setResultado(null);
     setEstado('neutral');
@@ -180,6 +192,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     const textoInsertar = SIGNOS_CON_ESPACIO.has(signo) ? signo + ' ' : signo;
     const nueva = consulta.slice(0, inicio) + textoInsertar + consulta.slice(fin);
     setConsulta(nueva);
+    sesion.current?.guardarConsulta(nueva);
     setResaltadoActivo(false);
     setSugerencias(controlador.current.sugerirAutocompletado(nueva, tablas));
     controlador.current.evaluarEstado(nueva).then(nuevoEstado => {
@@ -198,6 +211,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     const valor = e.target.value;
     ultimaConsulta.current = valor;
     setConsulta(valor);
+    sesion.current?.guardarConsulta(valor);
     setResultado(null);
     setResaltadoActivo(false);
     setSugerencias(controlador.current.sugerirAutocompletado(valor, tablas));
@@ -211,6 +225,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     palabras[palabras.length - 1] = palabra + ' ';
     const nueva = palabras.join('');
     setConsulta(nueva);
+    sesion.current?.guardarConsulta(nueva);
     setSugerencias([]);
     controlador.current.evaluarEstado(nueva).then(nuevoEstado => setEstado(nuevoEstado));
     textareaRef.current?.focus();
@@ -226,6 +241,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     if (ejercicio) {
       const correcto = await controlador.current.verificarCorreccion(res);
       if (correcto) {
+        sesion.current?.limpiar();
         onCompletado?.(ejercicio.id);
         setEstado(onSiguiente ? 'feliz' : 'celebrando');
       } else {
