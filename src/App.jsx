@@ -176,7 +176,12 @@ export default function App() {
         progreso={{ actual: indiceActual + 1, total: ejerciciosOrdenados.length }}
         onVolver={() => window.history.back()}
         onSiguiente={siguienteEjercicio ? () => irAEditor(siguienteEjercicio) : null}
-        onTerminar={() => window.history.go(-2)}
+        onTerminar={() => {
+          setEjercicioActual(null);
+          setTemaActual(null);
+          setPantalla('temas');
+          window.history.pushState({ pantalla: 'temas', areaId: areaActual?.id, nivelId: nivelActual?.id }, '');
+        }}
         onCompletado={(id) => ctrlPerfil.current.marcarCompletado(id)}
       />
     );
