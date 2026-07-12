@@ -351,7 +351,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
       )}
 
       <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
-        <img src="/hero-bg.png" alt="" className="w-full h-full object-cover object-center" draggable="false" />
+        <img src={localStorage.getItem('tema-visual') === 'clasico' ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20" style={{ '--tw-gradient-to': 'var(--fondo-base)' }} />
         <button
           onClick={() => setTabActual('ajustes')}
