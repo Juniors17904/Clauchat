@@ -99,7 +99,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
 
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-3">
-            <img src="/iconos/bases-de-datos.png" alt="database" className="w-10 h-10 object-contain" style={{ filter: 'var(--filtro-icono)' }} />
+            <img src="/iconos/bases-de-datos.png" alt="database" className="w-10 h-10 object-contain" style={{ filter: 'var(--filtro-icono)', mixBlendMode: 'var(--blend-icono)' }} />
             <h1 className="text-2xl font-bold" style={{ color: 'var(--texto-primario)' }}>Bases de Datos</h1>
           </div>
           <p className="text-sm font-sans leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>
