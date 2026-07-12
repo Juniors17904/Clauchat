@@ -177,7 +177,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
           <h3 className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--texto-secundario)' }}>Especializaciones</h3>
 
           <div className="space-y-3">
-            {Object.entries(ESPECIALIDADES).map(([id, esp]) => {
+            {Object.entries(ESPECIALIDADES).map(([id, esp], indice) => {
               if (id === 'sql-base') return null;
               const bloqueado = esp.bloqueado && esp.estado === 'bloqueado';
 
@@ -186,7 +186,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
                   key={id}
                   onClick={() => handleSeleccionar(id)}
                   disabled={bloqueado}
-                  className={`w-full rounded-xl border transition-all text-left overflow-hidden ${
+                  className={`w-full rounded-xl border transition-all text-left overflow-hidden tarjeta-animada ${
                     bloqueado
                       ? 'opacity-50 cursor-not-allowed'
                       : 'active:scale-[0.98] cursor-pointer'
@@ -194,6 +194,7 @@ function PantallaBaseDatos({ onSeleccionar, ultimaPosicion, onContinuar, onEmpez
                   style={{
                     backgroundColor: bloqueado ? 'var(--fondo-base)' : 'var(--fondo-panel)',
                     borderColor: 'var(--borde)',
+                    animationDelay: `${indice * 50}ms`,
                   }}
                 >
                   <div className="flex items-center gap-3 p-4 border-l-4" style={{ borderLeftColor: esp.color }}>

@@ -39,7 +39,7 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-5 pb-4 space-y-3">
 
-      {AREAS.map(area => {
+      {AREAS.map((area, indice) => {
         const estilos = AREA_ESTILOS[area.id] ?? AREA_ESTILOS['bases-de-datos'];
         const { color, Icono } = estilos;
         const esIA = area.id === 'inteligencia-artificial';
@@ -48,8 +48,8 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
         return (
           <div
             key={area.id}
-            className="rounded-2xl border overflow-hidden"
-            style={{ backgroundColor: 'var(--fondo-panel)', borderColor: `${color}40` }}
+            className="rounded-2xl border overflow-hidden tarjeta-animada"
+            style={{ backgroundColor: 'var(--fondo-panel)', borderColor: `${color}40`, animationDelay: `${indice * 60}ms` }}
           >
             <button
               onClick={() => area.disponible && onSeleccionar(area)}

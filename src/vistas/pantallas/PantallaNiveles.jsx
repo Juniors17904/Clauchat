@@ -50,7 +50,7 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver, control
         </div>
 
         <div className="space-y-2">
-          {niveles.map(nivel => {
+          {niveles.map((nivel, indice) => {
             const color = COLORES[nivel.orden];
             const temasDelNivel = TEMAS.filter(t => t.nivelId === nivel.id);
             const ejerciciosDelNivel = EJERCICIOS.filter(e => e.nivelId === nivel.id);
@@ -64,8 +64,8 @@ export default function PantallaNiveles({ area, onSeleccionar, onVolver, control
               <button
                 key={nivel.id}
                 onClick={() => onSeleccionar(nivel)}
-                className="w-full flex items-center gap-4 pr-4 pl-0 py-0 rounded-xl border hover:bg-[#1c2128] transition-all text-left overflow-hidden group"
-                style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}
+                className="w-full flex items-center gap-4 pr-4 pl-0 py-0 rounded-xl border hover:bg-[#1c2128] transition-all text-left overflow-hidden group tarjeta-animada"
+                style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: `${indice * 50}ms` }}
               >
                 <div className="w-1 self-stretch flex-shrink-0 rounded-l-xl" style={{ backgroundColor: color }} />
 

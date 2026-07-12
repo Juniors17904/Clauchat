@@ -55,7 +55,7 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver, controla
                 key={tema.id}
                 onClick={() => disponible && onSeleccionar(tema)}
                 disabled={!disponible}
-                className={`w-full flex items-center gap-4 px-4 py-3.5 text-left transition-all
+                className={`w-full flex items-center gap-4 px-4 py-3.5 text-left transition-all tarjeta-animada
                   ${disponible
                     ? 'hover:bg-[#1c2128] group cursor-pointer'
                     : 'cursor-not-allowed'
@@ -63,6 +63,7 @@ export default function PantallaTemas({ nivel, onSeleccionar, onVolver, controla
                 style={{
                   backgroundColor: disponible ? 'var(--fondo-panel)' : 'var(--fondo-base)',
                   borderTop: i > 0 ? '1px solid var(--fondo-elevado)' : 'none',
+                  animationDelay: `${i * 40}ms`,
                 }}
               >
                 {disponible ? (
