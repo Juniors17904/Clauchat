@@ -148,8 +148,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
         indice = (indice + 1) % MENSAJES_CARGA.length;
         setMensajeCarga(MENSAJES_CARGA[indice]);
         setOpacidadMensaje(1);
-      }, 200);
-    }, 750);
+      }, 150);
+    }, 400);
     return () => clearInterval(intervalo);
   }, [cargando]);
 
