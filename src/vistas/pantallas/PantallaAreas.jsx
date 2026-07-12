@@ -351,11 +351,15 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
       )}
 
       <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
-        <img src={localStorage.getItem('tema-visual') === 'clasico' ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20" style={{ '--tw-gradient-to': 'var(--fondo-base)' }} />
+        {(() => { const esClasico = localStorage.getItem('tema-visual') === 'clasico'; return (<>
+        <img src={esClasico ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
+        <div className="absolute inset-0 bg-gradient-to-b" style={esClasico
+          ? { background: 'linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.6), var(--fondo-base))' }
+          : { '--tw-gradient-from': 'rgba(0,0,0,0.5)', '--tw-gradient-via': 'rgba(0,0,0,0.2)', '--tw-gradient-to': 'var(--fondo-base)', background: 'linear-gradient(to bottom, var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to))' }
+        } />
         <button
           onClick={() => setTabActual('ajustes')}
-          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:border-white/50 transition-colors backdrop-blur-sm"
+          className={`absolute top-4 right-4 w-10 h-10 rounded-full border flex items-center justify-center transition-colors backdrop-blur-sm ${esClasico ? 'bg-white/40 border-black/10 text-black/50 hover:text-black hover:border-black/30' : 'bg-black/40 border-white/20 text-white/70 hover:text-white hover:border-white/50'}`}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
@@ -365,7 +369,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         {promptInstalar && (
           <button
             onClick={instalarApp}
-            className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 border border-white/20 text-white/70 hover:text-white hover:border-white/50 transition-colors text-xs font-sans backdrop-blur-sm"
+            className={`absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full border transition-colors text-xs font-sans backdrop-blur-sm ${esClasico ? 'bg-white/40 border-black/10 text-black/50 hover:text-black hover:border-black/30' : 'bg-black/40 border-white/20 text-white/70 hover:text-white hover:border-white/50'}`}
           >
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
               <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
@@ -375,9 +379,10 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           </button>
         )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-          <h1 className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg" style={{ color: '#fff' }}>DevLab</h1>
-          <p className="mt-1 text-sm font-sans" style={{ color: 'rgba(255,255,255,0.6)' }}>Elige un área de estudio</p>
+          <h1 className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg" style={{ color: esClasico ? '#1f2328' : '#fff' }}>DevLab</h1>
+          <p className="mt-1 text-sm font-sans" style={{ color: esClasico ? 'rgba(31,35,40,0.5)' : 'rgba(255,255,255,0.6)' }}>Elige un área de estudio</p>
         </div>
+        </>); })()}
       </div>
 
       <div className="flex-1 pb-20">
