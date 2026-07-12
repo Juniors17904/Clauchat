@@ -353,10 +353,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
       <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
         {(() => { const esClasico = localStorage.getItem('tema-visual') === 'clasico'; return (<>
         <img src={esClasico ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
-        <div className="absolute inset-0 bg-gradient-to-b" style={esClasico
-          ? { background: 'linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.6), var(--fondo-base))' }
-          : { '--tw-gradient-from': 'rgba(0,0,0,0.5)', '--tw-gradient-via': 'rgba(0,0,0,0.2)', '--tw-gradient-to': 'var(--fondo-base)', background: 'linear-gradient(to bottom, var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to))' }
-        } />
+        {!esClasico && <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2), var(--fondo-base))' }} />}
         <button
           onClick={() => setTabActual('ajustes')}
           className={`absolute top-4 right-4 w-10 h-10 rounded-full border flex items-center justify-center transition-colors backdrop-blur-sm ${esClasico ? 'bg-white/40 border-black/10 text-black/50 hover:text-black hover:border-black/30' : 'bg-black/40 border-white/20 text-white/70 hover:text-white hover:border-white/50'}`}
