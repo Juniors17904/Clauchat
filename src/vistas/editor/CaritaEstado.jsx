@@ -22,6 +22,6 @@ export default function CaritaEstado({ estado }) {
   }, [estado, config.ms]);
 
   return (
-    <span className="text-xl leading-none select-none">{config.frames[frame]}</span>
+    <span key={estado} className="text-xl leading-none select-none carita-pop">{config.frames[frame]}</span>
   );
 }

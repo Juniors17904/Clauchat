@@ -312,7 +312,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
       {/* ===== HEADER ===== */}
       <div className="flex-shrink-0 transition-colors duration-300 border-b" style={{ backgroundColor: esCorrecto && resultado !== null ? 'var(--exito-fondo)' : 'var(--fondo-base)', borderColor: esCorrecto && resultado !== null ? 'var(--acento-btn)' : 'var(--borde)' }}>
         {esCorrecto && resultado !== null ? (
-          <div className="flex items-center gap-3 px-4 py-3">
+          <div className="flex items-center gap-3 px-4 py-3 banner-animado">
             <button onClick={onVolver} className="text-base transition-colors flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>←</button>
             <p className="text-sm flex-1" style={{ color: 'var(--acento)' }}>¡Correcto! 😊</p>
             <button
