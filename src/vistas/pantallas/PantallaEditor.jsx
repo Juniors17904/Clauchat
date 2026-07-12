@@ -408,7 +408,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                 )}
               </div>
               <p className="text-sm leading-relaxed pr-20" style={{ color: 'var(--texto-primario)' }}>{ejercicio.enunciado}</p>
-              <div className="absolute right-2.5 top-9 w-[72px] h-[72px] opacity-[0.08]">
+              <div className="absolute right-2.5 top-9 w-[72px] h-[72px] opacity-[0.15]">
                 <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--texto-secundario)' }}>
                   <rect x="20" y="20" width="40" height="55" rx="2"/>
                   <rect x="28" y="28" width="8" height="8" rx="1"/>
