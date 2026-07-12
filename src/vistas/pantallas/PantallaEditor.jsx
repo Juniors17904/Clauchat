@@ -473,39 +473,29 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                 ))}
               </div>
               <div className="flex-1 relative">
-                {cargando ? (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <p className="text-sm transition-opacity duration-200" style={{ opacity: opacidadMensaje, color: 'var(--texto-tenue)' }}>
-                      {mensajeCarga}
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    {resaltadoActivo && (
-                      <pre
-                        ref={capaResaltadoRef}
-                        aria-hidden="true"
-                        className="absolute inset-0 px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
-                        style={{ fontFamily: 'var(--fuente-mono)', fontSize: nivelZoom, lineHeight: '1.8em' }}
-                        dangerouslySetInnerHTML={{ __html: resaltador.current.resaltar(consulta) + '\n' }}
-                      />
-                    )}
-                    <textarea
-                      ref={textareaRef}
-                      value={consulta}
-                      onChange={handleCambio}
-                      onKeyDown={handleKeyDown}
-                      onScroll={handleEditorScroll}
-                      onFocus={() => { setEditorEnfocado(true); setMostrarSignos(true); }}
-                      onBlur={() => setTimeout(() => setEditorEnfocado(false), 150)}
-                      onSelect={handleSeleccion}
-                      placeholder="Escribe tu consulta aquí..."
-                      className="relative w-full h-full bg-transparent resize-none focus:outline-none px-3 py-3 select-text"
-                      style={{ fontFamily: 'var(--fuente-mono)', fontSize: nivelZoom, lineHeight: '1.8em', color: resaltadoActivo ? 'transparent' : 'var(--texto-primario)', caretColor: 'var(--texto-primario)', '--tw-placeholder-opacity': 1 }}
-                      spellCheck={false}
-                    />
-                  </>
+                {resaltadoActivo && !cargando && (
+                  <pre
+                    ref={capaResaltadoRef}
+                    aria-hidden="true"
+                    className="absolute inset-0 px-3 py-3 overflow-hidden pointer-events-none whitespace-pre-wrap break-words m-0"
+                    style={{ fontFamily: 'var(--fuente-mono)', fontSize: nivelZoom, lineHeight: '1.8em' }}
+                    dangerouslySetInnerHTML={{ __html: resaltador.current.resaltar(consulta) + '\n' }}
+                  />
                 )}
+                <textarea
+                  ref={textareaRef}
+                  value={consulta}
+                  onChange={handleCambio}
+                  onKeyDown={handleKeyDown}
+                  onScroll={handleEditorScroll}
+                  onFocus={() => { setEditorEnfocado(true); setMostrarSignos(true); }}
+                  onBlur={() => setTimeout(() => setEditorEnfocado(false), 150)}
+                  onSelect={handleSeleccion}
+                  placeholder="Escribe tu consulta aquí..."
+                  className="relative w-full h-full bg-transparent resize-none focus:outline-none px-3 py-3 select-text"
+                  style={{ fontFamily: 'var(--fuente-mono)', fontSize: nivelZoom, lineHeight: '1.8em', color: (resaltadoActivo && !cargando) ? 'transparent' : 'var(--texto-primario)', caretColor: 'var(--texto-primario)', '--tw-placeholder-opacity': 1 }}
+                  spellCheck={false}
+                />
               </div>
             </div>
             <AutocompletadorSQL sugerencias={sugerencias} onSeleccionar={handleAutocompletar} />
@@ -547,12 +537,18 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           {/* Botón ejecutar */}
           <button
             onClick={ejecutar}
-            disabled={!consulta.trim()}
+            disabled={cargando || !consulta.trim()}
             className="w-full py-3.5 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[15px] font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 hover:brightness-110"
             style={{ backgroundColor: 'var(--acento-btn)' }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Ejecutar consulta
+            {cargando ? (
+              <span className="transition-opacity duration-200" style={{ opacity: opacidadMensaje }}>{mensajeCarga}</span>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Ejecutar consulta
+              </>
+            )}
           </button>
 
           {/* Resultados */}
