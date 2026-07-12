@@ -18,15 +18,6 @@ const formatearTiempo = (seg) => {
   return `${m}:${s.toString().padStart(2, '0')}`;
 };
 
-const MENSAJES_CARGA = [
-  'Iniciando motor de base de datos...',
-  'Ejecutando esquema SQL...',
-  'Cargando datos de ejemplo...',
-  'Leyendo estructura de columnas...',
-  'Verificando relaciones...',
-  'Casi listo...',
-];
-
 const SIGNOS_RAPIDOS = [',', '*', '=', "'", '(', ')', '>', '<', '!=', ';', '%', '_'];
 const SIGNOS_CON_ESPACIO = new Set([',', '=', '>', '<', '!=']);
 
@@ -45,8 +36,6 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [alturaPantalla, setAlturaPantalla] = useState(
     () => window.visualViewport?.height ?? window.innerHeight
   );
-  const [mensajeCarga, setMensajeCarga] = useState(MENSAJES_CARGA[0]);
-  const [opacidadMensaje, setOpacidadMensaje] = useState(1);
   const [segundos, setSegundos] = useState(0);
   const [resultadosAbiertos, setResultadosAbiertos] = useState(true);
   const [panelAjustesAbierto, setPanelAjustesAbierto] = useState(false);
@@ -137,16 +126,6 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     };
   }, [drawerAbierto, diagramaAbierto, panelAjustesAbierto]);
 
-  useEffect(() => {
-    if (!cargando) return;
-    let indice = 0;
-    setMensajeCarga(MENSAJES_CARGA[0]);
-    const intervalo = setInterval(() => {
-      indice = (indice + 1) % MENSAJES_CARGA.length;
-      setMensajeCarga(MENSAJES_CARGA[indice]);
-    }, 200);
-    return () => clearInterval(intervalo);
-  }, [cargando]);
 
   useEffect(() => {
     const seg = sesion.current?.segundos ?? 0;
@@ -537,7 +516,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             style={{ backgroundColor: 'var(--acento-btn)' }}
           >
             {cargando ? (
-              <span style={{ color: 'rgba(255,255,255,0.85)' }}>{mensajeCarga}</span>
+              <span style={{ color: 'rgba(255,255,255,0.85)' }}>Preparando...</span>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
