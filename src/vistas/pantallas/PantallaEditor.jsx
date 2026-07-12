@@ -542,7 +542,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             style={{ backgroundColor: 'var(--acento-btn)' }}
           >
             {cargando ? (
-              <span className="transition-opacity duration-200" style={{ opacity: opacidadMensaje }}>{mensajeCarga}</span>
+              <span className="transition-opacity duration-200" style={{ opacity: opacidadMensaje, color: 'rgba(255,255,255,0.85)' }}>{mensajeCarga}</span>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
