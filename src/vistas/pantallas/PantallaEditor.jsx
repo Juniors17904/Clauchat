@@ -90,8 +90,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     ctrl.iniciar(ejercicio, baseDatos).then(async () => {
       if (cambiaBD) {
         setTablas(await ctrl.obtenerEsquema());
-        setCargando(false);
       }
+      setCargando(false);
     }).catch(err => {
       setCargando(false);
       setErrorCarga(err?.message ?? 'Error al cargar la base de datos');
