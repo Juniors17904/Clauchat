@@ -371,7 +371,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
           {/* Tarjeta del ejercicio */}
           {ejercicio && (
-            <div className="border rounded-xl p-3.5 relative overflow-hidden" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+            <div className="border rounded-xl p-3.5 relative overflow-hidden tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
               <div className="flex items-center gap-1.5 mb-2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--acento)' }}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
                 <span className="text-xs font-semibold" style={{ color: 'var(--acento)' }}>Ejercicio</span>
@@ -420,7 +420,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           )}
 
           {/* Editor SQL */}
-          <div className="border rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+          <div className="border rounded-xl overflow-hidden tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '60ms' }}>
             <div className="flex items-center justify-between px-3.5 py-2.5 border-b" style={{ borderColor: 'var(--borde)' }}>
               <div className="flex items-center gap-1.5">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--acento)' }}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
@@ -512,8 +512,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           <button
             onClick={ejecutar}
             disabled={cargando || !consulta.trim()}
-            className="w-full py-3.5 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[15px] font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 hover:brightness-110"
-            style={{ backgroundColor: 'var(--acento-btn)' }}
+            className="w-full py-3.5 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[15px] font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 hover:brightness-110 tarjeta-animada"
+            style={{ backgroundColor: 'var(--acento-btn)', animationDelay: '120ms' }}
           >
             {cargando ? (
               <span style={{ color: 'rgba(255,255,255,0.85)' }}>Preparando...</span>
@@ -526,7 +526,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
           </button>
 
           {/* Resultados */}
-          <div className="border rounded-xl overflow-hidden mb-2" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+          <div className="border rounded-xl overflow-hidden mb-2 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '180ms' }}>
             <button
               onClick={() => setResultadosAbiertos(r => !r)}
               className="w-full flex items-center justify-between px-3.5 py-3"
