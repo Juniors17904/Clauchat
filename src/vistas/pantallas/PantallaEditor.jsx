@@ -71,7 +71,6 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const capaResaltadoRef = useRef(null);
   const gestorTemas = useRef(new GestorTemas());
   const sesion = useRef(null);
-  const motorListo = useRef(false);
 
   useEffect(() => {
     setTemaId(gestorTemas.current.temaActual.id);
@@ -97,16 +96,13 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     setMostrarPista(false);
     setIndicePista(0);
 
-    if (cambiaBD) {
-      setCargando(true);
-      motorListo.current = false;
-    }
+    if (cambiaBD) setCargando(true);
 
     ctrl.iniciar(ejercicio, baseDatos).then(async () => {
       if (cambiaBD) {
         setTablas(await ctrl.obtenerEsquema());
+        setCargando(false);
       }
-      motorListo.current = true;
     }).catch(err => {
       setCargando(false);
       setErrorCarga(err?.message ?? 'Error al cargar la base de datos');
@@ -143,31 +139,13 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
   useEffect(() => {
     if (!cargando) return;
-    let cancelado = false;
-
-    const esperar = (ms) => new Promise(r => setTimeout(r, ms));
-
-    const secuencia = async () => {
-      for (let i = 0; i < MENSAJES_CARGA.length; i++) {
-        if (cancelado) return;
-        setMensajeCarga(MENSAJES_CARGA[i]);
-        setOpacidadMensaje(1);
-        await esperar(400);
-        if (cancelado) return;
-        if (i < MENSAJES_CARGA.length - 1) {
-          setOpacidadMensaje(0);
-          await esperar(150);
-        }
-      }
-      while (!motorListo.current) {
-        if (cancelado) return;
-        await esperar(100);
-      }
-      if (!cancelado) setCargando(false);
-    };
-
-    secuencia();
-    return () => { cancelado = true; };
+    let indice = 0;
+    setMensajeCarga(MENSAJES_CARGA[0]);
+    const intervalo = setInterval(() => {
+      indice = (indice + 1) % MENSAJES_CARGA.length;
+      setMensajeCarga(MENSAJES_CARGA[indice]);
+    }, 200);
+    return () => clearInterval(intervalo);
   }, [cargando]);
 
   useEffect(() => {
@@ -559,7 +537,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             style={{ backgroundColor: 'var(--acento-btn)' }}
           >
             {cargando ? (
-              <span className="transition-opacity duration-200" style={{ opacity: opacidadMensaje, color: 'rgba(255,255,255,0.85)' }}>{mensajeCarga}</span>
+              <span style={{ color: 'rgba(255,255,255,0.85)' }}>{mensajeCarga}</span>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
