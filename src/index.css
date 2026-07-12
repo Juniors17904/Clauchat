@@ -31,3 +31,38 @@ body {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+
+/* Transiciones entre pantallas (View Transitions API) */
+@keyframes salida-izquierda {
+  to { transform: translateX(-28px); opacity: 0; }
+}
+@keyframes entrada-derecha {
+  from { transform: translateX(28px); opacity: 0; }
+}
+@keyframes salida-derecha {
+  to { transform: translateX(28px); opacity: 0; }
+}
+@keyframes entrada-izquierda {
+  from { transform: translateX(-28px); opacity: 0; }
+}
+
+::view-transition-old(root) {
+  animation: salida-izquierda 200ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-new(root) {
+  animation: entrada-derecha 240ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+html[data-transicion='atras']::view-transition-old(root) {
+  animation-name: salida-derecha;
+}
+html[data-transicion='atras']::view-transition-new(root) {
+  animation-name: entrada-izquierda;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
