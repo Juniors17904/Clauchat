@@ -71,6 +71,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const capaResaltadoRef = useRef(null);
   const gestorTemas = useRef(new GestorTemas());
   const sesion = useRef(null);
+  const motorListo = useRef(false);
 
   useEffect(() => {
     setTemaId(gestorTemas.current.temaActual.id);
@@ -96,12 +97,15 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     setMostrarPista(false);
     setIndicePista(0);
 
-    if (cambiaBD) setCargando(true);
+    if (cambiaBD) {
+      setCargando(true);
+      motorListo.current = false;
+    }
 
     ctrl.iniciar(ejercicio, baseDatos).then(async () => {
       if (cambiaBD) {
         setTablas(await ctrl.obtenerEsquema());
-        setCargando(false);
+        motorListo.current = true;
       }
     }).catch(err => {
       setCargando(false);
@@ -139,18 +143,31 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
   useEffect(() => {
     if (!cargando) return;
-    let indice = 0;
-    setMensajeCarga(MENSAJES_CARGA[0]);
-    setOpacidadMensaje(1);
-    const intervalo = setInterval(() => {
-      setOpacidadMensaje(0);
-      setTimeout(() => {
-        indice = (indice + 1) % MENSAJES_CARGA.length;
-        setMensajeCarga(MENSAJES_CARGA[indice]);
+    let cancelado = false;
+
+    const esperar = (ms) => new Promise(r => setTimeout(r, ms));
+
+    const secuencia = async () => {
+      for (let i = 0; i < MENSAJES_CARGA.length; i++) {
+        if (cancelado) return;
+        setMensajeCarga(MENSAJES_CARGA[i]);
         setOpacidadMensaje(1);
-      }, 150);
-    }, 400);
-    return () => clearInterval(intervalo);
+        await esperar(400);
+        if (cancelado) return;
+        if (i < MENSAJES_CARGA.length - 1) {
+          setOpacidadMensaje(0);
+          await esperar(150);
+        }
+      }
+      while (!motorListo.current) {
+        if (cancelado) return;
+        await esperar(100);
+      }
+      if (!cancelado) setCargando(false);
+    };
+
+    secuencia();
+    return () => { cancelado = true; };
   }, [cargando]);
 
   useEffect(() => {
