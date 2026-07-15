@@ -3,6 +3,10 @@ import { AREAS } from '../../datos/areas';
 import { NIVELES } from '../../datos/niveles';
 import { EJERCICIOS } from '../../datos/ejercicios';
 import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
+import { GestorTemas } from '../../modelos/gestor_temas';
+import { MetaDiaria } from '../../modelos/meta_diaria';
+import { GestorRespaldo } from '../../modelos/gestor_respaldo';
+import { version } from '../../../package.json';
 
 const UMBRAL_PULL = 65;
 
@@ -248,14 +252,56 @@ function TabFavoritos() {
   );
 }
 
-function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
+function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInstalar, onInstalar }) {
+  const gestorTemas = useRef(new GestorTemas());
+  const metaDiaria = useRef(new MetaDiaria());
+  const gestorRespaldo = useRef(new GestorRespaldo());
+  const gestorEstadisticas = useRef(new GestorEstadisticas());
+  const archivoRef = useRef(null);
+
   const [nombre, setNombre] = useState(controladorPerfil.nombre);
   const [editando, setEditando] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
+  const [temaId, setTemaId] = useState(gestorTemas.current.temaActual.id);
+  const [temaGlobal, setTemaGlobal] = useState(gestorTemas.current.esGlobal);
+  const [objetivo, setObjetivo] = useState(metaDiaria.current.objetivo);
+  const [textoImportar, setTextoImportar] = useState(null);
+  const [avisoImportar, setAvisoImportar] = useState(null);
+
+  const ejerciciosHoy = gestorEstadisticas.current.ejerciciosHoy;
 
   const handleNombre = (e) => {
     setNombre(e.target.value);
     controladorPerfil.nombre = e.target.value;
+  };
+
+  const cambiarTema = (id) => {
+    gestorTemas.current.cambiar(id);
+    setTemaId(id);
+  };
+
+  const cambiarObjetivo = (n) => {
+    metaDiaria.current.cambiar(n);
+    setObjetivo(n);
+  };
+
+  const seleccionarArchivo = (e) => {
+    const archivo = e.target.files?.[0];
+    e.target.value = '';
+    if (!archivo) return;
+    const lector = new FileReader();
+    lector.onload = () => setTextoImportar(lector.result);
+    lector.readAsText(archivo);
+  };
+
+  const confirmarImportar = () => {
+    const ok = gestorRespaldo.current.importar(textoImportar);
+    setTextoImportar(null);
+    if (ok) {
+      window.location.reload();
+    } else {
+      setAvisoImportar('El archivo no es un respaldo válido de DevLab.');
+    }
   };
 
   return (
@@ -289,6 +335,75 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
         )}
       </div>
 
+      {/* Tema visual */}
+      <div>
+        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Tema visual</p>
+        <div className="grid grid-cols-2 gap-2">
+          {gestorTemas.current.temas.map(t => {
+            const c = t.colores;
+            const activo = temaId === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => cambiarTema(t.id)}
+                className="p-2.5 rounded-xl border-2 transition-all text-left"
+                style={{ backgroundColor: c['fondo-base'], borderColor: activo ? c['acento'] : c['borde'] }}
+              >
+                <div className="flex gap-1 mb-1.5">
+                  <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['acento'] }} />
+                  <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['sintaxis-clave'] }} />
+                  <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['sintaxis-cadena'] }} />
+                  <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: c['sintaxis-funcion'] }} />
+                </div>
+                <span className="text-[11px] font-medium font-sans" style={{ color: c['texto-primario'] }}>{t.nombre}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div>
+            <p className="text-xs font-sans" style={{ color: 'var(--texto-secundario)' }}>Aplicar a toda la app</p>
+            <p className="text-[10px] mt-0.5 font-sans" style={{ color: 'var(--texto-tenue)' }}>Cambia colores en todas las pantallas</p>
+          </div>
+          <button
+            onClick={() => { gestorTemas.current.alternarGlobal(); setTemaGlobal(gestorTemas.current.esGlobal); }}
+            className="relative w-10 h-[22px] rounded-full transition-colors duration-200 flex-shrink-0"
+            style={{ backgroundColor: temaGlobal ? 'var(--acento)' : 'var(--fondo-elevado)' }}
+          >
+            <div
+              className="absolute top-[3px] w-4 h-4 rounded-full transition-all duration-200"
+              style={{ left: temaGlobal ? 21 : 3, backgroundColor: temaGlobal ? '#fff' : 'var(--texto-tenue)' }}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* Meta diaria */}
+      <div>
+        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Meta diaria de ejercicios</p>
+        <div className="flex gap-2">
+          {[3, 5, 10].map(n => (
+            <button
+              key={n}
+              onClick={() => cambiarObjetivo(n)}
+              className="flex-1 py-2.5 rounded-xl border text-sm font-mono transition-colors"
+              style={{
+                backgroundColor: objetivo === n ? 'var(--acento-suave)' : 'var(--fondo-panel)',
+                borderColor: objetivo === n ? 'var(--acento)' : 'var(--borde)',
+                color: objetivo === n ? 'var(--acento)' : 'var(--texto-secundario)',
+              }}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+        <p className="text-[11px] mt-2 font-sans" style={{ color: metaDiaria.current.cumplida(ejerciciosHoy) ? 'var(--acento)' : 'var(--texto-tenue)' }}>
+          {metaDiaria.current.cumplida(ejerciciosHoy)
+            ? `✓ Meta cumplida hoy: ${ejerciciosHoy}/${objetivo} ejercicios`
+            : `Hoy llevas ${ejerciciosHoy}/${objetivo} ejercicios`}
+        </p>
+      </div>
+
       {onRecordatorios && (
         <button
           onClick={onRecordatorios}
@@ -312,6 +427,62 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
           📋 Ver currículo completo
         </button>
       )}
+
+      {/* Respaldo del progreso */}
+      <div>
+        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Respaldo de tu avance</p>
+        {textoImportar ? (
+          <div className="space-y-3">
+            <p className="text-xs font-sans" style={{ color: 'var(--advertencia)' }}>Esto reemplazará tu avance actual con el del archivo. ¿Continuar?</p>
+            <div className="flex gap-2">
+              <button
+                onClick={confirmarImportar}
+                className="flex-1 py-2.5 text-sm rounded-xl font-sans transition-colors"
+                style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}
+              >
+                Importar
+              </button>
+              <button
+                onClick={() => setTextoImportar(null)}
+                className="flex-1 py-2.5 border hover:text-white text-sm rounded-xl font-sans transition-colors"
+                style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={() => gestorRespaldo.current.descargar()}
+              className="flex-1 py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors flex items-center justify-center gap-2"
+              style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+              </svg>
+              Exportar
+            </button>
+            <button
+              onClick={() => archivoRef.current?.click()}
+              className="flex-1 py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors flex items-center justify-center gap-2"
+              style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+              </svg>
+              Importar
+            </button>
+            <input ref={archivoRef} type="file" accept=".json,application/json" onChange={seleccionarArchivo} className="hidden" />
+          </div>
+        )}
+        {avisoImportar && (
+          <p className="text-[11px] mt-2 font-sans" style={{ color: 'var(--error)' }}>{avisoImportar}</p>
+        )}
+        <p className="text-[10px] mt-2 font-sans" style={{ color: 'var(--texto-tenue)' }}>Tu avance vive en este navegador. Exportalo para no perderlo o llevarlo a otro dispositivo.</p>
+      </div>
 
       <div className="pt-2">
         {confirmando ? (
@@ -343,6 +514,25 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios }) {
             🗑️ Borrar todo el avance
           </button>
         )}
+      </div>
+
+      {/* Acerca de */}
+      <div className="pt-2 pb-2 border-t" style={{ borderColor: 'var(--borde)' }}>
+        <div className="flex items-center justify-between mt-3">
+          <div>
+            <p className="text-sm font-semibold font-sans" style={{ color: 'var(--texto-primario)' }}>DevLab</p>
+            <p className="text-[11px] font-sans mt-0.5" style={{ color: 'var(--texto-tenue)' }}>Versión {version} · Funciona sin conexión</p>
+          </div>
+          {promptInstalar && (
+            <button
+              onClick={onInstalar}
+              className="px-3 py-2 rounded-xl border text-xs font-sans transition-colors"
+              style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
+            >
+              Instalar app
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -492,7 +682,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         )}
         {tabActual === 'progreso' && <TabProgreso controladorPerfil={controladorPerfil} />}
         {tabActual === 'favoritos' && <TabFavoritos />}
-        {tabActual === 'ajustes' && <TabAjustes controladorPerfil={controladorPerfil} onVerArbol={() => { onVerArbol?.(); }} onRecordatorios={onRecordatorios} />}
+        {tabActual === 'ajustes' && <TabAjustes controladorPerfil={controladorPerfil} onVerArbol={() => { onVerArbol?.(); }} onRecordatorios={onRecordatorios} promptInstalar={promptInstalar} onInstalar={instalarApp} />}
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 flex items-center justify-around z-30" style={{ backgroundColor: 'var(--fondo-panel)', borderTop: '1px solid var(--borde)', paddingBottom: 'env(safe-area-inset-bottom)' }}>

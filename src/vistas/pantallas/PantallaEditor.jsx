@@ -12,6 +12,7 @@ import { ResaltadorSintaxis } from '../../modelos/resaltador_sintaxis';
 import { GestorTemas } from '../../modelos/gestor_temas';
 import { SesionEjercicio } from '../../modelos/sesion_ejercicio';
 import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
+import { PreferenciasEditor } from '../../modelos/preferencias_editor';
 
 const formatearTiempo = (seg) => {
   const m = Math.floor(seg / 60);
@@ -40,7 +41,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const [segundos, setSegundos] = useState(0);
   const [resultadosAbiertos, setResultadosAbiertos] = useState(true);
   const [panelAjustesAbierto, setPanelAjustesAbierto] = useState(false);
-  const [nivelZoom, setNivelZoom] = useState(12);
+  const [nivelZoom, setNivelZoom] = useState(() => new PreferenciasEditor().zoom);
   const [editorEnfocado, setEditorEnfocado] = useState(false);
   const [mostrarSignos, setMostrarSignos] = useState(true);
   const [resaltadoActivo, setResaltadoActivo] = useState(false);
@@ -62,6 +63,15 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const gestorTemas = useRef(new GestorTemas());
   const sesion = useRef(null);
   const gestorEstadisticas = useRef(new GestorEstadisticas());
+  const preferencias = useRef(new PreferenciasEditor());
+
+  const cambiarZoom = (delta) => {
+    setNivelZoom(z => {
+      const nuevo = Math.min(preferencias.current.zoomMaximo, Math.max(preferencias.current.zoomMinimo, z + delta));
+      preferencias.current.cambiarZoom(nuevo);
+      return nuevo;
+    });
+  };
 
   useEffect(() => {
     setTemaId(gestorTemas.current.temaActual.id);
@@ -622,7 +632,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
             <p className="text-xs font-semibold mb-2.5" style={{ color: 'var(--texto-secundario)' }}>Zoom del editor</p>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setNivelZoom(z => Math.max(8, z - 2))}
+                onClick={() => cambiarZoom(-2)}
                 className="w-9 h-9 flex items-center justify-center rounded-lg border text-lg font-bold transition-colors hover:brightness-125"
                 style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
               >
@@ -632,7 +642,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                 <span className="text-sm" style={{ color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}>{nivelZoom}px</span>
               </div>
               <button
-                onClick={() => setNivelZoom(z => Math.min(22, z + 2))}
+                onClick={() => cambiarZoom(2)}
                 className="w-9 h-9 flex items-center justify-center rounded-lg border text-lg font-bold transition-colors hover:brightness-125"
                 style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
               >

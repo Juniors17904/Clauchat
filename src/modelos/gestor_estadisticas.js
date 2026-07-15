@@ -39,6 +39,11 @@ export class GestorEstadisticas {
     return this.#actividades.reduce((total, a) => total + a.segundos, 0);
   }
 
+  get ejerciciosHoy() {
+    const hoy = this.#fechaLocal(new Date());
+    return this.#actividades.filter(a => a.fecha === hoy).length;
+  }
+
   get ejerciciosEstaSemana() {
     const fechas = this.#ultimasFechas(7);
     return this.#actividades.filter(a => fechas.includes(a.fecha)).length;
