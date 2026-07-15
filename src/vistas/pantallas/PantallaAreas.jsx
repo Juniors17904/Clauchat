@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { AREAS } from '../../datos/areas';
 import { NIVELES } from '../../datos/niveles';
 import { EJERCICIOS } from '../../datos/ejercicios';
+import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
 
 const UMBRAL_PULL = 65;
 
@@ -100,38 +101,135 @@ function TabInicio({ onSeleccionar, ultimaPosicion, onContinuar }) {
   );
 }
 
+function formatearDuracion(segundos) {
+  if (segundos < 60) return `${segundos}s`;
+  const horas = Math.floor(segundos / 3600);
+  const minutos = Math.floor((segundos % 3600) / 60);
+  if (horas > 0) return `${horas}h ${minutos}m`;
+  return `${minutos}m`;
+}
+
 function TabProgreso({ controladorPerfil }) {
+  const gestorEstadisticas = useRef(new GestorEstadisticas());
   const resumen = controladorPerfil.resumenPorNivel(NIVELES, EJERCICIOS).filter(n => n.total > 0);
   const totalCompletados = resumen.reduce((a, n) => a + n.completados, 0);
   const totalEjercicios = resumen.reduce((a, n) => a + n.total, 0);
 
+  const racha = gestorEstadisticas.current.racha;
+  const tiempoTotal = gestorEstadisticas.current.tiempoTotalSegundos;
+  const estaSemana = gestorEstadisticas.current.ejerciciosEstaSemana;
+  const semana = gestorEstadisticas.current.actividadSemanal();
+  const ultimas = gestorEstadisticas.current.ultimas(5);
+
+  const maxMinutos = Math.max(...semana.map(d => d.minutos), 1);
+  const indicePico = semana.reduce((mejor, d, i) => (d.minutos > semana[mejor].minutos ? i : mejor), 0);
+  const maxSegundosEj = Math.max(...ultimas.map(a => a.segundos), 1);
+
   return (
     <div className="w-full max-w-sm mx-auto px-5 pt-6 pb-4">
       <h2 className="text-lg font-semibold font-sans mb-1" style={{ color: 'var(--texto-primario)' }}>Mi Progreso</h2>
-      <p className="text-xs font-sans mb-6" style={{ color: 'var(--texto-secundario)' }}>{totalCompletados} de {totalEjercicios} ejercicios completados</p>
+      <p className="text-xs font-sans mb-5" style={{ color: 'var(--texto-secundario)' }}>{totalCompletados} de {totalEjercicios} ejercicios completados</p>
 
+      {/* Racha de días */}
+      <div className="rounded-xl border p-4 mb-3 flex items-center gap-4 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+        <span className="text-3xl">🔥</span>
+        <div className="flex-1">
+          <p className="text-2xl font-bold font-mono leading-none" style={{ color: 'var(--texto-primario)' }}>{racha}</p>
+          <p className="text-xs font-sans mt-1" style={{ color: 'var(--texto-secundario)' }}>
+            {racha === 0 ? 'Completa un ejercicio hoy para iniciar tu racha' : racha === 1 ? 'día de racha' : 'días seguidos practicando'}
+          </p>
+        </div>
+      </div>
+
+      {/* Estadísticas */}
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <div className="rounded-xl border p-4 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '50ms' }}>
+          <p className="text-xl font-bold font-mono leading-none" style={{ color: 'var(--texto-primario)' }}>{formatearDuracion(tiempoTotal)}</p>
+          <p className="text-xs font-sans mt-1.5" style={{ color: 'var(--texto-secundario)' }}>Tiempo total</p>
+        </div>
+        <div className="rounded-xl border p-4 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '100ms' }}>
+          <p className="text-xl font-bold font-mono leading-none" style={{ color: 'var(--texto-primario)' }}>{estaSemana}</p>
+          <p className="text-xs font-sans mt-1.5" style={{ color: 'var(--texto-secundario)' }}>Ejercicios esta semana</p>
+        </div>
+      </div>
+
+      {/* Actividad semanal */}
+      <div className="rounded-xl border p-4 mb-3 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '150ms' }}>
+        <p className="text-xs font-semibold font-sans mb-3" style={{ color: 'var(--texto-secundario)' }}>Actividad semanal · minutos por día</p>
+        <div className="flex items-end gap-1.5 h-24">
+          {semana.map((dia, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-1">
+              {i === indicePico && dia.minutos > 0 && (
+                <span className="text-[10px] font-mono leading-none" style={{ color: 'var(--texto-secundario)' }}>{dia.minutos}m</span>
+              )}
+              <div
+                className="w-full rounded-t"
+                style={{
+                  height: dia.minutos > 0 ? `${Math.max((dia.minutos / maxMinutos) * 100, 8)}%` : '4px',
+                  backgroundColor: dia.minutos > 0 ? 'var(--acento)' : 'var(--fondo-elevado)',
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-1.5 mt-1.5">
+          {semana.map((dia, i) => (
+            <span key={i} className="flex-1 text-center text-[10px] font-sans" style={{ color: dia.esHoy ? 'var(--acento)' : 'var(--texto-tenue)', fontWeight: dia.esHoy ? 700 : 400 }}>
+              {dia.etiqueta}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Tiempo por ejercicio */}
+      {ultimas.length > 0 && (
+        <div className="rounded-xl border p-4 mb-3 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '200ms' }}>
+          <p className="text-xs font-semibold font-sans mb-3" style={{ color: 'var(--texto-secundario)' }}>Últimos ejercicios · tiempo dedicado</p>
+          <div className="space-y-3">
+            {ultimas.map((actividad, i) => {
+              const ejercicio = EJERCICIOS.find(e => e.id === actividad.ejercicioId);
+              return (
+                <div key={`${actividad.ejercicioId}-${i}`}>
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="text-xs font-sans truncate flex-1 mr-2" style={{ color: 'var(--texto-primario)' }}>{ejercicio?.titulo ?? actividad.ejercicioId}</p>
+                    <span className="text-[10px] font-mono flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>{formatearDuracion(actividad.segundos)}</span>
+                  </div>
+                  <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+                    <div className="h-full rounded-full" style={{ width: `${Math.max((actividad.segundos / maxSegundosEj) * 100, 4)}%`, backgroundColor: 'var(--acento)' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Progreso por nivel */}
       {resumen.filter(n => n.completados > 0).length === 0 ? (
-        <p className="text-sm font-sans text-center mt-12" style={{ color: 'var(--texto-tenue)' }}>Aún no has completado ningún ejercicio.</p>
+        <p className="text-sm font-sans text-center mt-8" style={{ color: 'var(--texto-tenue)' }}>Aún no has completado ningún ejercicio.</p>
       ) : (
-        <div className="space-y-5">
-          {resumen.filter(n => n.completados > 0).map(({ nombre, orden, completados, total }) => {
-            const color = COLORES_NIVEL[orden] ?? COLORES_NIVEL[1];
-            const porcentaje = (completados / total) * 100;
-            return (
-              <div key={nombre}>
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-sm font-sans" style={{ color: 'var(--texto-primario)' }}>{nombre}</p>
-                  <p className="text-xs font-mono">
-                    <span style={{ color: color.texto }}>{completados}</span>
-                    <span style={{ color: 'var(--texto-tenue)' }}>/{total}</span>
-                  </p>
+        <div className="rounded-xl border p-4 tarjeta-animada" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', animationDelay: '250ms' }}>
+          <p className="text-xs font-semibold font-sans mb-4" style={{ color: 'var(--texto-secundario)' }}>Progreso por nivel</p>
+          <div className="space-y-5">
+            {resumen.filter(n => n.completados > 0).map(({ nombre, orden, completados, total }) => {
+              const color = COLORES_NIVEL[orden] ?? COLORES_NIVEL[1];
+              const porcentaje = (completados / total) * 100;
+              return (
+                <div key={nombre}>
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm font-sans" style={{ color: 'var(--texto-primario)' }}>{nombre}</p>
+                    <p className="text-xs font-mono">
+                      <span style={{ color: color.texto }}>{completados}</span>
+                      <span style={{ color: 'var(--texto-tenue)' }}>/{total}</span>
+                    </p>
+                  </div>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${porcentaje}%`, backgroundColor: color.barra }} />
+                  </div>
                 </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
-                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${porcentaje}%`, backgroundColor: color.barra }} />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

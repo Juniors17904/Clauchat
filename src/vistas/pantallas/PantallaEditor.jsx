@@ -11,6 +11,7 @@ import { FormateadorSQL } from '../../modelos/formateador_sql';
 import { ResaltadorSintaxis } from '../../modelos/resaltador_sintaxis';
 import { GestorTemas } from '../../modelos/gestor_temas';
 import { SesionEjercicio } from '../../modelos/sesion_ejercicio';
+import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
 
 const formatearTiempo = (seg) => {
   const m = Math.floor(seg / 60);
@@ -60,6 +61,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const capaResaltadoRef = useRef(null);
   const gestorTemas = useRef(new GestorTemas());
   const sesion = useRef(null);
+  const gestorEstadisticas = useRef(new GestorEstadisticas());
 
   useEffect(() => {
     setTemaId(gestorTemas.current.temaActual.id);
@@ -221,6 +223,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
     if (ejercicio) {
       const correcto = await controlador.current.verificarCorreccion(res);
       if (correcto) {
+        gestorEstadisticas.current.registrar(ejercicio.id, sesion.current?.segundos ?? segundos);
         sesion.current?.limpiar();
         onCompletado?.(ejercicio.id);
         setEstado(onSiguiente ? 'feliz' : 'celebrando');
