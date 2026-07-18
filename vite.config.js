@@ -16,7 +16,7 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
-        globIgnores: ['**/*.wasm', '**/*.data'],
+        globIgnores: ['**/*.wasm', '**/*.data', '**/ocr/**'],
       },
       manifest: {
         name: 'Maestro Dev',

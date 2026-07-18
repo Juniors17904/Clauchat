@@ -3,14 +3,44 @@ import { FASES_INSTALACION } from '../../datos/fases_instalacion';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { VisorImagen } from '../../modelos/visor_imagen';
+import { CompresorImagen } from '../../modelos/compresor_imagen';
+import { ReconocedorTexto } from '../../modelos/reconocedor_texto';
 
 export default function PantallaInstalacion({ onVolver }) {
   const gestor = useRef(new GestorInstalacion());
   const visor = useRef(new VisorImagen());
+  const compresor = useRef(new CompresorImagen());
+  const reconocedor = useRef(new ReconocedorTexto());
+  const archivoFotoRef = useRef(null);
   const [, setVersion] = useState(0);
   const [pasoAbierto, setPasoAbierto] = useState(null);
   const [imagenAmpliada, setImagenAmpliada] = useState(null);
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
+  const [reconociendo, setReconociendo] = useState(null);
+
+  const subirFoto = async (e, paso) => {
+    const archivo = e.target.files?.[0];
+    e.target.value = '';
+    if (!archivo) return;
+    try {
+      const dataUrl = await compresor.current.comprimir(archivo);
+      gestor.current.guardarFoto(paso.numero, dataUrl);
+      setVersion(v => v + 1);
+      setReconociendo(0);
+      const texto = await reconocedor.current.reconocer(dataUrl, (p) => setReconociendo(p));
+      const datos = reconocedor.current.extraerDatos(texto);
+      for (const campo of paso.campos) {
+        if (datos[campo] && !gestor.current.obtenerCampo(paso.numero, campo)) {
+          gestor.current.guardarCampo(paso.numero, campo, datos[campo]);
+        }
+      }
+    } catch {
+      // si el OCR falla, la foto queda guardada y los campos se llenan a mano
+    } finally {
+      setReconociendo(null);
+      setVersion(v => v + 1);
+    }
+  };
 
   const total = PASOS_INSTALACION.length;
   const completados = gestor.current.totalCompletados;
@@ -119,6 +149,62 @@ export default function PantallaInstalacion({ onVolver }) {
                             </div>
                           )}
                           <p className="text-xs leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{paso.detalle}</p>
+
+                          {/* Campos de datos con foto y reconocimiento */}
+                          {paso.campos.length > 0 && (
+                            <div className="space-y-2.5 mb-3">
+                              {paso.campos.map(campo => (
+                                <div key={campo}>
+                                  <p className="text-[10px] font-semibold mb-1 uppercase tracking-wide" style={{ color: 'var(--texto-tenue)' }}>{campo}</p>
+                                  <input
+                                    value={gestor.current.obtenerCampo(paso.numero, campo)}
+                                    onChange={(e) => { gestor.current.guardarCampo(paso.numero, campo, e.target.value); setVersion(v => v + 1); }}
+                                    placeholder={`Escribe el ${campo.toLowerCase()}...`}
+                                    className="w-full border rounded-lg px-3 py-2 text-xs focus:outline-none"
+                                    style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)', color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}
+                                    spellCheck={false}
+                                  />
+                                </div>
+                              ))}
+
+                              {gestor.current.obtenerFoto(paso.numero) ? (
+                                <div className="flex items-center gap-2">
+                                  <img
+                                    src={gestor.current.obtenerFoto(paso.numero)}
+                                    alt="Foto adjunta"
+                                    onClick={() => setImagenAmpliada(gestor.current.obtenerFoto(paso.numero))}
+                                    className="w-16 h-16 object-cover rounded-lg border cursor-zoom-in"
+                                    style={{ borderColor: 'var(--borde)' }}
+                                  />
+                                  <div className="flex-1">
+                                    {reconociendo !== null ? (
+                                      <p className="text-[11px]" style={{ color: 'var(--acento)' }}>Reconociendo texto... {reconociendo}%</p>
+                                    ) : (
+                                      <p className="text-[11px]" style={{ color: 'var(--texto-tenue)' }}>Foto guardada. Revisa que los datos estén correctos.</p>
+                                    )}
+                                    <button
+                                      onClick={() => { gestor.current.eliminarFoto(paso.numero); setVersion(v => v + 1); }}
+                                      className="text-[11px] mt-1"
+                                      style={{ color: 'var(--error)' }}
+                                    >
+                                      Eliminar foto
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => archivoFotoRef.current?.click()}
+                                  disabled={reconociendo !== null}
+                                  className="w-full py-2.5 border border-dashed rounded-lg text-xs transition-colors"
+                                  style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
+                                >
+                                  📷 Subir foto y reconocer datos
+                                </button>
+                              )}
+                              <input ref={archivoFotoRef} type="file" accept="image/*" onChange={(e) => subirFoto(e, paso)} className="hidden" />
+                            </div>
+                          )}
+
                           {paso.imagenes.length > 0 && (
                             <div className="space-y-2">
                               {paso.imagenes.map(img => (

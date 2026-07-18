@@ -4,9 +4,10 @@ export const PASOS_INSTALACION = [
   // ===== FASE 1: RESPALDO =====
   new PasoInstalacion({
     numero: 1,
-    titulo: 'Seleccionar o crear carpeta de uso',
-    detalle: 'Crear o elegir la carpeta donde se guardará todo el respaldo del equipo (IP, licencia y base de datos) antes de instalar la imagen nueva.',
+    titulo: 'Datos del equipo',
+    detalle: 'Anotar los datos del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla y la app intentará reconocer los datos automáticamente — igual revisá y corregí cada campo.',
     faseId: 'respaldo',
+    campos: ['Username', 'Hostname', 'Nombre del equipo', 'IP'],
   }),
   new PasoInstalacion({
     numero: 2,
