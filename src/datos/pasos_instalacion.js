@@ -1,0 +1,165 @@
+import { PasoInstalacion } from '../modelos/paso_instalacion.js';
+
+export const PASOS_INSTALACION = [
+  // ===== FASE 1: RESPALDO =====
+  new PasoInstalacion({
+    numero: 1,
+    titulo: 'Seleccionar o crear carpeta de uso',
+    detalle: 'Crear o elegir la carpeta donde se guardará todo el respaldo del equipo (IP, licencia y base de datos) antes de instalar la imagen nueva.',
+    faseId: 'respaldo',
+  }),
+  new PasoInstalacion({
+    numero: 2,
+    titulo: 'Obtener IP',
+    detalle: 'Copiar y guardar la configuración de red actual del equipo: dirección IP, máscara de subred, puerta de enlace y servidores DNS. Se necesitará para restaurarla después de instalar la imagen.',
+    faseId: 'respaldo',
+  }),
+  new PasoInstalacion({
+    numero: 3,
+    titulo: 'Copiar licencia (RMS Config)',
+    detalle: 'Respaldar el archivo de licencia RMS Config del equipo en la carpeta de uso.',
+    faseId: 'respaldo',
+  }),
+  new PasoInstalacion({
+    numero: 4,
+    titulo: 'Copia de seguridad (Backup BD)',
+    detalle: 'Generar el respaldo de la base de datos del equipo y guardarlo en la carpeta de uso.',
+    faseId: 'respaldo',
+  }),
+
+  // ===== FASE 2: CUENTA LOCAL LINDCORP =====
+  new PasoInstalacion({
+    numero: 5,
+    titulo: 'Restaurar IP',
+    detalle: 'Con la imagen nueva instalada, poner la IP de la tienda (si no se puede en tienda, realizarlo en el centro de capas), la máscara de red y el DNS del dominio de Lindcorp.',
+    faseId: 'cuenta-local',
+    imagenes: ['/instalacion/p05-a.png'],
+  }),
+  new PasoInstalacion({
+    numero: 6,
+    titulo: 'Servicios Oracle',
+    detalle: 'Revisar los servicios de Oracle del equipo antes de continuar con el cambio de nombre.',
+    faseId: 'cuenta-local',
+  }),
+  new PasoInstalacion({
+    numero: 7,
+    titulo: 'Cambiar nombre y unir a dominio',
+    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nEjemplo: TL-1046-1 (número de tienda y caja 1 o 2).\nDominio: LindcorpTiendas.net\n\nDespués del cambio, reiniciar el equipo.',
+    faseId: 'cuenta-local',
+    imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
+  }),
+  new PasoInstalacion({
+    numero: 8,
+    titulo: 'Desactivar Firewall',
+    detalle: 'Desactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.',
+    faseId: 'cuenta-local',
+  }),
+  new PasoInstalacion({
+    numero: 9,
+    titulo: 'Ver datos [INICIAR SESIÓN]',
+    detalle: 'Verificar los datos configurados y cerrar sesión. A partir del siguiente paso se trabaja con el usuario de tienda (cuenta de dominio Tambo o Aruma).',
+    faseId: 'cuenta-local',
+  }),
+
+  // ===== FASE 3: CUENTA DOMINIO — CONFIGURACIÓN =====
+  new PasoInstalacion({
+    numero: 10,
+    titulo: 'Permisos de las 3 carpetas',
+    detalle: 'Compartir las carpetas Oracle, 19C y Staging con la entidad "Authentic User". Dentro de Oracle, la carpeta Db19c también debe compartirse con la misma entidad.\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
+    faseId: 'cuenta-dominio-config',
+    imagenes: ['/instalacion/p10-a.png', '/instalacion/p10-b.png', '/instalacion/p10-c.png', '/instalacion/p10-d.png', '/instalacion/p10-e.png', '/instalacion/p10-f.png'],
+  }),
+  new PasoInstalacion({
+    numero: 11,
+    titulo: 'Configurar listener.ora y tnsnames.ora',
+    detalle: 'Colocar los datos correspondientes en LISTENER y TNSNAMES con el usuario de tienda.\n\nRuta: C:\\Oracle\\19c\\db_home\\network\\admin\n\nEn ambos archivos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).',
+    faseId: 'cuenta-dominio-config',
+    imagenes: ['/instalacion/p11-a.png', '/instalacion/p11-b.png', '/instalacion/p11-c.png'],
+  }),
+  new PasoInstalacion({
+    numero: 12,
+    titulo: 'Configurar to_be_replaced.properties',
+    detalle: 'Ruta: C:\\staging\\environment-files\\PROD\n\nDatos importantes:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
+    faseId: 'cuenta-dominio-config',
+    imagenes: ['/instalacion/p12-a.png'],
+  }),
+
+  // ===== FASE 4: CUENTA DOMINIO — INSTALACIÓN =====
+  new PasoInstalacion({
+    numero: 13,
+    titulo: 'Agregar usuario a ORA_DBA',
+    detalle: 'En Grupos → DBA_DATA, agregar el usuario de tienda correspondiente.',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p13-a.png'],
+  }),
+  new PasoInstalacion({
+    numero: 14,
+    titulo: 'Validar servicios Oracle',
+    detalle: 'Todos los servicios Oracle deben estar en "Automático" (NO "Automático - inicio retrasado") y con estado "Iniciado".',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p14-a.png'],
+  }),
+  new PasoInstalacion({
+    numero: 15,
+    titulo: 'Validar Firewall',
+    detalle: 'Confirmar que el firewall sigue desactivado antes de ejecutar los instaladores.',
+    faseId: 'cuenta-dominio-instalacion',
+  }),
+  new PasoInstalacion({
+    numero: 16,
+    titulo: 'Ejecutar 00.LDC-PROD',
+    detalle: 'Ejecutar el LDC-PROD. NO realizarlo como administrador.\n\nAl terminar se crea un nuevo to_be_replaced.properties: validar que los datos estén correctos.',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p16-a.png', '/instalacion/p16-b.png'],
+    advertencia: 'No ejecutar como administrador',
+  }),
+  new PasoInstalacion({
+    numero: 17,
+    titulo: 'Validar to_be_replaced.properties (staging)',
+    detalle: 'Revisar nuevamente el archivo to_be_replaced.properties generado en staging y confirmar que todos los valores del paso 12 siguen correctos.',
+    faseId: 'cuenta-dominio-instalacion',
+  }),
+  new PasoInstalacion({
+    numero: 18,
+    titulo: 'Ejecutar 02.installXstore [MANUAL]',
+    detalle: 'Ejecutar 02.installXstore y confirmar cada dato con Y (sí) o N (no).\n\nIMPORTANTE: storeprimary.host siempre debe ser el HOSTNAME de la caja 1, incluso instalando en la caja 2.\n\nDurante la instalación saldrán 2 solicitudes de credenciales: confirmarlas con el usuario administrator y la contraseña indicada por soporte.',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p18-a.png', '/instalacion/p18-b.png', '/instalacion/p18-c.png'],
+    advertencia: 'storeprimary.host siempre es el hostname de la caja 1',
+  }),
+  new PasoInstalacion({
+    numero: 19,
+    titulo: 'Ejecutar KillXStore',
+    detalle: 'Ejecutar KillXStore para detener los procesos de Xstore antes de configurar los permisos de las carpetas nuevas.',
+    faseId: 'cuenta-dominio-instalacion',
+  }),
+  new PasoInstalacion({
+    numero: 20,
+    titulo: 'Permisos de las 6 carpetas Xstore',
+    detalle: 'Compartir las carpetas nuevas creadas en el disco C tras instalar Xstore, de la misma forma que las 3 carpetas anteriores: entidad "Authentic User" y desmarcar siempre "Solo lectura" en cada carpeta.',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p20-a.png', '/instalacion/p20-b.png', '/instalacion/p20-c.png', '/instalacion/p20-d.png'],
+  }),
+  new PasoInstalacion({
+    numero: 21,
+    titulo: 'Copiar archivos TOTP Authentication',
+    detalle: 'Ir a:\nC:\\staging\\environment-files\\PROD\\security\\Xenvironment TOTP Authentication\n\nCopiar todo su contenido y pegarlo en:\nC:\\xstoredata\\xstore\\download',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p21-a.png', '/instalacion/p21-b.png'],
+    advertencia: 'SOLO CAJA 1 — en caja 2 omitir este paso',
+  }),
+  new PasoInstalacion({
+    numero: 22,
+    titulo: 'Ejecutar dataloader2.bat',
+    detalle: 'Cuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar dataloader2.bat.\n\nAl finalizar: abrir Xstore y dejar Google Chrome con la página de enroll:\nhttps://localhost:9096/cloudenroll',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p22-a.png', '/instalacion/p22-b.png'],
+    advertencia: 'SOLO CAJA 1 — en caja 2 omitir este paso',
+  }),
+  new PasoInstalacion({
+    numero: 23,
+    titulo: 'Instalación de aplicaciones y software',
+    detalle: 'Instalar el Axteroid luego de enrolar y aprovechar en instalar lo del checklist.\n\n(El detalle de este paso se completará con el manual de programas y software.)',
+    faseId: 'cuenta-dominio-instalacion',
+  }),
+];

@@ -9,6 +9,7 @@ import PantallaConcepto from './vistas/pantallas/PantallaConcepto';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import PantallaRecordatorios from './vistas/pantallas/PantallaRecordatorios';
+import PantallaInstalacion from './vistas/pantallas/PantallaInstalacion';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
 import { NIVELES } from './datos/niveles';
@@ -131,6 +132,13 @@ export default function App() {
     window.history.pushState({ pantalla: 'recordatorios' }, '');
   };
 
+  const irAInstalacion = () => {
+    navegar('adelante', () => {
+      setPantalla('instalacion');
+    });
+    window.history.pushState({ pantalla: 'instalacion' }, '');
+  };
+
   const irAContinuar = () => {
     const pos = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
     if (!pos) return;
@@ -171,6 +179,10 @@ export default function App() {
 
   if (pantalla === 'arbol') {
     return <PantallaArbol onVolver={() => window.history.back()} />;
+  }
+
+  if (pantalla === 'instalacion') {
+    return <PantallaInstalacion onVolver={() => window.history.back()} />;
   }
 
   if (pantalla === 'base-datos') {
@@ -256,6 +268,7 @@ export default function App() {
       controladorPerfil={ctrlPerfil.current}
       onVerArbol={irAArbol}
       onRecordatorios={irARecordatorios}
+      onInstalacion={irAInstalacion}
       needRefresh={needRefresh}
       onActualizar={() => updateServiceWorker(true)}
       ultimaPosicion={ultimaPosicion}
