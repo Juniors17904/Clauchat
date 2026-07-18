@@ -2,9 +2,11 @@ import { useState, useRef } from 'react';
 import { FASES_INSTALACION } from '../../datos/fases_instalacion';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
+import { VisorImagen } from '../../modelos/visor_imagen';
 
 export default function PantallaInstalacion({ onVolver }) {
   const gestor = useRef(new GestorInstalacion());
+  const visor = useRef(new VisorImagen());
   const [, setVersion] = useState(0);
   const [pasoAbierto, setPasoAbierto] = useState(null);
   const [imagenAmpliada, setImagenAmpliada] = useState(null);
@@ -186,14 +188,38 @@ export default function PantallaInstalacion({ onVolver }) {
         )}
       </div>
 
-      {/* Imagen ampliada */}
+      {/* Imagen ampliada con zoom y arrastre */}
       {imagenAmpliada && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 cursor-zoom-out"
-          style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
-          onClick={() => setImagenAmpliada(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+          style={{ backgroundColor: 'rgba(0,0,0,0.9)', touchAction: 'none' }}
+          onTouchStart={(e) => { visor.current.manejarInicio(Array.from(e.touches)); }}
+          onTouchMove={(e) => { visor.current.manejarMovimiento(Array.from(e.touches)); setVersion(v => v + 1); }}
+          onTouchEnd={(e) => {
+            visor.current.manejarFin(Array.from(e.touches));
+            if (e.touches.length === 0 && visor.current.manejarDobleTap()) setVersion(v => v + 1);
+            setVersion(v => v + 1);
+          }}
+          onWheel={(e) => { visor.current.manejarRueda(e.deltaY); setVersion(v => v + 1); }}
+          onDoubleClick={() => { visor.current.ampliada ? visor.current.reiniciar() : visor.current.manejarRueda(-100); setVersion(v => v + 1); }}
         >
-          <img src={imagenAmpliada} alt="Ampliada" className="max-w-full max-h-full rounded-lg" />
+          <button
+            onClick={() => { visor.current.reiniciar(); setImagenAmpliada(null); }}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white text-xl"
+            style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
+          >
+            ×
+          </button>
+          <img
+            src={imagenAmpliada}
+            alt="Ampliada"
+            draggable="false"
+            className="max-w-full max-h-full rounded-lg select-none"
+            style={{ transform: visor.current.estilo, transition: visor.current.ampliada ? 'none' : 'transform 200ms ease' }}
+          />
+          <p className="absolute bottom-5 left-0 right-0 text-center text-[11px] pointer-events-none" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            Pellizca para zoom · arrastra para mover · doble toque para acercar
+          </p>
         </div>
       )}
     </div>
