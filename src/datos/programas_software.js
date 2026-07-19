@@ -20,6 +20,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Antivirus',
     detalle: 'Ingresar a la ruta para instalar el antivirus:\n[[D:\\Instaladores\\Cortex\\TAMBO]]',
     imagenes: ['/software/s02-a.png', '/software/s02-b.png'],
+    notas: { '/software/s02-a.png': 'Antivirus Cortex XDR — ejecutar como Administrator.' },
   }),
   new ProgramaSoftware({
     numero: 3,
@@ -28,6 +29,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Monitoreo',
     detalle: 'El instalador está en la raíz del disco [[D:\\]].\n\nEjecutar con el usuario Administrator y dar todo a "Siguiente" hasta finalizar.\n\nÚnico dato a tener en cuenta — IP: [[10.180.13.201]]',
     imagenes: ['/software/s03-a.png', '/software/s03-b.png', '/software/s03-c.png', '/software/s03-d.png', '/software/s03-e.png'],
+    notas: { '/software/s03-a.png': 'Zabbix (monitoreo) — ojo con la IP: 10.180.13.201' },
   }),
   new ProgramaSoftware({
     numero: 4,
@@ -36,6 +38,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Sesión y favoritos',
     detalle: 'a. Iniciar sesión con el correo de tienda al abrir Chrome por primera vez, para activar la sincronización.\n\nb. Agregar como favorito Mi Tienda e iniciar sesión con Google:\n[[https://mitienda.lindcorp.pe/]]\n\nc. Agregar GLPI e iniciar sesión con la cuenta de Red de la tienda (guardar la contraseña):\n[[https://helpdesk.lindcorptiendas.net/]]',
     imagenes: ['/software/s04-a.png', '/software/s04-b.png', '/software/s04-c.png', '/software/s04-d.png', '/software/s04-e.png', '/software/s04-f.png', '/software/s04-g.png'],
+    notas: { '/software/s04-a.png': 'Chrome — primero iniciar sesión con el correo de tienda.' },
   }),
   new ProgramaSoftware({
     numero: 5,
@@ -44,6 +47,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Anclar aplicaciones',
     detalle: 'Dejar ancladas en la barra de tareas las siguientes aplicaciones:\n· Chrome\n· Administrador de tareas\n· Ejecutar',
     imagenes: ['/software/s05-a.png', '/software/s05-b.png'],
+    notas: { '/software/s05-a.png': 'Anclar: Chrome, Administrador de tareas y Ejecutar.' },
   }),
   new ProgramaSoftware({
     numero: 6,
@@ -52,6 +56,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Códigos según la marca',
     detalle: 'Escanear los códigos según la marca del lector:\n· DATALOGIC\n· ZEBRA\n· HONEYWELL\n· CBX',
     imagenes: ['/software/s06-a.png', '/software/s06-b.png', '/software/s06-c.png', '/software/s06-d.png'],
+    notas: { '/software/s06-a.png': 'Lector de barras — escanear el código de TU marca.' },
   }),
   new ProgramaSoftware({
     numero: 7,
@@ -60,6 +65,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Según modelo de impresora',
     detalle: 'Los instaladores están en:\n[[D:\\Instaladores\\Utility]]\n\nElegir según el modelo de impresora que use la tienda.',
     imagenes: ['/software/s07-a.png', '/software/s07-b.png', '/software/s07-c.png', '/software/s07-d.png', '/software/s07-e.png'],
+    notas: { '/software/s07-a.png': 'Utility Epson — elegir según el modelo de impresora.' },
   }),
   new ProgramaSoftware({
     numero: 8,
@@ -68,6 +74,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Biométrico',
     detalle: 'Primero instalar el controlador del biométrico (huellero). Ruta de instaladores:\n[[D:\\Instaladores\\HUELLERO]]\n\nLuego instalar GeoVictoria.',
     imagenes: ['/software/s08-a.png', '/software/s08-b.png', '/software/s08-c.png', '/software/s08-d.png', '/software/s08-e.png', '/software/s08-f.png', '/software/s08-g.png'],
+    notas: { '/software/s08-a.png': 'GeoVictoria — primero instalar el controlador del huellero.' },
   }),
   new ProgramaSoftware({
     numero: 9,
@@ -76,6 +83,7 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Desde el servidor',
     detalle: 'El instalador actualizado está en el servidor [[10.180.11.144]].\n\nRuta completa:\n[[\\\\10.180.11.144\\instaladores$\\XSTORE_2026\\Instaladores]]',
     imagenes: ['/software/s09-a.png', '/software/s09-b.png', '/software/s09-c.png', '/software/s09-d.png', '/software/s09-e.png', '/software/s09-f.png'],
+    notas: { '/software/s09-a.png': 'RUMI — instalador en el servidor 10.180.11.144' },
   }),
   new ProgramaSoftware({
     numero: 10,
@@ -84,5 +92,6 @@ export const PROGRAMAS_SOFTWARE = [
     descripcion: 'Simulador del POS',
     detalle: 'Verificar que esté conectado correctamente a la AIO. Una vez que el POS termina de encender por completo, ejecutar el simulador ubicado en:\n[[C:\\Program Files (x86)\\Caja Windows APIREST - PinPad - 6.4\\APIREST\\Simulador]]',
     imagenes: ['/software/s10-a.png', '/software/s10-b.png'],
+    notas: { '/software/s10-a.png': 'Izipay — el POS debe estar 100% encendido antes.' },
   }),
 ];
