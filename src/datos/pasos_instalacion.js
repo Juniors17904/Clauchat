@@ -43,6 +43,7 @@ export const PASOS_INSTALACION = [
     titulo: 'Servicios Oracle',
     detalle: 'Revisar los servicios de Oracle del equipo antes de continuar con el cambio de nombre.\n\nAbrir con: Win + R → services.msc.',
     faseId: 'cuenta-local',
+    imagenes: ['/instalacion/p14-a.png'],
   }),
   new PasoInstalacion({
     numero: 7,
