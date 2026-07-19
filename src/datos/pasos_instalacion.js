@@ -5,7 +5,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 1,
     titulo: 'Datos del equipo',
-    detalle: 'Anotar los datos de identidad del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla por cada campo y la app intentará reconocer el dato — igual revisá y corregí.',
+    detalle: 'Anotar los datos de identidad del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla por cada campo y la app intentará reconocer el dato — igual revisá y corregí.\n\nComandos útiles (cmd): hostname → nombre del equipo · whoami → usuario con dominio.',
     faseId: 'respaldo',
     campos: ['Username', 'Hostname', 'Nombre de tienda'],
   }),
@@ -33,27 +33,27 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 5,
     titulo: 'Restaurar IP',
-    detalle: 'Con la imagen nueva instalada, poner la IP de la tienda (si no se puede en tienda, realizarlo en el centro de capas), la máscara de red y el DNS del dominio de Lindcorp.',
+    detalle: 'Con la imagen nueva instalada, poner la IP de la tienda (si no se puede en tienda, realizarlo en el centro de capas), la máscara de red y el DNS del dominio de Lindcorp.\n\nAbrir con: Win + R → ncpa.cpl → clic derecho en el adaptador → Propiedades → TCP/IPv4.',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p05-a.png'],
   }),
   new PasoInstalacion({
     numero: 6,
     titulo: 'Servicios Oracle',
-    detalle: 'Revisar los servicios de Oracle del equipo antes de continuar con el cambio de nombre.',
+    detalle: 'Revisar los servicios de Oracle del equipo antes de continuar con el cambio de nombre.\n\nAbrir con: Win + R → services.msc.',
     faseId: 'cuenta-local',
   }),
   new PasoInstalacion({
     numero: 7,
     titulo: 'Cambiar nombre y unir a dominio',
-    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nEjemplo: TL-1046-1 (número de tienda y caja 1 o 2).\nDominio: LindcorpTiendas.net\n\nDespués del cambio, reiniciar el equipo.',
+    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nEjemplo: TL-1046-1 (número de tienda y caja 1 o 2).\nDominio: LindcorpTiendas.net\n\nAbrir con: Win + R → sysdm.cpl → botón Cambiar.\n\nDespués del cambio, reiniciar el equipo.',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
   }),
   new PasoInstalacion({
     numero: 8,
     titulo: 'Desactivar Firewall',
-    detalle: 'Desactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.',
+    detalle: 'Desactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.\n\nAbrir con: Win + R → firewall.cpl → Activar o desactivar Firewall de Windows Defender.',
     faseId: 'cuenta-local',
   }),
   new PasoInstalacion({
@@ -90,21 +90,21 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 13,
     titulo: 'Agregar usuario a ORA_DBA',
-    detalle: 'En Grupos → DBA_DATA, agregar el usuario de tienda correspondiente.',
+    detalle: 'En Grupos → DBA_DATA, agregar el usuario de tienda correspondiente.\n\nAbrir con: Win + R → lusrmgr.msc → Grupos.',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p13-a.png'],
   }),
   new PasoInstalacion({
     numero: 14,
     titulo: 'Validar servicios Oracle',
-    detalle: 'Todos los servicios Oracle deben estar en "Automático" (NO "Automático - inicio retrasado") y con estado "Iniciado".',
+    detalle: 'Todos los servicios Oracle deben estar en "Automático" (NO "Automático - inicio retrasado") y con estado "Iniciado".\n\nAbrir con: Win + R → services.msc.',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p14-a.png'],
   }),
   new PasoInstalacion({
     numero: 15,
     titulo: 'Validar Firewall',
-    detalle: 'Confirmar que el firewall sigue desactivado antes de ejecutar los instaladores.',
+    detalle: 'Confirmar que el firewall sigue desactivado antes de ejecutar los instaladores.\n\nAbrir con: Win + R → firewall.cpl.',
     faseId: 'cuenta-dominio-instalacion',
   }),
   new PasoInstalacion({
