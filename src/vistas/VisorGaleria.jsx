@@ -129,6 +129,16 @@ export default function VisorGaleria({ imagenes, indiceInicial, onCerrar, onCamb
           </button>
         )}
 
+        {/* Nota de la imagen (solo cuando no está ampliada) */}
+        {actual.nota && !visor.current.ampliada && (
+          <div className="absolute bottom-3 left-3 right-3 rounded-xl px-4 py-3 pointer-events-none" style={{ backgroundColor: 'rgba(0,0,0,0.72)', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: '#fff' }}>
+              <span style={{ color: 'var(--advertencia)', fontWeight: 700 }}>Nota: </span>
+              {actual.nota}
+            </p>
+          </div>
+        )}
+
         {/* Portada al cambiar de punto */}
         {portada && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none portada-punto">

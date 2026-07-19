@@ -9,7 +9,7 @@ import VisorGaleria from '../VisorGaleria';
 
 // Lista plana de las imágenes del manual, para navegar en galería
 const GALERIA_MANUAL = PASOS_INSTALACION.flatMap(p =>
-  p.imagenes.map(src => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.titulo}`, color: '#3fb950' }))
+  p.imagenes.map(src => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.titulo}`, color: '#3fb950', nota: p.notaDe(src) }))
 );
 
 function renderizarDetalle(texto) {
