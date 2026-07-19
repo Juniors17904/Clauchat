@@ -7,7 +7,7 @@ export const PASOS_INSTALACION = [
     titulo: 'Datos del equipo',
     detalle: 'Anotar los datos de identidad del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla por cada campo y la app intentará reconocer el dato — igual revisá y corregí.',
     faseId: 'respaldo',
-    campos: ['Username', 'Hostname', 'Nombre del equipo'],
+    campos: ['Username', 'Hostname', 'Nombre de tienda'],
   }),
   new PasoInstalacion({
     numero: 2,

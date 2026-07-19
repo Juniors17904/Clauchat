@@ -30,11 +30,13 @@ export class ReconocedorTexto {
     const hostnameCorto = texto.match(/\b((?:TL|TP|AL|AP)-\d{2,5}-\d)\b/i);
     if (hostnameCompleto) {
       datos['Hostname'] = `${hostnameCompleto[1]}.LindcorpTiendas.net`;
-      datos['Nombre del equipo'] = hostnameCompleto[1];
     } else if (hostnameCorto) {
       datos['Hostname'] = `${hostnameCorto[1]}.LindcorpTiendas.net`;
-      datos['Nombre del equipo'] = hostnameCorto[1];
     }
+
+    const storeName = texto.match(/storeName\s*[=:]\s*([^\n#]+)/i)
+      ?? texto.match(/\b((?:TAMBO|ARUMA)\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ0-9 .\-]{3,50})/);
+    if (storeName) datos['Nombre de tienda'] = storeName[1].trim();
 
     this.#extraerRed(texto, datos);
 
