@@ -47,10 +47,9 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 7,
     titulo: 'Cambiar nombre y unir a dominio',
-    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nFormato: XX-NNNN-C\n· NNNN = número de tienda de 4 dígitos\n· C = caja (1 o 2)\n\nEjemplo: TL-1046-1\nDominio: LindcorpTiendas.net\n\nAbrir con: Win + R → sysdm.cpl → botón Cambiar.\n\nDespués del cambio, reiniciar el equipo.',
+    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nFormato: [[XX-NNNN-C]]\n· [[NNNN = número de tienda de 4 dígitos]]\n· [[C = caja (1 o 2)]]\n\nEjemplo: [[TL-1046-1]]\nDominio: LindcorpTiendas.net\n\nAbrir con: Win + R → sysdm.cpl → botón Cambiar.\n\nDespués del cambio, reiniciar el equipo.',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
-    advertencia: 'El número de tienda SIEMPRE lleva 4 dígitos, seguido de la caja (1 o 2). Ej: TL-1046-1',
   }),
   new PasoInstalacion({
     numero: 8,
@@ -69,7 +68,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 10,
     titulo: 'Permisos de las 3 carpetas',
-    detalle: 'Compartir las carpetas Oracle, 19C y Staging con la entidad "Authentic User". Dentro de Oracle, la carpeta Db19c también debe compartirse con la misma entidad.\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
+    detalle: 'Compartir 3 carpetas ubicadas en [[C:\\]] con la entidad "Authentic User":\n· [[Oracle]]\n· [[19C]]\n· [[Staging]]\n\nDentro de [[Oracle]], la carpeta [[Db19c]] también debe compartirse con la misma entidad.\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p10-a.png', '/instalacion/p10-b.png', '/instalacion/p10-c.png', '/instalacion/p10-d.png', '/instalacion/p10-e.png', '/instalacion/p10-f.png'],
   }),

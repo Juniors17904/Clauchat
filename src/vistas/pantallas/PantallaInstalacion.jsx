@@ -7,6 +7,15 @@ import { CompresorImagen } from '../../modelos/compresor_imagen';
 import { MejoradorImagen } from '../../modelos/mejorador_imagen';
 import { ReconocedorTexto } from '../../modelos/reconocedor_texto';
 
+function renderizarDetalle(texto) {
+  return texto.split(/(\[\[.*?\]\])/g).map((parte, i) => {
+    if (parte.startsWith('[[') && parte.endsWith(']]')) {
+      return <span key={i} style={{ color: 'var(--advertencia)', fontWeight: 600 }}>{parte.slice(2, -2)}</span>;
+    }
+    return parte;
+  });
+}
+
 export default function PantallaInstalacion({ onVolver }) {
   const gestor = useRef(new GestorInstalacion());
   const visor = useRef(new VisorImagen());
@@ -214,7 +223,7 @@ export default function PantallaInstalacion({ onVolver }) {
                               <p className="text-sm font-semibold" style={{ color: 'var(--advertencia)' }}>⚠️ {paso.advertencia}</p>
                             </div>
                           )}
-                          <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{paso.detalle}</p>
+                          <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(paso.detalle)}</p>
 
                           {/* Campos de datos: la foto primero, el texto si se reconoció */}
                           {paso.campos.length > 0 && (
