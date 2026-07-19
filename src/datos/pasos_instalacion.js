@@ -163,10 +163,4 @@ export const PASOS_INSTALACION = [
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p22-b.png'],
   }),
-  new PasoInstalacion({
-    numero: 24,
-    titulo: 'Instalación de aplicaciones y software',
-    detalle: 'Instalar el Axteroid luego de enrolar y aprovechar en instalar lo del checklist.\n\n(El detalle de este paso se completará con el manual de programas y software.)',
-    faseId: 'cuenta-dominio-instalacion',
-  }),
 ];

@@ -10,6 +10,8 @@ import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import PantallaRecordatorios from './vistas/pantallas/PantallaRecordatorios';
 import PantallaInstalacion from './vistas/pantallas/PantallaInstalacion';
+import PantallaHerramientas from './vistas/pantallas/PantallaHerramientas';
+import PantallaSoftware from './vistas/pantallas/PantallaSoftware';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
 import { NIVELES } from './datos/niveles';
@@ -140,11 +142,25 @@ export default function App() {
     window.history.pushState({ pantalla: 'recordatorios' }, '');
   };
 
+  const irAHerramientas = () => {
+    navegar('adelante', () => {
+      setPantalla('herramientas');
+    });
+    window.history.pushState({ pantalla: 'herramientas' }, '');
+  };
+
   const irAInstalacion = () => {
     navegar('adelante', () => {
       setPantalla('instalacion');
     });
     window.history.pushState({ pantalla: 'instalacion' }, '');
+  };
+
+  const irASoftware = () => {
+    navegar('adelante', () => {
+      setPantalla('software');
+    });
+    window.history.pushState({ pantalla: 'software' }, '');
   };
 
   const irAContinuar = () => {
@@ -189,8 +205,22 @@ export default function App() {
     return <PantallaArbol onVolver={() => window.history.back()} />;
   }
 
+  if (pantalla === 'herramientas') {
+    return (
+      <PantallaHerramientas
+        onVolver={() => window.history.back()}
+        onXstore={irAInstalacion}
+        onSoftware={irASoftware}
+      />
+    );
+  }
+
   if (pantalla === 'instalacion') {
     return <PantallaInstalacion onVolver={() => window.history.back()} />;
+  }
+
+  if (pantalla === 'software') {
+    return <PantallaSoftware onVolver={() => window.history.back()} />;
   }
 
   if (pantalla === 'base-datos') {
@@ -276,7 +306,7 @@ export default function App() {
       controladorPerfil={ctrlPerfil.current}
       onVerArbol={irAArbol}
       onRecordatorios={irARecordatorios}
-      onInstalacion={irAInstalacion}
+      onInstalacion={irAHerramientas}
       needRefresh={needRefresh}
       onActualizar={() => updateServiceWorker(true)}
       ultimaPosicion={ultimaPosicion}
