@@ -111,7 +111,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 16,
     titulo: 'Ejecutar 00.LDC-PROD',
-    detalle: 'Ejecutar el LDC-PROD. NO realizarlo como administrador.\n\nAl terminar se crea un nuevo to_be_replaced.properties: validar que los datos estén correctos.',
+    detalle: 'Ejecutar [[00.LDC-PROD]], ubicado en [[C:\\staging]]. NO realizarlo como administrador.\n\nAl terminar se crea un nuevo to_be_replaced.properties: validar que los datos estén correctos.',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p16-a.png', '/instalacion/p16-b.png'],
     advertencia: 'No ejecutar como administrador',
@@ -125,7 +125,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 18,
     titulo: 'Ejecutar 02.installXstore [MANUAL]',
-    detalle: 'Ejecutar 02.installXstore y confirmar cada dato con Y (sí) o N (no).\n\nIMPORTANTE: storeprimary.host siempre debe ser el HOSTNAME de la caja 1, incluso instalando en la caja 2.\n\nDurante la instalación saldrán 2 solicitudes de credenciales: confirmarlas con el usuario administrator y la contraseña indicada por soporte.',
+    detalle: 'Ejecutar [[02.installXstore]], ubicado en [[C:\\staging]], y confirmar cada dato con Y (sí) o N (no).\n\nIMPORTANTE: storeprimary.host siempre debe ser el HOSTNAME de la caja 1, incluso instalando en la caja 2.\n\nDurante la instalación saldrán 2 solicitudes de credenciales: confirmarlas con el usuario administrator y la contraseña indicada por soporte.',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p18-a.png', '/instalacion/p18-b.png', '/instalacion/p18-c.png'],
     advertencia: 'storeprimary.host siempre es el hostname de la caja 1',
