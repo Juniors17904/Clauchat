@@ -11,9 +11,19 @@ export class ReconocedorTexto {
         }
       },
     });
+    await trabajador.setParameters({ tessedit_pageseg_mode: '6' });
     const { data } = await trabajador.recognize(imagenDataUrl);
     await trabajador.terminate();
     return data.text;
+  }
+
+  #normalizarNumeros(texto) {
+    // Corregir confusiones típicas del OCR dentro de números: O→0, l/I/|→1, S→5, B→8
+    return texto
+      .replace(/(?<=[\d.,\s])[OoQ](?=[\d.,])|(?<=[\d.,])[OoQ](?=[\d.,\s])/g, '0')
+      .replace(/(?<=[\d.,])[lI|](?=[\d.,])/g, '1')
+      .replace(/(?<=[\d.,])S(?=[\d.,])/g, '5')
+      .replace(/(?<=[\d.,])B(?=[\d.,])/g, '8');
   }
 
   extraerCampo(texto, campo) {
@@ -43,7 +53,8 @@ export class ReconocedorTexto {
     return datos;
   }
 
-  #extraerRed(texto, datos) {
+  #extraerRed(textoCrudo, datos) {
+    const texto = this.#normalizarNumeros(textoCrudo);
     const buscarIpEnLinea = (linea) => {
       const m = linea.match(/\b(\d{1,3}(?:\s*[.,]\s*\d{1,3}){3})\b/);
       return m ? m[1].replace(/\s*[.,]\s*/g, '.') : null;

@@ -4,12 +4,14 @@ import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { VisorImagen } from '../../modelos/visor_imagen';
 import { CompresorImagen } from '../../modelos/compresor_imagen';
+import { MejoradorImagen } from '../../modelos/mejorador_imagen';
 import { ReconocedorTexto } from '../../modelos/reconocedor_texto';
 
 export default function PantallaInstalacion({ onVolver }) {
   const gestor = useRef(new GestorInstalacion());
   const visor = useRef(new VisorImagen());
   const compresor = useRef(new CompresorImagen());
+  const mejorador = useRef(new MejoradorImagen());
   const reconocedor = useRef(new ReconocedorTexto());
   const archivoFotoRef = useRef(null);
   const [, setVersion] = useState(0);
@@ -41,7 +43,9 @@ export default function PantallaInstalacion({ onVolver }) {
       }
       setVersion(v => v + 1);
       setReconociendo({ campo, progreso: 0 });
-      const texto = await reconocedor.current.reconocer(dataUrl, (p) => setReconociendo({ campo, progreso: p }));
+      // El OCR trabaja sobre la foto original en alta resolución, mejorada
+      const paraOcr = await mejorador.current.prepararParaOcr(archivo);
+      const texto = await reconocedor.current.reconocer(paraOcr, (p) => setReconociendo({ campo, progreso: p }));
       const datos = reconocedor.current.extraerDatos(texto);
       let encontrados = 0;
       // La foto llena su campo y cualquier otro campo vacío del paso
