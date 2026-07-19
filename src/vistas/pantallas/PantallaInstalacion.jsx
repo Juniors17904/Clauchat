@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FASES_INSTALACION } from '../../datos/fases_instalacion';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
@@ -32,11 +32,17 @@ export default function PantallaInstalacion({ onVolver }) {
       setVersion(v => v + 1);
       setReconociendo({ campo, progreso: 0 });
       const texto = await reconocedor.current.reconocer(dataUrl, (p) => setReconociendo({ campo, progreso: p }));
-      const valor = reconocedor.current.extraerCampo(texto, campo);
-      if (valor) {
-        gestor.current.guardarCampo(paso.numero, campo, valor);
+      const datos = reconocedor.current.extraerDatos(texto);
+      if (datos[campo]) {
+        gestor.current.guardarCampo(paso.numero, campo, datos[campo]);
       } else {
         setAvisoCampo(campo);
+      }
+      // La misma foto puede traer otros datos del paso: llenar los campos vacíos
+      for (const otro of paso.campos) {
+        if (otro !== campo && datos[otro] && !gestor.current.obtenerCampo(paso.numero, otro)) {
+          gestor.current.guardarCampo(paso.numero, otro, datos[otro]);
+        }
       }
     } catch {
       setAvisoCampo(campo);
@@ -45,6 +51,21 @@ export default function PantallaInstalacion({ onVolver }) {
       setVersion(v => v + 1);
     }
   };
+
+  useEffect(() => {
+    if (!imagenAmpliada) return;
+    const estadoActual = window.history.state;
+    window.history.pushState({ ...estadoActual, visorFoto: true }, '');
+    const cerrarConRetroceso = () => {
+      visor.current.reiniciar();
+      setImagenAmpliada(null);
+    };
+    window.addEventListener('popstate', cerrarConRetroceso);
+    return () => {
+      window.removeEventListener('popstate', cerrarConRetroceso);
+      if (window.history.state?.visorFoto) window.history.back();
+    };
+  }, [imagenAmpliada]);
 
   const total = PASOS_INSTALACION.length;
   const completados = gestor.current.totalCompletados;

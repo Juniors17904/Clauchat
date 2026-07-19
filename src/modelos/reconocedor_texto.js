@@ -36,11 +36,51 @@ export class ReconocedorTexto {
       datos['Nombre del equipo'] = hostnameCorto[1];
     }
 
-    const ips = [...texto.matchAll(/\b(\d{1,3}(?:\s*[.,]\s*\d{1,3}){3})\b/g)]
-      .map(m => m[1].replace(/\s*[.,]\s*/g, '.'))
-      .filter(ip => !ip.startsWith('255.') && ip.split('.').every(n => Number(n) <= 255));
-    if (ips.length > 0) datos['IP'] = ips[0];
+    this.#extraerRed(texto, datos);
 
     return datos;
+  }
+
+  #extraerRed(texto, datos) {
+    const buscarIpEnLinea = (linea) => {
+      const m = linea.match(/\b(\d{1,3}(?:\s*[.,]\s*\d{1,3}){3})\b/);
+      return m ? m[1].replace(/\s*[.,]\s*/g, '.') : null;
+    };
+
+    const etiquetas = [
+      ['Dirección IP', /direcci[oó]n\s*ip/i],
+      ['Máscara de subred', /m[aá]scara/i],
+      ['Puerta de enlace', /puerta\s*de\s*enlace/i],
+      ['DNS preferido', /dns\s*preferido|servidor\s*dns\s*preferido/i],
+      ['DNS alternativo', /dns\s*alternativo/i],
+    ];
+
+    // Primero por etiqueta: la IP en la misma línea que el rótulo
+    for (const linea of texto.split('\n')) {
+      for (const [campo, patron] of etiquetas) {
+        if (!datos[campo] && patron.test(linea)) {
+          const ip = buscarIpEnLinea(linea);
+          if (ip) datos[campo] = ip;
+        }
+      }
+    }
+
+    // Luego por orden de aparición para lo que falte
+    const todas = [...texto.matchAll(/\b(\d{1,3}(?:\s*[.,]\s*\d{1,3}){3})\b/g)]
+      .map(m => m[1].replace(/\s*[.,]\s*/g, '.'))
+      .filter(ip => ip.split('.').every(n => Number(n) <= 255));
+    const usadas = new Set(Object.values(datos));
+    const libres = todas.filter(ip => !usadas.has(ip));
+
+    if (!datos['Máscara de subred']) {
+      const mascara = libres.find(ip => ip.startsWith('255.'));
+      if (mascara) { datos['Máscara de subred'] = mascara; libres.splice(libres.indexOf(mascara), 1); }
+    }
+    const restantes = libres.filter(ip => !ip.startsWith('255.'));
+    for (const campo of ['Dirección IP', 'Puerta de enlace', 'DNS preferido', 'DNS alternativo']) {
+      if (!datos[campo] && restantes.length > 0) {
+        datos[campo] = restantes.shift();
+      }
+    }
   }
 }

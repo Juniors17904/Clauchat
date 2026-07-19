@@ -5,15 +5,16 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 1,
     titulo: 'Datos del equipo',
-    detalle: 'Anotar los datos del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla y la app intentará reconocer los datos automáticamente — igual revisá y corregí cada campo.',
+    detalle: 'Anotar los datos de identidad del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla por cada campo y la app intentará reconocer el dato — igual revisá y corregí.',
     faseId: 'respaldo',
-    campos: ['Username', 'Hostname', 'Nombre del equipo', 'IP'],
+    campos: ['Username', 'Hostname', 'Nombre del equipo'],
   }),
   new PasoInstalacion({
     numero: 2,
     titulo: 'Obtener IP',
-    detalle: 'Copiar y guardar la configuración de red actual del equipo: dirección IP, máscara de subred, puerta de enlace y servidores DNS. Se necesitará para restaurarla después de instalar la imagen.',
+    detalle: 'Guardar la configuración de red actual del equipo (pantalla de Propiedades de TCP/IPv4). Se necesitará para restaurarla después de instalar la imagen.\n\nCon una sola foto de esa pantalla la app puede reconocer varios campos a la vez.',
     faseId: 'respaldo',
+    campos: ['Dirección IP', 'Máscara de subred', 'Puerta de enlace', 'DNS preferido', 'DNS alternativo'],
   }),
   new PasoInstalacion({
     numero: 3,
