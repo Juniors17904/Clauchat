@@ -19,6 +19,8 @@ export default function PantallaInstalacion({ onVolver }) {
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
   const campoActivo = useRef(null);
+  const vieneDeCamara = useRef(false);
+  const archivoCamaraRef = useRef(null);
 
   const subirFoto = async (e, paso) => {
     const archivo = e.target.files?.[0];
@@ -29,6 +31,13 @@ export default function PantallaInstalacion({ onVolver }) {
     try {
       const dataUrl = await compresor.current.comprimir(archivo);
       gestor.current.guardarFoto(paso.numero, campo, dataUrl);
+      if (vieneDeCamara.current) {
+        // Guardar copia en el teléfono (carpeta Descargas) por si acaso
+        const enlace = document.createElement('a');
+        enlace.href = dataUrl;
+        enlace.download = `paso${paso.numero}-${campo.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+        enlace.click();
+      }
       setVersion(v => v + 1);
       setReconociendo({ campo, progreso: 0 });
       const texto = await reconocedor.current.reconocer(dataUrl, (p) => setReconociendo({ campo, progreso: p }));
@@ -194,13 +203,22 @@ export default function PantallaInstalacion({ onVolver }) {
                                         spellCheck={false}
                                       />
                                       <button
-                                        onClick={() => { campoActivo.current = campo; archivoFotoRef.current?.click(); }}
+                                        onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
                                         disabled={reconociendo !== null}
                                         className="w-9 flex-shrink-0 border rounded-lg text-sm flex items-center justify-center transition-colors disabled:opacity-40"
                                         style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
-                                        title={`Subir foto para ${campo}`}
+                                        title={`Tomar foto para ${campo}`}
                                       >
                                         📷
+                                      </button>
+                                      <button
+                                        onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
+                                        disabled={reconociendo !== null}
+                                        className="w-9 flex-shrink-0 border rounded-lg text-sm flex items-center justify-center transition-colors disabled:opacity-40"
+                                        style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+                                        title={`Subir foto de la galería para ${campo}`}
+                                      >
+                                        🖼️
                                       </button>
                                       {foto && (
                                         <img
@@ -228,6 +246,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                 );
                               })}
                               <input ref={archivoFotoRef} type="file" accept="image/*" onChange={(e) => subirFoto(e, paso)} className="hidden" />
+                              <input ref={archivoCamaraRef} type="file" accept="image/*" capture="environment" onChange={(e) => subirFoto(e, paso)} className="hidden" />
                             </div>
                           )}
 
