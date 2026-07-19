@@ -68,7 +68,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 10,
     titulo: 'Permisos de las 3 carpetas',
-    detalle: 'Compartir 3 carpetas ubicadas en [[C:\\]] con la entidad "Authentic User":\n· [[Oracle]]\n· [[19c]]\n· [[Staging]]\n\nDentro de [[Oracle]] también compartir su carpeta [[19c]] con la misma entidad.\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
+    detalle: 'Compartir 3 carpetas con la entidad "Authentic User":\n\nEn [[C:\\]]\n· [[Oracle]]\n· [[Staging]]\n\nDentro de Oracle\n· [[C:\\Oracle\\19c]]\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p10-a.png', '/instalacion/p10-b.png', '/instalacion/p10-c.png', '/instalacion/p10-d.png', '/instalacion/p10-e.png', '/instalacion/p10-f.png'],
   }),
