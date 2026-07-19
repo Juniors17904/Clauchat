@@ -119,9 +119,9 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 17,
     titulo: 'Validar to_be_replaced.properties (staging)',
-    detalle: 'Revisar nuevamente el archivo [[to_be_replaced.properties]] en [[C:\\staging\\environment-files\\PROD]] y confirmar que todos los valores del paso 12 siguen correctos (orgId, rtlLocId, terminalId, storeprimary.host, storeName, locate.XstoreSystemCode).',
+    detalle: 'Revisar el [[to_be_replaced.properties]] generado por el LDC-PROD, en [[C:\\staging]], y confirmar que todos los valores del paso 12 siguen correctos (orgId, rtlLocId, terminalId, storeprimary.host, storeName, locate.XstoreSystemCode).',
     faseId: 'cuenta-dominio-instalacion',
-    imagenes: ['/instalacion/p12-a.png'],
+    imagenes: ['/instalacion/p16-b.png'],
   }),
   new PasoInstalacion({
     numero: 18,
