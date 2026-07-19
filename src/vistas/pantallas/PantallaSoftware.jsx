@@ -17,8 +17,8 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaSoftware({ onVolver }) {
-  const gestor = useRef(new GestorSoftware());
+export default function PantallaSoftware({ onVolver, caja = 1 }) {
+  const gestor = useRef(new GestorSoftware(caja));
   const pasosRef = useRef({});
   const indiceGaleriaRef = useRef(0);
   const [, setVersion] = useState(0);
@@ -87,7 +87,7 @@ export default function PantallaSoftware({ onVolver }) {
             ← Volver
           </button>
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-lg font-bold" style={{ color: 'var(--texto-primario)' }}>Software y aplicaciones</h1>
+            <h1 className="text-lg font-bold" style={{ color: 'var(--texto-primario)' }}>Software · Caja {caja}</h1>
             <span className="text-xs font-mono" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-secundario)' }}>
               {completados}/{total}
             </span>

@@ -1,11 +1,12 @@
-const CLAVE = 'sqlab_software';
-
 export class GestorSoftware {
   #completados;
+  #clave;
 
-  constructor() {
+  constructor(caja = 1) {
+    const sufijo = caja === 2 ? '_caja2' : '';
+    this.#clave = `sqlab_software${sufijo}`;
     try {
-      this.#completados = new Set(JSON.parse(localStorage.getItem(CLAVE) ?? '[]'));
+      this.#completados = new Set(JSON.parse(localStorage.getItem(this.#clave) ?? '[]'));
     } catch {
       this.#completados = new Set();
     }
@@ -34,6 +35,6 @@ export class GestorSoftware {
   }
 
   #persistir() {
-    localStorage.setItem(CLAVE, JSON.stringify([...this.#completados]));
+    localStorage.setItem(this.#clave, JSON.stringify([...this.#completados]));
   }
 }

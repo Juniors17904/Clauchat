@@ -160,11 +160,12 @@ export default function App() {
     window.history.pushState({ pantalla: 'instalacion', caja }, '');
   };
 
-  const irASoftware = () => {
+  const irASoftware = (caja = 1) => {
     navegar('adelante', () => {
+      setCajaInstalacion(caja);
       setPantalla('software');
     });
-    window.history.pushState({ pantalla: 'software' }, '');
+    window.history.pushState({ pantalla: 'software', caja }, '');
   };
 
   const irAContinuar = () => {
@@ -224,7 +225,7 @@ export default function App() {
   }
 
   if (pantalla === 'software') {
-    return <PantallaSoftware onVolver={() => window.history.back()} />;
+    return <PantallaSoftware onVolver={() => window.history.back()} caja={cajaInstalacion} />;
   }
 
   if (pantalla === 'base-datos') {
