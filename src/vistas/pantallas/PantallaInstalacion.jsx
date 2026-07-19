@@ -21,6 +21,7 @@ export default function PantallaInstalacion({ onVolver }) {
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
   const [camposAbiertos, setCamposAbiertos] = useState(new Set());
+  const [pasosManuales, setPasosManuales] = useState(new Set());
   const campoActivo = useRef(null);
   const vieneDeCamara = useRef(false);
   const archivoCamaraRef = useRef(null);
@@ -275,12 +276,14 @@ export default function PantallaInstalacion({ onVolver }) {
                                 const valor = gestor.current.obtenerCampo(paso.numero, campo);
                                 const procesando = reconociendo?.campo === campo;
                                 const clave = `${paso.numero}-${campo}`;
-                                const mostrarTexto = valor !== '' || camposAbiertos.has(clave) || procesando;
+                                const mostrarTexto = valor !== '' || camposAbiertos.has(clave) || procesando || (paso.fotoUnica && pasosManuales.has(paso.numero));
+                                // En foto única, si el campo no se muestra, se oculta por completo (una sola acción manual controla todos)
+                                if (paso.fotoUnica && !mostrarTexto) return null;
                                 return (
                                   <div key={campo}>
                                     <div className="flex items-center justify-between mb-1.5">
                                       <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--texto-tenue)' }}>{campo}</p>
-                                      {!mostrarTexto && (
+                                      {!mostrarTexto && !paso.fotoUnica && (
                                         <button
                                           onClick={() => { setCamposAbiertos(prev => new Set(prev).add(clave)); }}
                                           className="text-[10px]"
@@ -373,6 +376,18 @@ export default function PantallaInstalacion({ onVolver }) {
                                   </div>
                                 );
                               })}
+
+                              {/* En foto única: una sola opción para escribir todo a mano */}
+                              {paso.fotoUnica && !pasosManuales.has(paso.numero) && (
+                                <button
+                                  onClick={() => setPasosManuales(prev => new Set(prev).add(paso.numero))}
+                                  className="w-full py-2 border border-dashed rounded-lg text-[11px] transition-colors"
+                                  style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+                                >
+                                  ✎ Escribir los datos a mano
+                                </button>
+                              )}
+
                               <input ref={archivoFotoRef} type="file" accept="image/*" onChange={(e) => subirFoto(e, paso)} className="hidden" />
                               <input ref={archivoCamaraRef} type="file" accept="image/*" capture="environment" onChange={(e) => subirFoto(e, paso)} className="hidden" />
                             </div>
