@@ -159,6 +159,12 @@ export const PASOS_INSTALACION = [
   }),
   new PasoInstalacion({
     numero: 23,
+    titulo: 'Configurar ConfigPatch (aruma → tambo)',
+    detalle: 'Este paso es en AMBAS CAJAS.\n\nIr a la carpeta [[C:\\xtoredata\\xtore]] y abrir el documento [[ConfigPatch]].\n\nEn la línea 06, cambiar la palabra "aruma" por "tambo".\n\nGuardar y cerrar el documento.',
+    faseId: 'cuenta-dominio-instalacion',
+  }),
+  new PasoInstalacion({
+    numero: 24,
     titulo: 'Abrir Xstore y dejar Chrome en enroll',
     detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nAbrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
     faseId: 'cuenta-dominio-instalacion',
