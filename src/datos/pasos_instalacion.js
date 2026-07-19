@@ -75,14 +75,14 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 11,
     titulo: 'Configurar listener.ora y tnsnames.ora',
-    detalle: 'Colocar los datos correspondientes en LISTENER y TNSNAMES con el usuario de tienda.\n\nRuta: C:\\Oracle\\19c\\db_home\\network\\admin\n\nEn ambos archivos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).',
+    detalle: 'Editar los archivos [[listener.ora]] y [[tnsnames.ora]] con el usuario de tienda.\n\nRuta: [[C:\\Oracle\\19c\\db_home\\network\\admin]]\n\nEn ambos archivos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p11-a.png', '/instalacion/p11-b.png', '/instalacion/p11-c.png'],
   }),
   new PasoInstalacion({
     numero: 12,
     titulo: 'Configurar to_be_replaced.properties',
-    detalle: 'Este es el archivo que se EDITA. Está en [[C:\\staging\\environment-files\\PROD]].\n\nCambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
+    detalle: 'Este es el archivo [[to_be_replaced.properties]] que se EDITA. Está en [[C:\\staging\\environment-files\\PROD]].\n\nCambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p12-a.png'],
   }),
@@ -146,7 +146,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 21,
     titulo: 'Copiar archivos TOTP Authentication',
-    detalle: 'Ir a:\nC:\\staging\\environment-files\\PROD\\security\\Xenvironment TOTP Authentication\n\nCopiar todo su contenido y pegarlo en:\nC:\\xstoredata\\xstore\\download',
+    detalle: 'Copiar todo el contenido de:\n[[C:\\staging\\environment-files\\PROD\\security\\Xenvironment TOTP Authentication]]\n\nY pegarlo en:\n[[C:\\xstoredata\\xstore\\download]]',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p21-a.png', '/instalacion/p21-b.png'],
     advertencia: 'SOLO CAJA 1 — en caja 2 omitir este paso',
@@ -154,7 +154,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 22,
     titulo: 'Ejecutar dataloader2.bat',
-    detalle: 'Cuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar dataloader2.bat.\n\nAl finalizar: abrir Xstore y dejar Google Chrome con la página de enroll:\nhttps://localhost:9096/cloudenroll',
+    detalle: 'Cuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar [[dataloader2.bat]].\n\nAl finalizar: abrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p22-a.png', '/instalacion/p22-b.png'],
     advertencia: 'SOLO CAJA 1 — en caja 2 omitir este paso',
