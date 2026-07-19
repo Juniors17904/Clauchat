@@ -139,7 +139,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 20,
     titulo: 'Permisos de las 6 carpetas Xstore',
-    detalle: 'Compartir las carpetas nuevas creadas en el disco C tras instalar Xstore, de la misma forma que las 3 carpetas anteriores: entidad "Authentic User" y desmarcar siempre "Solo lectura" en cada carpeta.',
+    detalle: 'Compartir las 6 carpetas nuevas que se crearon en [[C:\\]] tras instalar Xstore, de la misma forma que las anteriores (entidad "Authentic User" y desmarcar siempre "Solo lectura"):\n\n· [[eftlink]]\n· [[environment]]\n· [[jre]]\n· [[xstore]]\n· [[xstoredata]]\n· [[xstore-mobile]]',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p20-a.png', '/instalacion/p20-b.png', '/instalacion/p20-c.png', '/instalacion/p20-d.png'],
   }),
