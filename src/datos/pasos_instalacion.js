@@ -47,9 +47,10 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 7,
     titulo: 'Cambiar nombre y unir a dominio',
-    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nEjemplo: TL-1046-1 (número de tienda y caja 1 o 2).\nDominio: LindcorpTiendas.net\n\nAbrir con: Win + R → sysdm.cpl → botón Cambiar.\n\nDespués del cambio, reiniciar el equipo.',
+    detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nFormato: XX-NNNN-C\n· NNNN = número de tienda de 4 dígitos\n· C = caja (1 o 2)\n\nEjemplo: TL-1046-1\nDominio: LindcorpTiendas.net\n\nAbrir con: Win + R → sysdm.cpl → botón Cambiar.\n\nDespués del cambio, reiniciar el equipo.',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
+    advertencia: 'El número de tienda SIEMPRE lleva 4 dígitos, seguido de la caja (1 o 2). Ej: TL-1046-1',
   }),
   new PasoInstalacion({
     numero: 8,

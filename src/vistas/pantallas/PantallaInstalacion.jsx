@@ -143,12 +143,12 @@ export default function PantallaInstalacion({ onVolver }) {
           return (
             <div key={fase.id} className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--texto-secundario)' }}>{fase.nombre}</h2>
-                <span className="text-[10px] font-mono" style={{ color: completadosFase === pasosDeFase.length ? 'var(--acento)' : 'var(--texto-tenue)' }}>
+                <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--texto-secundario)' }}>{fase.nombre}</h2>
+                <span className="text-xs font-mono" style={{ color: completadosFase === pasosDeFase.length ? 'var(--acento)' : 'var(--texto-tenue)' }}>
                   {completadosFase}/{pasosDeFase.length}
                 </span>
               </div>
-              <p className="text-[11px] mb-2.5" style={{ color: 'var(--texto-tenue)' }}>{fase.descripcion}</p>
+              <p className="text-xs mb-2.5" style={{ color: 'var(--texto-tenue)' }}>{fase.descripcion}</p>
 
               <div className="border rounded-xl overflow-hidden" style={{ borderColor: 'var(--borde)' }}>
                 {pasosDeFase.map((paso, i) => {
@@ -188,8 +188,8 @@ export default function PantallaInstalacion({ onVolver }) {
                           onClick={() => setPasoAbierto(abierto ? null : paso.numero)}
                           className="flex-1 min-w-0 text-left"
                         >
-                          <p className="text-sm leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
-                            <span className="font-mono text-xs mr-1.5" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--acento)' }}>{paso.numero}.</span>
+                          <p className="text-base leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
+                            <span className="font-mono text-sm mr-1.5" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--acento)' }}>{paso.numero}.</span>
                             {paso.titulo}
                           </p>
                         </button>
@@ -210,11 +210,11 @@ export default function PantallaInstalacion({ onVolver }) {
                       {abierto && (
                         <div className="px-3.5 pb-3.5 pt-1" style={{ backgroundColor: 'var(--fondo-base)' }}>
                           {paso.advertencia && (
-                            <div className="border rounded-lg px-3 py-2 mb-3" style={{ borderColor: 'var(--advertencia)', backgroundColor: 'color-mix(in srgb, var(--advertencia) 10%, transparent)' }}>
-                              <p className="text-xs font-semibold" style={{ color: 'var(--advertencia)' }}>⚠️ {paso.advertencia}</p>
+                            <div className="border rounded-lg px-3 py-2.5 mb-3" style={{ borderColor: 'var(--advertencia)', backgroundColor: 'color-mix(in srgb, var(--advertencia) 10%, transparent)' }}>
+                              <p className="text-sm font-semibold" style={{ color: 'var(--advertencia)' }}>⚠️ {paso.advertencia}</p>
                             </div>
                           )}
-                          <p className="text-xs leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{paso.detalle}</p>
+                          <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{paso.detalle}</p>
 
                           {/* Campos de datos: la foto primero, el texto si se reconoció */}
                           {paso.campos.length > 0 && (
@@ -274,7 +274,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                         <button
                                           onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
                                           disabled={reconociendo !== null}
-                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
                                         >
                                           📷 Tomar foto de la pantalla de red
@@ -291,7 +291,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                       </div>
                                     )}
                                     {avisoCampo === '__paso' && (
-                                      <p className="text-[10px] mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció ningún dato en la foto — completá los campos a mano.</p>
+                                      <p className="text-xs mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció ningún dato en la foto — completá los campos a mano.</p>
                                     )}
                                   </div>
                                 );
@@ -308,11 +308,11 @@ export default function PantallaInstalacion({ onVolver }) {
                                 return (
                                   <div key={campo}>
                                     <div className="flex items-center justify-between mb-1.5">
-                                      <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--texto-tenue)' }}>{campo}</p>
+                                      <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--texto-tenue)' }}>{campo}</p>
                                       {!mostrarTexto && !paso.fotoUnica && (
                                         <button
                                           onClick={() => { setCamposAbiertos(prev => new Set(prev).add(clave)); }}
-                                          className="text-[10px]"
+                                          className="text-xs"
                                           style={{ color: 'var(--texto-tenue)' }}
                                         >
                                           ✎ Escribir a mano
@@ -369,7 +369,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                         <button
                                           onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
                                           disabled={reconociendo !== null}
-                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
                                         >
                                           📷 Tomar foto
@@ -391,13 +391,13 @@ export default function PantallaInstalacion({ onVolver }) {
                                         value={valor}
                                         onChange={(e) => { gestor.current.guardarCampo(paso.numero, campo, e.target.value); setVersion(v => v + 1); }}
                                         placeholder={procesando ? `Reconociendo... ${reconociendo.progreso}%` : `Escribe el ${campo.toLowerCase()}...`}
-                                        className="w-full border rounded-lg px-3 py-2 text-xs focus:outline-none"
+                                        className="w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none"
                                         style={{ backgroundColor: 'var(--fondo-panel)', borderColor: procesando ? 'var(--acento)' : 'var(--borde)', color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}
                                         spellCheck={false}
                                       />
                                     )}
                                     {avisoCampo === campo && (
-                                      <p className="text-[10px] mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció el {campo.toLowerCase()} en la foto — tocá "✎ Escribir a mano".</p>
+                                      <p className="text-xs mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció el {campo.toLowerCase()} en la foto — tocá "✎ Escribir a mano".</p>
                                     )}
                                   </div>
                                 );
@@ -407,7 +407,7 @@ export default function PantallaInstalacion({ onVolver }) {
                               {paso.fotoUnica && !pasosManuales.has(paso.numero) && (
                                 <button
                                   onClick={() => setPasosManuales(prev => new Set(prev).add(paso.numero))}
-                                  className="w-full py-2 border border-dashed rounded-lg text-[11px] transition-colors"
+                                  className="w-full py-2.5 border border-dashed rounded-lg text-sm transition-colors"
                                   style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
                                 >
                                   ✎ Escribir los datos a mano
@@ -436,7 +436,7 @@ export default function PantallaInstalacion({ onVolver }) {
                           )}
                           <button
                             onClick={() => completarYAvanzar(paso)}
-                            className="w-full mt-3 py-2.5 rounded-lg text-xs font-semibold transition-colors"
+                            className="w-full mt-3 py-3 rounded-lg text-sm font-semibold transition-colors"
                             style={{
                               backgroundColor: completado ? 'var(--fondo-elevado)' : 'var(--acento-btn)',
                               color: completado ? 'var(--texto-secundario)' : '#fff',
