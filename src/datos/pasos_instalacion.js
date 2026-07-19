@@ -152,12 +152,19 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 22,
     titulo: 'Ejecutar dataloader2.bat',
-    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar [[dataloader2.bat]].\n\nAl finalizar: abrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
+    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar [[dataloader2.bat]], ubicado en [[C:\\xstore]].',
     faseId: 'cuenta-dominio-instalacion',
-    imagenes: ['/instalacion/p22-a.png', '/instalacion/p22-b.png'],
+    imagenes: ['/instalacion/p22-a.png'],
   }),
   new PasoInstalacion({
     numero: 23,
+    titulo: 'Abrir Xstore y dejar Chrome en enroll',
+    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nAbrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
+    faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p22-b.png'],
+  }),
+  new PasoInstalacion({
+    numero: 24,
     titulo: 'Instalación de aplicaciones y software',
     detalle: 'Instalar el Axteroid luego de enrolar y aprovechar en instalar lo del checklist.\n\n(El detalle de este paso se completará con el manual de programas y software.)',
     faseId: 'cuenta-dominio-instalacion',

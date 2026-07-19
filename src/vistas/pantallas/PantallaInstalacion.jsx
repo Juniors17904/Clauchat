@@ -141,7 +141,7 @@ export default function PantallaInstalacion({ onVolver }) {
       <div className="flex-1 w-full max-w-sm mx-auto px-5 py-4 pb-10">
         {porcentaje === 100 && (
           <div className="border rounded-xl px-4 py-3 mb-4 banner-animado" style={{ backgroundColor: 'var(--exito-fondo)', borderColor: 'var(--acento-btn)' }}>
-            <p className="text-sm" style={{ color: 'var(--acento)' }}>✓ Instalación completa — los 23 pasos están listos</p>
+            <p className="text-sm" style={{ color: 'var(--acento)' }}>✓ Instalación completa — los {total} pasos están listos</p>
           </div>
         )}
 
