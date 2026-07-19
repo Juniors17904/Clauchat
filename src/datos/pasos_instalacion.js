@@ -159,9 +159,10 @@ export const PASOS_INSTALACION = [
   }),
   new PasoInstalacion({
     numero: 23,
-    titulo: 'Configurar ConfigPatch (aruma → tambo)',
-    detalle: 'Este paso es en AMBAS CAJAS.\n\nIr a la carpeta [[C:\\xtoredata\\xtore]] y abrir el documento [[ConfigPatch]].\n\nEn la línea 06, cambiar la palabra "aruma" por "tambo".\n\nGuardar y cerrar el documento.',
+    titulo: 'Configurar configPath.properties (aruma → tambo)',
+    detalle: 'Este paso es en AMBAS CAJAS.\n\nIr a la carpeta [[C:\\xstoredata\\xstore]] y abrir el archivo [[configPath.properties]].\n\nEn la línea 06 buscar [[xstore.config.path.global.extensions=relatearuma]] y cambiar "aruma" por "tambo" → queda [[relatetambo]].\n\nGuardar y cerrar el documento.',
     faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p23-a.png', '/instalacion/p23-b.png'],
   }),
   new PasoInstalacion({
     numero: 24,
