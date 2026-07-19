@@ -91,7 +91,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 13,
     titulo: 'Agregar usuario a ORA_DBA',
-    detalle: 'En Grupos → DBA_DATA, agregar el usuario de tienda correspondiente.\n\nAbrir con: Win + R → lusrmgr.msc → Grupos.',
+    detalle: 'En Grupos → [[ORA_DBA]], agregar el usuario de tienda correspondiente.\n\nAbrir con: Win + R → lusrmgr.msc → Grupos.',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p13-a.png'],
   }),
