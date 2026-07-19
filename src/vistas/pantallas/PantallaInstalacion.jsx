@@ -504,13 +504,9 @@ export default function PantallaInstalacion({ onVolver }) {
           style={{ backgroundColor: 'rgba(0,0,0,0.9)', touchAction: 'none' }}
           onTouchStart={(e) => { visor.current.manejarInicio(Array.from(e.touches)); }}
           onTouchMove={(e) => { visor.current.manejarMovimiento(Array.from(e.touches)); setVersion(v => v + 1); }}
-          onTouchEnd={(e) => {
-            visor.current.manejarFin(Array.from(e.touches));
-            if (e.touches.length === 0 && visor.current.manejarDobleTap()) setVersion(v => v + 1);
-            setVersion(v => v + 1);
-          }}
+          onTouchEnd={(e) => { visor.current.manejarFin(Array.from(e.touches)); setVersion(v => v + 1); }}
           onWheel={(e) => { visor.current.manejarRueda(e.deltaY); setVersion(v => v + 1); }}
-          onDoubleClick={() => { visor.current.ampliada ? visor.current.reiniciar() : visor.current.manejarRueda(-100); setVersion(v => v + 1); }}
+          onDoubleClick={() => { visor.current.alternarDobleClic(); setVersion(v => v + 1); }}
         >
           <button
             onClick={() => { visor.current.reiniciar(); setImagenAmpliada(null); }}
