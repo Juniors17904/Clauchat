@@ -25,6 +25,23 @@ export default function PantallaInstalacion({ onVolver }) {
   const campoActivo = useRef(null);
   const vieneDeCamara = useRef(false);
   const archivoCamaraRef = useRef(null);
+  const pasosRef = useRef({});
+
+  const completarYAvanzar = (paso) => {
+    const estaba = gestor.current.estaCompletado(paso.numero);
+    alternarPaso(paso.numero);
+    if (estaba) return; // se desmarcó: no avanzar
+    const idx = PASOS_INSTALACION.findIndex(p => p.numero === paso.numero);
+    const siguiente = PASOS_INSTALACION[idx + 1];
+    if (siguiente) {
+      setPasoAbierto(siguiente.numero);
+      setTimeout(() => {
+        pasosRef.current[siguiente.numero]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    } else {
+      setPasoAbierto(null);
+    }
+  };
 
   const subirFoto = async (e, paso) => {
     const archivo = e.target.files?.[0];
@@ -139,8 +156,17 @@ export default function PantallaInstalacion({ onVolver }) {
                   const abierto = pasoAbierto === paso.numero;
 
                   return (
-                    <div key={paso.numero} style={{ borderTop: i > 0 ? '1px solid var(--borde)' : 'none', backgroundColor: 'var(--fondo-panel)' }}>
-                      <div className="flex items-center gap-3 px-3.5 py-3">
+                    <div
+                      key={paso.numero}
+                      ref={el => { pasosRef.current[paso.numero] = el; }}
+                      style={{
+                        borderTop: i > 0 ? '1px solid var(--borde)' : 'none',
+                        backgroundColor: abierto ? 'var(--fondo-base)' : 'var(--fondo-panel)',
+                        borderLeft: abierto ? '3px solid var(--acento)' : '3px solid transparent',
+                        scrollMarginTop: '96px',
+                      }}
+                    >
+                      <div className="flex items-center gap-3 px-3.5 py-3" style={{ backgroundColor: abierto ? 'var(--fondo-elevado)' : 'transparent' }}>
                         {/* Checkbox */}
                         <button
                           onClick={() => alternarPaso(paso.numero)}
@@ -409,14 +435,14 @@ export default function PantallaInstalacion({ onVolver }) {
                             </div>
                           )}
                           <button
-                            onClick={() => { alternarPaso(paso.numero); setPasoAbierto(null); }}
+                            onClick={() => completarYAvanzar(paso)}
                             className="w-full mt-3 py-2.5 rounded-lg text-xs font-semibold transition-colors"
                             style={{
                               backgroundColor: completado ? 'var(--fondo-elevado)' : 'var(--acento-btn)',
                               color: completado ? 'var(--texto-secundario)' : '#fff',
                             }}
                           >
-                            {completado ? 'Desmarcar paso' : '✓ Marcar como completado'}
+                            {completado ? 'Desmarcar paso' : '✓ Marcar como completado y continuar'}
                           </button>
                         </div>
                       )}
