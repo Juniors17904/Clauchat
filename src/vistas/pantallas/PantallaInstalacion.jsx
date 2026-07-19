@@ -2,10 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 import { FASES_INSTALACION } from '../../datos/fases_instalacion';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
-import { VisorImagen } from '../../modelos/visor_imagen';
 import { CompresorImagen } from '../../modelos/compresor_imagen';
 import { MejoradorImagen } from '../../modelos/mejorador_imagen';
 import { ReconocedorTexto } from '../../modelos/reconocedor_texto';
+import VisorGaleria from '../VisorGaleria';
+
+// Lista plana de las imágenes del manual, para navegar en galería
+const GALERIA_MANUAL = PASOS_INSTALACION.flatMap(p =>
+  p.imagenes.map(src => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.titulo}`, color: '#3fb950' }))
+);
 
 function renderizarDetalle(texto) {
   return texto.split(/(\[\[.*?\]\])/g).map((parte, i) => {
@@ -18,14 +23,19 @@ function renderizarDetalle(texto) {
 
 export default function PantallaInstalacion({ onVolver }) {
   const gestor = useRef(new GestorInstalacion());
-  const visor = useRef(new VisorImagen());
   const compresor = useRef(new CompresorImagen());
   const mejorador = useRef(new MejoradorImagen());
   const reconocedor = useRef(new ReconocedorTexto());
   const archivoFotoRef = useRef(null);
   const [, setVersion] = useState(0);
   const [pasoAbierto, setPasoAbierto] = useState(null);
-  const [imagenAmpliada, setImagenAmpliada] = useState(null);
+  const [galeria, setGaleria] = useState(null);
+
+  const abrirManual = (src) => {
+    const indice = GALERIA_MANUAL.findIndex(g => g.src === src);
+    if (indice >= 0) setGaleria({ imagenes: GALERIA_MANUAL, indice });
+  };
+  const abrirFoto = (src) => setGaleria({ imagenes: [{ src, grupo: 0, etiqueta: 'Foto guardada', color: '#8250df' }], indice: 0 });
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
@@ -94,19 +104,16 @@ export default function PantallaInstalacion({ onVolver }) {
   };
 
   useEffect(() => {
-    if (!imagenAmpliada) return;
+    if (!galeria) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
-    const cerrarConRetroceso = () => {
-      visor.current.reiniciar();
-      setImagenAmpliada(null);
-    };
+    const cerrarConRetroceso = () => setGaleria(null);
     window.addEventListener('popstate', cerrarConRetroceso);
     return () => {
       window.removeEventListener('popstate', cerrarConRetroceso);
       if (window.history.state?.visorFoto) window.history.back();
     };
-  }, [imagenAmpliada]);
+  }, [galeria]);
 
   const total = PASOS_INSTALACION.length;
   const completados = gestor.current.totalCompletados;
@@ -239,7 +246,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                         <img
                                           src={fotoPaso}
                                           alt="Foto del paso"
-                                          onClick={() => setImagenAmpliada(fotoPaso)}
+                                          onClick={() => abrirFoto(fotoPaso)}
                                           className="w-full h-36 object-cover rounded-lg border cursor-zoom-in"
                                           style={{ borderColor: 'var(--borde)' }}
                                         />
@@ -334,7 +341,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                         <img
                                           src={foto}
                                           alt={`Foto de ${campo}`}
-                                          onClick={() => setImagenAmpliada(foto)}
+                                          onClick={() => abrirFoto(foto)}
                                           className="w-full h-32 object-cover rounded-lg border cursor-zoom-in"
                                           style={{ borderColor: 'var(--borde)' }}
                                         />
@@ -435,7 +442,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                   key={img}
                                   src={img}
                                   alt={`Paso ${paso.numero}`}
-                                  onClick={() => setImagenAmpliada(img)}
+                                  onClick={() => abrirManual(img)}
                                   className="w-full rounded-lg border cursor-zoom-in"
                                   style={{ borderColor: 'var(--borde)' }}
                                   loading="lazy"
@@ -497,35 +504,13 @@ export default function PantallaInstalacion({ onVolver }) {
         )}
       </div>
 
-      {/* Imagen ampliada con zoom y arrastre */}
-      {imagenAmpliada && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: 'rgba(0,0,0,0.9)', touchAction: 'none' }}
-          onTouchStart={(e) => { visor.current.manejarInicio(Array.from(e.touches)); }}
-          onTouchMove={(e) => { visor.current.manejarMovimiento(Array.from(e.touches)); setVersion(v => v + 1); }}
-          onTouchEnd={(e) => { visor.current.manejarFin(Array.from(e.touches)); setVersion(v => v + 1); }}
-          onWheel={(e) => { visor.current.manejarRueda(e.deltaY); setVersion(v => v + 1); }}
-          onDoubleClick={() => { visor.current.alternarDobleClic(); setVersion(v => v + 1); }}
-        >
-          <button
-            onClick={() => { visor.current.reiniciar(); setImagenAmpliada(null); }}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white text-xl"
-            style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
-          >
-            ×
-          </button>
-          <img
-            src={imagenAmpliada}
-            alt="Ampliada"
-            draggable="false"
-            className="max-w-full max-h-full rounded-lg select-none"
-            style={{ transform: visor.current.estilo, transition: visor.current.ampliada ? 'none' : 'transform 200ms ease' }}
-          />
-          <p className="absolute bottom-5 left-0 right-0 text-center text-[11px] pointer-events-none" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            Pellizca para zoom · arrastra para mover · doble toque para acercar
-          </p>
-        </div>
+      {/* Galería con zoom y deslizar entre imágenes */}
+      {galeria && (
+        <VisorGaleria
+          imagenes={galeria.imagenes}
+          indiceInicial={galeria.indice}
+          onCerrar={() => setGaleria(null)}
+        />
       )}
     </div>
   );

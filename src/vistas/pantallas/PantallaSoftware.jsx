@@ -1,7 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 import { GestorSoftware } from '../../modelos/gestor_software';
-import { VisorImagen } from '../../modelos/visor_imagen';
+import VisorGaleria from '../VisorGaleria';
+
+// Lista plana de todas las imágenes con su punto, para navegar en galería
+const GALERIA = PROGRAMAS_SOFTWARE.flatMap(p =>
+  p.imagenes.map(src => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.nombre}`, color: '#3fb950' }))
+);
 
 function renderizarDetalle(texto) {
   return texto.split(/(\[\[.*?\]\])/g).map((parte, i) => {
@@ -14,27 +19,28 @@ function renderizarDetalle(texto) {
 
 export default function PantallaSoftware({ onVolver }) {
   const gestor = useRef(new GestorSoftware());
-  const visor = useRef(new VisorImagen());
   const pasosRef = useRef({});
   const [, setVersion] = useState(0);
   const [abierto, setAbierto] = useState(null);
-  const [imagenAmpliada, setImagenAmpliada] = useState(null);
+  const [indiceGaleria, setIndiceGaleria] = useState(null);
 
   const total = PROGRAMAS_SOFTWARE.length;
   const completados = gestor.current.totalCompletados;
   const porcentaje = total > 0 ? Math.round((completados / total) * 100) : 0;
 
+  const abrirGaleria = (src) => setIndiceGaleria(GALERIA.findIndex(g => g.src === src));
+
   useEffect(() => {
-    if (!imagenAmpliada) return;
+    if (indiceGaleria === null) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
-    const cerrar = () => { visor.current.reiniciar(); setImagenAmpliada(null); };
+    const cerrar = () => setIndiceGaleria(null);
     window.addEventListener('popstate', cerrar);
     return () => {
       window.removeEventListener('popstate', cerrar);
       if (window.history.state?.visorFoto) window.history.back();
     };
-  }, [imagenAmpliada]);
+  }, [indiceGaleria]);
 
   const completarYAvanzar = (programa) => {
     const estaba = gestor.current.estaCompletado(programa.id);
@@ -133,7 +139,7 @@ export default function PantallaSoftware({ onVolver }) {
                             key={img}
                             src={img}
                             alt={programa.nombre}
-                            onClick={() => setImagenAmpliada(img)}
+                            onClick={() => abrirGaleria(img)}
                             className="w-full rounded-lg border cursor-zoom-in"
                             style={{ borderColor: 'var(--borde)' }}
                             loading="lazy"
@@ -156,35 +162,13 @@ export default function PantallaSoftware({ onVolver }) {
         </div>
       </div>
 
-      {/* Imagen ampliada con zoom */}
-      {imagenAmpliada && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: 'rgba(0,0,0,0.9)', touchAction: 'none' }}
-          onTouchStart={(e) => { visor.current.manejarInicio(Array.from(e.touches)); }}
-          onTouchMove={(e) => { visor.current.manejarMovimiento(Array.from(e.touches)); setVersion(v => v + 1); }}
-          onTouchEnd={(e) => { visor.current.manejarFin(Array.from(e.touches)); setVersion(v => v + 1); }}
-          onWheel={(e) => { visor.current.manejarRueda(e.deltaY); setVersion(v => v + 1); }}
-          onDoubleClick={() => { visor.current.alternarDobleClic(); setVersion(v => v + 1); }}
-        >
-          <button
-            onClick={() => { visor.current.reiniciar(); setImagenAmpliada(null); }}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white text-xl"
-            style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
-          >
-            ×
-          </button>
-          <img
-            src={imagenAmpliada}
-            alt="Ampliada"
-            draggable="false"
-            className="max-w-full max-h-full rounded-lg select-none"
-            style={{ transform: visor.current.estilo, transition: visor.current.ampliada ? 'none' : 'transform 200ms ease' }}
-          />
-          <p className="absolute bottom-5 left-0 right-0 text-center text-[11px] pointer-events-none" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            Pellizca para zoom · arrastra para mover · doble toque para acercar
-          </p>
-        </div>
+      {/* Galería con zoom y deslizar entre imágenes */}
+      {indiceGaleria !== null && (
+        <VisorGaleria
+          imagenes={GALERIA}
+          indiceInicial={indiceGaleria}
+          onCerrar={() => setIndiceGaleria(null)}
+        />
       )}
     </div>
   );
