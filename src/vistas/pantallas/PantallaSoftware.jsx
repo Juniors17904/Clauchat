@@ -5,7 +5,7 @@ import VisorGaleria from '../VisorGaleria';
 
 // Lista plana de todas las imágenes con su punto, para navegar en galería
 const GALERIA = PROGRAMAS_SOFTWARE.flatMap(p =>
-  p.imagenes.map(src => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.nombre}`, color: '#3fb950', nota: p.notaDe(src) }))
+  p.imagenes.map((src, idx) => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.nombre}`, color: '#3fb950', nota: p.notaDe(src), detalle: idx === 0 ? p.detalle : null }))
 );
 
 function renderizarDetalle(texto) {
@@ -64,6 +64,20 @@ export default function PantallaSoftware({ onVolver }) {
     }
   };
 
+  // Marcar con el checkbox: al completar, resalta y baja al siguiente sin abrirlo
+  const marcarConCheck = (programa) => {
+    const estaba = gestor.current.estaCompletado(programa.id);
+    gestor.current.alternar(programa.id);
+    setVersion(v => v + 1);
+    if (estaba) return;
+    const idx = PROGRAMAS_SOFTWARE.findIndex(p => p.id === programa.id);
+    const siguiente = PROGRAMAS_SOFTWARE[idx + 1];
+    if (siguiente) {
+      setUltimoVisto(siguiente.id);
+      setTimeout(() => { pasosRef.current[siguiente.id]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
+    }
+  };
+
   return (
     <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
       {/* Header */}
@@ -110,7 +124,7 @@ export default function PantallaSoftware({ onVolver }) {
               >
                 <div className="flex items-center gap-3 px-3.5 py-3" style={{ backgroundColor: estaAbierto ? 'var(--fondo-elevado)' : 'transparent' }}>
                   <button
-                    onClick={() => { gestor.current.alternar(programa.id); setVersion(v => v + 1); }}
+                    onClick={() => marcarConCheck(programa)}
                     className="w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all"
                     style={{ borderColor: completado ? 'var(--acento)' : 'var(--texto-tenue)', backgroundColor: completado ? 'var(--acento)' : 'transparent' }}
                   >

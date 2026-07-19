@@ -1,6 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { VisorImagen } from '../modelos/visor_imagen';
 
+function renderizarTexto(texto) {
+  return texto.split(/(\[\[.*?\]\])/g).map((parte, i) => {
+    if (parte.startsWith('[[') && parte.endsWith(']]')) {
+      return <span key={i} style={{ color: 'var(--advertencia)', fontWeight: 700, wordBreak: 'break-all' }}>{parte.slice(2, -2)}</span>;
+    }
+    return parte;
+  });
+}
+
 // imagenes: [{ src, grupo, etiqueta, color }]  ·  indiceInicial  ·  onCerrar  ·  onCambioIndice
 export default function VisorGaleria({ imagenes, indiceInicial, onCerrar, onCambioIndice }) {
   const visor = useRef(new VisorImagen());
@@ -127,6 +136,13 @@ export default function VisorGaleria({ imagenes, indiceInicial, onCerrar, onCamb
           >
             ›
           </button>
+        )}
+
+        {/* Texto del manual arriba (solo en la 1ra imagen del punto y sin zoom) */}
+        {actual.detalle && !visor.current.ampliada && (
+          <div className="absolute top-2 left-3 right-3 rounded-xl px-3.5 py-2.5 pointer-events-auto overflow-y-auto" style={{ backgroundColor: 'rgba(0,0,0,0.75)', border: '1px solid rgba(255,255,255,0.12)', maxHeight: '40%' }}>
+            <p className="text-xs leading-relaxed whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.92)' }}>{renderizarTexto(actual.detalle)}</p>
+          </div>
         )}
 
         {/* Nota de la imagen (solo cuando no está ampliada) */}

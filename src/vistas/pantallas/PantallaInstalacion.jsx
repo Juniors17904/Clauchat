@@ -9,7 +9,7 @@ import VisorGaleria from '../VisorGaleria';
 
 // Lista plana de las imágenes del manual, para navegar en galería
 const GALERIA_MANUAL = PASOS_INSTALACION.flatMap(p =>
-  p.imagenes.map(src => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.titulo}`, color: '#3fb950', nota: p.notaDe(src) }))
+  p.imagenes.map((src, idx) => ({ src, grupo: p.numero, etiqueta: `${p.numero}. ${p.titulo}`, color: '#3fb950', nota: p.notaDe(src), detalle: idx === 0 ? p.detalle : null }))
 );
 
 function renderizarDetalle(texto) {
@@ -129,6 +129,20 @@ export default function PantallaInstalacion({ onVolver }) {
     setVersion(v => v + 1);
   };
 
+  // Marcar con el checkbox: al completar, resalta y baja al siguiente paso sin abrirlo
+  const marcarConCheck = (numero) => {
+    const estaba = gestor.current.estaCompletado(numero);
+    gestor.current.alternar(numero);
+    setVersion(v => v + 1);
+    if (estaba) return;
+    const idx = PASOS_INSTALACION.findIndex(p => p.numero === numero);
+    const siguiente = PASOS_INSTALACION[idx + 1];
+    if (siguiente) {
+      setUltimoVisto(siguiente.numero);
+      setTimeout(() => { pasosRef.current[siguiente.numero]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
+    }
+  };
+
   return (
     <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
       {/* Header */}
@@ -191,7 +205,7 @@ export default function PantallaInstalacion({ onVolver }) {
                       <div className="flex items-center gap-3 px-3.5 py-3" style={{ backgroundColor: abierto ? 'var(--fondo-elevado)' : 'transparent' }}>
                         {/* Checkbox */}
                         <button
-                          onClick={() => alternarPaso(paso.numero)}
+                          onClick={() => marcarConCheck(paso.numero)}
                           className="w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all"
                           style={{
                             borderColor: completado ? 'var(--acento)' : 'var(--texto-tenue)',
