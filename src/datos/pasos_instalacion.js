@@ -82,7 +82,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 12,
     titulo: 'Configurar to_be_replaced.properties',
-    detalle: 'Ruta: C:\\staging\\environment-files\\PROD\n\nDatos importantes:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
+    detalle: 'Este es el archivo que se EDITA. Está en [[C:\\staging\\environment-files\\PROD]].\n\nCambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p12-a.png'],
   }),
@@ -111,7 +111,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 16,
     titulo: 'Ejecutar 00.LDC-PROD',
-    detalle: 'Ejecutar [[00.LDC-PROD]], ubicado en [[C:\\staging]]. NO realizarlo como administrador.\n\nAl terminar se crea un nuevo to_be_replaced.properties: validar que los datos estén correctos.',
+    detalle: 'Ejecutar [[00.LDC-PROD]], ubicado en [[C:\\staging]]. NO realizarlo como administrador.\n\nSale una pantalla negra y, al terminar, se genera automáticamente un SEGUNDO archivo to_be_replaced.properties en [[C:\\staging]] (este es solo para validar en el paso siguiente, NO se edita).',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p16-a.png', '/instalacion/p16-b.png'],
     advertencia: 'No ejecutar como administrador',
@@ -119,7 +119,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 17,
     titulo: 'Validar to_be_replaced.properties (staging)',
-    detalle: 'Revisar el [[to_be_replaced.properties]] generado por el LDC-PROD, en [[C:\\staging]], y confirmar que todos los valores del paso 12 siguen correctos (orgId, rtlLocId, terminalId, storeprimary.host, storeName, locate.XstoreSystemCode).',
+    detalle: 'Este es el archivo que solo se VALIDA (no se edita). Es el que generó el LDC-PROD en [[C:\\staging]].\n\nConfirmar que todos los valores del paso 12 quedaron correctos (orgId, rtlLocId, terminalId, storeprimary.host, storeName, locate.XstoreSystemCode).',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p16-b.png'],
   }),
