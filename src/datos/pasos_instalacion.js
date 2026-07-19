@@ -114,7 +114,6 @@ export const PASOS_INSTALACION = [
     detalle: 'Ejecutar [[00.LDC-PROD]], ubicado en [[C:\\staging]]. NO realizarlo como administrador.\n\nSale una pantalla negra y, al terminar, se genera automáticamente un SEGUNDO archivo to_be_replaced.properties en [[C:\\staging]] (este es solo para validar en el paso siguiente, NO se edita).',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p16-a.png', '/instalacion/p16-b.png'],
-    advertencia: 'No ejecutar como administrador',
   }),
   new PasoInstalacion({
     numero: 17,
