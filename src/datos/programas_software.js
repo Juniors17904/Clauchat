@@ -8,7 +8,7 @@ export const PROGRAMAS_SOFTWARE = [
     nombre: 'Configuración de JavaPOS',
     descripcion: 'Impresora y gaveta de dinero',
     detalle: 'Ingresar a la ruta para configurar la impresora y la gaveta de dinero:\n[[C:\\Program Files\\EPSON\\JavaPOS\\SetupPOS]]\n\nEjecutar SetupPOS como administrador y elegir la categoría y el modelo de impresora que use la tienda.',
-    imagenes: ['/software/s01-a.png', '/software/s01-b.png', '/software/s01-c.png', '/software/s01-d.png', '/software/s01-e.png', '/software/s01-f.png', '/software/s01-g.png', '/software/s01-h.png', '/software/s01-i.png', '/software/s01-j.png'],
+    imagenes: ['/software/s01-b.png', '/software/s01-a.png', '/software/s01-d.png', '/software/s01-c.png', '/software/s01-f.png', '/software/s01-e.png', '/software/s01-g.png', '/software/s01-h.png', '/software/s01-j.png', '/software/s01-i.png'],
   }),
   new ProgramaSoftware({
     numero: 2,
