@@ -31,6 +31,11 @@ export default function App() {
   const ctrlRecordatorios = useRef(new ControladorRecordatorios());
   useRef(new GestorTemas());
   const gestorTransiciones = useRef(new GestorTransiciones());
+  const pantallaRef = useRef('areas');
+
+  useEffect(() => {
+    pantallaRef.current = pantalla;
+  }, [pantalla]);
 
   const navegar = (direccion, actualizar) => {
     gestorTransiciones.current.ejecutar(direccion, () => flushSync(actualizar));
@@ -40,6 +45,9 @@ export default function App() {
     window.history.replaceState({ pantalla: 'areas' }, '');
     const manejarRetroceso = (e) => {
       const estado = e.state ?? { pantalla: 'areas' };
+
+      // Si la pantalla no cambia, solo se cerró un panel o visor: no re-renderizar
+      if (estado.pantalla === pantallaRef.current) return;
 
       navegar('atras', () => {
         if (estado.areaId) {
