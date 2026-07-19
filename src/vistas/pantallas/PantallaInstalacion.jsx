@@ -18,7 +18,7 @@ export default function PantallaInstalacion({ onVolver }) {
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
-  const [menuFoto, setMenuFoto] = useState(null);
+  const [camposAbiertos, setCamposAbiertos] = useState(new Set());
   const campoActivo = useRef(null);
   const vieneDeCamara = useRef(false);
   const archivoCamaraRef = useRef(null);
@@ -63,20 +63,19 @@ export default function PantallaInstalacion({ onVolver }) {
   };
 
   useEffect(() => {
-    if (!imagenAmpliada && !menuFoto) return;
+    if (!imagenAmpliada) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
     const cerrarConRetroceso = () => {
       visor.current.reiniciar();
       setImagenAmpliada(null);
-      setMenuFoto(null);
     };
     window.addEventListener('popstate', cerrarConRetroceso);
     return () => {
       window.removeEventListener('popstate', cerrarConRetroceso);
       if (window.history.state?.visorFoto) window.history.back();
     };
-  }, [imagenAmpliada, menuFoto]);
+  }, [imagenAmpliada]);
 
   const total = PASOS_INSTALACION.length;
   const completados = gestor.current.totalCompletados;
@@ -186,40 +185,108 @@ export default function PantallaInstalacion({ onVolver }) {
                           )}
                           <p className="text-xs leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{paso.detalle}</p>
 
-                          {/* Campos de datos, cada uno con su foto y reconocimiento */}
+                          {/* Campos de datos: la foto primero, el texto si se reconoció */}
                           {paso.campos.length > 0 && (
-                            <div className="space-y-3 mb-3">
+                            <div className="space-y-4 mb-3">
                               {paso.campos.map(campo => {
                                 const foto = gestor.current.obtenerFoto(paso.numero, campo);
+                                const valor = gestor.current.obtenerCampo(paso.numero, campo);
                                 const procesando = reconociendo?.campo === campo;
+                                const clave = `${paso.numero}-${campo}`;
+                                const mostrarTexto = valor !== '' || camposAbiertos.has(clave) || procesando;
                                 return (
                                   <div key={campo}>
-                                    <p className="text-[10px] font-semibold mb-1 uppercase tracking-wide" style={{ color: 'var(--texto-tenue)' }}>{campo}</p>
-                                    <div className="flex gap-2">
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--texto-tenue)' }}>{campo}</p>
+                                      {!mostrarTexto && (
+                                        <button
+                                          onClick={() => { setCamposAbiertos(prev => new Set(prev).add(clave)); }}
+                                          className="text-[10px]"
+                                          style={{ color: 'var(--texto-tenue)' }}
+                                        >
+                                          ✎ Escribir a mano
+                                        </button>
+                                      )}
+                                    </div>
+
+                                    {foto ? (
+                                      <div className="relative mb-2">
+                                        <img
+                                          src={foto}
+                                          alt={`Foto de ${campo}`}
+                                          onClick={() => setImagenAmpliada(foto)}
+                                          className="w-full h-32 object-cover rounded-lg border cursor-zoom-in"
+                                          style={{ borderColor: 'var(--borde)' }}
+                                        />
+                                        {procesando && (
+                                          <div className="absolute inset-0 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}>
+                                            <p className="text-xs font-semibold text-white">Reconociendo... {reconociendo.progreso}%</p>
+                                          </div>
+                                        )}
+                                        <div className="absolute bottom-1.5 right-1.5 flex gap-1.5">
+                                          <button
+                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
+                                            disabled={reconociendo !== null}
+                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
+                                            title="Tomar otra foto"
+                                          >
+                                            📷
+                                          </button>
+                                          <button
+                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
+                                            disabled={reconociendo !== null}
+                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
+                                            title="Elegir de la galería"
+                                          >
+                                            🖼️
+                                          </button>
+                                          <button
+                                            onClick={() => { gestor.current.eliminarFoto(paso.numero, campo); setVersion(v => v + 1); }}
+                                            disabled={reconociendo !== null}
+                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
+                                            title="Eliminar foto"
+                                          >
+                                            🗑
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="flex gap-2 mb-2">
+                                        <button
+                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
+                                          disabled={reconociendo !== null}
+                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                                          style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
+                                        >
+                                          📷 Tomar foto
+                                        </button>
+                                        <button
+                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
+                                          disabled={reconociendo !== null}
+                                          className="w-11 border rounded-lg text-xs flex items-center justify-center transition-colors disabled:opacity-40"
+                                          style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+                                          title="Elegir de la galería"
+                                        >
+                                          🖼️
+                                        </button>
+                                      </div>
+                                    )}
+
+                                    {mostrarTexto && (
                                       <input
-                                        value={gestor.current.obtenerCampo(paso.numero, campo)}
+                                        value={valor}
                                         onChange={(e) => { gestor.current.guardarCampo(paso.numero, campo, e.target.value); setVersion(v => v + 1); }}
-                                        placeholder={procesando ? `Reconociendo... ${reconociendo.progreso}%` : `Escribe o toca la cámara...`}
-                                        className="flex-1 min-w-0 border rounded-lg px-3 py-2 text-xs focus:outline-none"
+                                        placeholder={procesando ? `Reconociendo... ${reconociendo.progreso}%` : `Escribe el ${campo.toLowerCase()}...`}
+                                        className="w-full border rounded-lg px-3 py-2 text-xs focus:outline-none"
                                         style={{ backgroundColor: 'var(--fondo-panel)', borderColor: procesando ? 'var(--acento)' : 'var(--borde)', color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}
                                         spellCheck={false}
                                       />
-                                      <button
-                                        onClick={() => setMenuFoto({ paso, campo })}
-                                        disabled={reconociendo !== null}
-                                        className="w-9 h-9 flex-shrink-0 border rounded-lg text-sm flex items-center justify-center overflow-hidden transition-colors disabled:opacity-40"
-                                        style={{ borderColor: foto ? 'var(--acento)' : 'var(--borde)', color: 'var(--acento)' }}
-                                        title={`Foto de ${campo}`}
-                                      >
-                                        {foto ? (
-                                          <img src={foto} alt={`Foto de ${campo}`} className="w-full h-full object-cover" />
-                                        ) : (
-                                          '📷'
-                                        )}
-                                      </button>
-                                    </div>
+                                    )}
                                     {avisoCampo === campo && (
-                                      <p className="text-[10px] mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció el {campo.toLowerCase()} en la foto — escribilo a mano.</p>
+                                      <p className="text-[10px] mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció el {campo.toLowerCase()} en la foto — tocá "✎ Escribir a mano".</p>
                                     )}
                                   </div>
                                 );
@@ -297,61 +364,6 @@ export default function PantallaInstalacion({ onVolver }) {
           )
         )}
       </div>
-
-      {/* Menú de foto por campo */}
-      {menuFoto && (() => {
-        const fotoActual = gestor.current.obtenerFoto(menuFoto.paso.numero, menuFoto.campo);
-        const cerrar = () => setMenuFoto(null);
-        return (
-          <>
-            <div className="fixed inset-0 z-30" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={cerrar} />
-            <div className="fixed bottom-0 left-0 right-0 z-40 rounded-t-2xl border-t px-4 pt-4 pb-6 banner-animado" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
-              <p className="text-xs font-semibold mb-3 text-center" style={{ color: 'var(--texto-secundario)' }}>Foto de {menuFoto.campo}</p>
-              <div className="space-y-2 max-w-sm mx-auto">
-                <button
-                  onClick={() => { campoActivo.current = menuFoto.campo; vieneDeCamara.current = true; cerrar(); archivoCamaraRef.current?.click(); }}
-                  className="w-full py-3 rounded-xl text-sm font-semibold transition-colors"
-                  style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}
-                >
-                  📷 Tomar foto
-                </button>
-                <button
-                  onClick={() => { campoActivo.current = menuFoto.campo; vieneDeCamara.current = false; cerrar(); archivoFotoRef.current?.click(); }}
-                  className="w-full py-3 border rounded-xl text-sm transition-colors"
-                  style={{ borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
-                >
-                  🖼️ Elegir de la galería
-                </button>
-                {fotoActual && (
-                  <button
-                    onClick={() => { cerrar(); setImagenAmpliada(fotoActual); }}
-                    className="w-full py-3 border rounded-xl text-sm transition-colors"
-                    style={{ borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
-                  >
-                    👁 Ver foto
-                  </button>
-                )}
-                {fotoActual && (
-                  <button
-                    onClick={() => { gestor.current.eliminarFoto(menuFoto.paso.numero, menuFoto.campo); cerrar(); setVersion(v => v + 1); }}
-                    className="w-full py-3 border rounded-xl text-sm transition-colors"
-                    style={{ borderColor: 'color-mix(in srgb, var(--error) 40%, transparent)', color: 'var(--error)' }}
-                  >
-                    🗑 Eliminar foto
-                  </button>
-                )}
-                <button
-                  onClick={cerrar}
-                  className="w-full py-2.5 text-xs transition-colors"
-                  style={{ color: 'var(--texto-tenue)' }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </>
-        );
-      })()}
 
       {/* Imagen ampliada con zoom y arrastre */}
       {imagenAmpliada && (
