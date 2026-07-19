@@ -16,6 +16,10 @@ export class ReconocedorTexto {
     return data.text;
   }
 
+  extraerCampo(texto, campo) {
+    return this.extraerDatos(texto)[campo] ?? '';
+  }
+
   extraerDatos(texto) {
     const datos = {};
 

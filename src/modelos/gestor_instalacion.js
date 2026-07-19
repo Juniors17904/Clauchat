@@ -29,19 +29,20 @@ export class GestorInstalacion {
     return this.#datos[numero]?.campos?.[campo] ?? '';
   }
 
-  guardarFoto(numero, dataUrl) {
+  guardarFoto(numero, campo, dataUrl) {
     this.#datos[numero] = this.#datos[numero] ?? {};
-    this.#datos[numero].foto = dataUrl;
+    this.#datos[numero].fotos = this.#datos[numero].fotos ?? {};
+    this.#datos[numero].fotos[campo] = dataUrl;
     this.#persistirDatos();
   }
 
-  obtenerFoto(numero) {
-    return this.#datos[numero]?.foto ?? null;
+  obtenerFoto(numero, campo) {
+    return this.#datos[numero]?.fotos?.[campo] ?? null;
   }
 
-  eliminarFoto(numero) {
-    if (this.#datos[numero]) {
-      delete this.#datos[numero].foto;
+  eliminarFoto(numero, campo) {
+    if (this.#datos[numero]?.fotos) {
+      delete this.#datos[numero].fotos[campo];
       this.#persistirDatos();
     }
   }
