@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { VisorImagen } from '../modelos/visor_imagen';
 
-// imagenes: [{ src, grupo, etiqueta, color }]  ·  indiceInicial  ·  onCerrar
-export default function VisorGaleria({ imagenes, indiceInicial, onCerrar }) {
+// imagenes: [{ src, grupo, etiqueta, color }]  ·  indiceInicial  ·  onCerrar  ·  onCambioIndice
+export default function VisorGaleria({ imagenes, indiceInicial, onCerrar, onCambioIndice }) {
   const visor = useRef(new VisorImagen());
   const inicioX = useRef(null);
   const inicioY = useRef(null);
@@ -22,6 +22,7 @@ export default function VisorGaleria({ imagenes, indiceInicial, onCerrar }) {
     visor.current.reiniciar();
     setEntrada(direccion === 'siguiente' ? 'desde-derecha' : 'desde-izquierda');
     setIndice(nuevo);
+    onCambioIndice?.(nuevo);
     if (grupoNuevo !== grupoAntes) {
       setPortada(imagenes[nuevo]);
     }

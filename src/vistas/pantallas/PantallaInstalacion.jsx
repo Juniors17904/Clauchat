@@ -30,12 +30,17 @@ export default function PantallaInstalacion({ onVolver }) {
   const [, setVersion] = useState(0);
   const [pasoAbierto, setPasoAbierto] = useState(null);
   const [galeria, setGaleria] = useState(null);
+  const [ultimaImagen, setUltimaImagen] = useState(null);
+  const [ultimoVisto, setUltimoVisto] = useState(null);
+  const galeriaRef = useRef(null);
+  const indiceGalRef = useRef(0);
 
   const abrirManual = (src) => {
     const indice = GALERIA_MANUAL.findIndex(g => g.src === src);
-    if (indice >= 0) setGaleria({ imagenes: GALERIA_MANUAL, indice });
+    if (indice >= 0) { galeriaRef.current = GALERIA_MANUAL; indiceGalRef.current = indice; setGaleria({ imagenes: GALERIA_MANUAL, indice }); }
   };
-  const abrirFoto = (src) => setGaleria({ imagenes: [{ src, grupo: 0, etiqueta: 'Foto guardada', color: '#8250df' }], indice: 0 });
+  const abrirFoto = (src) => { galeriaRef.current = [{ src, grupo: 0, etiqueta: 'Foto guardada', color: '#8250df' }]; indiceGalRef.current = 0; setGaleria({ imagenes: galeriaRef.current, indice: 0 }); };
+  const cerrarGaleria = () => { setUltimaImagen(galeriaRef.current?.[indiceGalRef.current]?.src ?? null); setGaleria(null); };
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
@@ -107,7 +112,7 @@ export default function PantallaInstalacion({ onVolver }) {
     if (!galeria) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
-    const cerrarConRetroceso = () => setGaleria(null);
+    const cerrarConRetroceso = () => cerrarGaleria();
     window.addEventListener('popstate', cerrarConRetroceso);
     return () => {
       window.removeEventListener('popstate', cerrarConRetroceso);
@@ -170,6 +175,7 @@ export default function PantallaInstalacion({ onVolver }) {
                 {pasosDeFase.map((paso, i) => {
                   const completado = gestor.current.estaCompletado(paso.numero);
                   const abierto = pasoAbierto === paso.numero;
+                  const esUltimoVisto = !abierto && ultimoVisto === paso.numero;
 
                   return (
                     <div
@@ -178,7 +184,7 @@ export default function PantallaInstalacion({ onVolver }) {
                       style={{
                         borderTop: i > 0 ? '1px solid var(--borde)' : 'none',
                         backgroundColor: abierto ? 'var(--fondo-base)' : 'var(--fondo-panel)',
-                        borderLeft: abierto ? '3px solid var(--acento)' : '3px solid transparent',
+                        borderLeft: abierto ? '3px solid var(--acento)' : esUltimoVisto ? '3px solid var(--acento-suave)' : '3px solid transparent',
                         scrollMarginTop: '96px',
                       }}
                     >
@@ -201,7 +207,7 @@ export default function PantallaInstalacion({ onVolver }) {
 
                         {/* Título */}
                         <button
-                          onClick={() => setPasoAbierto(abierto ? null : paso.numero)}
+                          onClick={() => { setPasoAbierto(abierto ? null : paso.numero); setUltimoVisto(paso.numero); }}
                           className="flex-1 min-w-0 text-left"
                         >
                           <p className="text-base leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
@@ -216,7 +222,7 @@ export default function PantallaInstalacion({ onVolver }) {
                           {paso.imagenes.length > 0 && (
                             <span className="text-[10px] font-mono" style={{ color: 'var(--texto-tenue)' }}>📷{paso.imagenes.length}</span>
                           )}
-                          <button onClick={() => setPasoAbierto(abierto ? null : paso.numero)} className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
+                          <button onClick={() => { setPasoAbierto(abierto ? null : paso.numero); setUltimoVisto(paso.numero); }} className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
                             {abierto ? '▲' : '▼'}
                           </button>
                         </div>
@@ -443,8 +449,8 @@ export default function PantallaInstalacion({ onVolver }) {
                                   src={img}
                                   alt={`Paso ${paso.numero}`}
                                   onClick={() => abrirManual(img)}
-                                  className="w-full rounded-lg border cursor-zoom-in"
-                                  style={{ borderColor: 'var(--borde)' }}
+                                  className="w-full rounded-lg cursor-zoom-in"
+                                  style={{ border: img === ultimaImagen ? '2px solid var(--acento)' : '1px solid var(--borde)' }}
                                   loading="lazy"
                                 />
                               ))}
@@ -509,7 +515,8 @@ export default function PantallaInstalacion({ onVolver }) {
         <VisorGaleria
           imagenes={galeria.imagenes}
           indiceInicial={galeria.indice}
-          onCerrar={() => setGaleria(null)}
+          onCambioIndice={(i) => { indiceGalRef.current = i; }}
+          onCerrar={cerrarGaleria}
         />
       )}
     </div>

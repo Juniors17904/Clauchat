@@ -20,21 +20,28 @@ function renderizarDetalle(texto) {
 export default function PantallaSoftware({ onVolver }) {
   const gestor = useRef(new GestorSoftware());
   const pasosRef = useRef({});
+  const indiceGaleriaRef = useRef(0);
   const [, setVersion] = useState(0);
   const [abierto, setAbierto] = useState(null);
   const [indiceGaleria, setIndiceGaleria] = useState(null);
+  const [ultimaImagen, setUltimaImagen] = useState(null);
+  const [ultimoVisto, setUltimoVisto] = useState(null);
 
   const total = PROGRAMAS_SOFTWARE.length;
   const completados = gestor.current.totalCompletados;
   const porcentaje = total > 0 ? Math.round((completados / total) * 100) : 0;
 
-  const abrirGaleria = (src) => setIndiceGaleria(GALERIA.findIndex(g => g.src === src));
+  const abrirGaleria = (src) => {
+    const i = GALERIA.findIndex(g => g.src === src);
+    indiceGaleriaRef.current = i;
+    setIndiceGaleria(i);
+  };
 
   useEffect(() => {
     if (indiceGaleria === null) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
-    const cerrar = () => setIndiceGaleria(null);
+    const cerrar = () => { setUltimaImagen(GALERIA[indiceGaleriaRef.current]?.src ?? null); setIndiceGaleria(null); };
     window.addEventListener('popstate', cerrar);
     return () => {
       window.removeEventListener('popstate', cerrar);
@@ -89,6 +96,7 @@ export default function PantallaSoftware({ onVolver }) {
           {PROGRAMAS_SOFTWARE.map((programa, i) => {
             const completado = gestor.current.estaCompletado(programa.id);
             const estaAbierto = abierto === programa.id;
+            const esUltimoVisto = !estaAbierto && ultimoVisto === programa.id;
             return (
               <div
                 key={programa.id}
@@ -96,7 +104,7 @@ export default function PantallaSoftware({ onVolver }) {
                 style={{
                   borderTop: i > 0 ? '1px solid var(--borde)' : 'none',
                   backgroundColor: estaAbierto ? 'var(--fondo-base)' : 'var(--fondo-panel)',
-                  borderLeft: estaAbierto ? '3px solid var(--acento)' : '3px solid transparent',
+                  borderLeft: estaAbierto ? '3px solid var(--acento)' : esUltimoVisto ? '3px solid var(--acento-suave)' : '3px solid transparent',
                   scrollMarginTop: '96px',
                 }}
               >
@@ -112,7 +120,7 @@ export default function PantallaSoftware({ onVolver }) {
                       </svg>
                     )}
                   </button>
-                  <button onClick={() => setAbierto(estaAbierto ? null : programa.id)} className="flex-1 min-w-0 text-left">
+                  <button onClick={() => { setAbierto(estaAbierto ? null : programa.id); setUltimoVisto(programa.id); }} className="flex-1 min-w-0 text-left">
                     <p className="text-base leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
                       <span className="font-mono text-sm mr-1.5" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--acento)' }}>{programa.numero}.</span>
                       {programa.nombre}
@@ -123,7 +131,7 @@ export default function PantallaSoftware({ onVolver }) {
                     {programa.imagenes.length > 0 && (
                       <span className="text-[10px] font-mono" style={{ color: 'var(--texto-tenue)' }}>📷{programa.imagenes.length}</span>
                     )}
-                    <button onClick={() => setAbierto(estaAbierto ? null : programa.id)} className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
+                    <button onClick={() => { setAbierto(estaAbierto ? null : programa.id); setUltimoVisto(programa.id); }} className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
                       {estaAbierto ? '▲' : '▼'}
                     </button>
                   </div>
@@ -134,17 +142,20 @@ export default function PantallaSoftware({ onVolver }) {
                     <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(programa.detalle)}</p>
                     {programa.imagenes.length > 0 && (
                       <div className="space-y-2">
-                        {programa.imagenes.map(img => (
-                          <img
-                            key={img}
-                            src={img}
-                            alt={programa.nombre}
-                            onClick={() => abrirGaleria(img)}
-                            className="w-full rounded-lg border cursor-zoom-in"
-                            style={{ borderColor: 'var(--borde)' }}
-                            loading="lazy"
-                          />
-                        ))}
+                        {programa.imagenes.map(img => {
+                          const esUltima = img === ultimaImagen;
+                          return (
+                            <img
+                              key={img}
+                              src={img}
+                              alt={programa.nombre}
+                              onClick={() => abrirGaleria(img)}
+                              className="w-full rounded-lg cursor-zoom-in"
+                              style={{ border: esUltima ? '2px solid var(--acento)' : '1px solid var(--borde)' }}
+                              loading="lazy"
+                            />
+                          );
+                        })}
                       </div>
                     )}
                     <button
@@ -167,7 +178,8 @@ export default function PantallaSoftware({ onVolver }) {
         <VisorGaleria
           imagenes={GALERIA}
           indiceInicial={indiceGaleria}
-          onCerrar={() => setIndiceGaleria(null)}
+          onCambioIndice={(i) => { indiceGaleriaRef.current = i; }}
+          onCerrar={() => { setUltimaImagen(GALERIA[indiceGaleriaRef.current]?.src ?? null); setIndiceGaleria(null); }}
         />
       )}
     </div>
