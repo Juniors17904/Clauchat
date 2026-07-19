@@ -43,16 +43,16 @@ export default function PantallaInstalacion({ onVolver }) {
       setReconociendo({ campo, progreso: 0 });
       const texto = await reconocedor.current.reconocer(dataUrl, (p) => setReconociendo({ campo, progreso: p }));
       const datos = reconocedor.current.extraerDatos(texto);
-      if (datos[campo]) {
-        gestor.current.guardarCampo(paso.numero, campo, datos[campo]);
-      } else {
-        setAvisoCampo(campo);
-      }
-      // La misma foto puede traer otros datos del paso: llenar los campos vacíos
+      let encontrados = 0;
+      // La foto llena su campo y cualquier otro campo vacío del paso
       for (const otro of paso.campos) {
-        if (otro !== campo && datos[otro] && !gestor.current.obtenerCampo(paso.numero, otro)) {
+        if (datos[otro] && (otro === campo || !gestor.current.obtenerCampo(paso.numero, otro))) {
           gestor.current.guardarCampo(paso.numero, otro, datos[otro]);
+          encontrados++;
         }
+      }
+      if (campo === '__paso' ? encontrados === 0 : !datos[campo]) {
+        setAvisoCampo(campo);
       }
     } catch {
       setAvisoCampo(campo);
@@ -188,12 +188,90 @@ export default function PantallaInstalacion({ onVolver }) {
                           {/* Campos de datos: la foto primero, el texto si se reconoció */}
                           {paso.campos.length > 0 && (
                             <div className="space-y-4 mb-3">
+                              {/* Una sola foto para todo el paso */}
+                              {paso.fotoUnica && (() => {
+                                const fotoPaso = gestor.current.obtenerFoto(paso.numero, '__paso');
+                                const procesandoPaso = reconociendo?.campo === '__paso';
+                                return (
+                                  <div>
+                                    {fotoPaso ? (
+                                      <div className="relative">
+                                        <img
+                                          src={fotoPaso}
+                                          alt="Foto del paso"
+                                          onClick={() => setImagenAmpliada(fotoPaso)}
+                                          className="w-full h-36 object-cover rounded-lg border cursor-zoom-in"
+                                          style={{ borderColor: 'var(--borde)' }}
+                                        />
+                                        {procesandoPaso && (
+                                          <div className="absolute inset-0 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}>
+                                            <p className="text-xs font-semibold text-white">Reconociendo... {reconociendo.progreso}%</p>
+                                          </div>
+                                        )}
+                                        <div className="absolute bottom-1.5 right-1.5 flex gap-1.5">
+                                          <button
+                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
+                                            disabled={reconociendo !== null}
+                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
+                                            title="Tomar otra foto"
+                                          >
+                                            📷
+                                          </button>
+                                          <button
+                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
+                                            disabled={reconociendo !== null}
+                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
+                                            title="Elegir de la galería"
+                                          >
+                                            🖼️
+                                          </button>
+                                          <button
+                                            onClick={() => { gestor.current.eliminarFoto(paso.numero, '__paso'); setVersion(v => v + 1); }}
+                                            disabled={reconociendo !== null}
+                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
+                                            title="Eliminar foto"
+                                          >
+                                            🗑
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="flex gap-2">
+                                        <button
+                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
+                                          disabled={reconociendo !== null}
+                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-xs font-semibold transition-colors disabled:opacity-40"
+                                          style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
+                                        >
+                                          📷 Tomar foto de la pantalla de red
+                                        </button>
+                                        <button
+                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
+                                          disabled={reconociendo !== null}
+                                          className="w-11 border rounded-lg text-xs flex items-center justify-center transition-colors disabled:opacity-40"
+                                          style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+                                          title="Elegir de la galería"
+                                        >
+                                          🖼️
+                                        </button>
+                                      </div>
+                                    )}
+                                    {avisoCampo === '__paso' && (
+                                      <p className="text-[10px] mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció ningún dato en la foto — completá los campos a mano.</p>
+                                    )}
+                                  </div>
+                                );
+                              })()}
+
                               {paso.campos.map(campo => {
                                 const foto = gestor.current.obtenerFoto(paso.numero, campo);
                                 const valor = gestor.current.obtenerCampo(paso.numero, campo);
                                 const procesando = reconociendo?.campo === campo;
                                 const clave = `${paso.numero}-${campo}`;
-                                const mostrarTexto = valor !== '' || camposAbiertos.has(clave) || procesando;
+                                const mostrarTexto = paso.fotoUnica || valor !== '' || camposAbiertos.has(clave) || procesando;
                                 return (
                                   <div key={campo}>
                                     <div className="flex items-center justify-between mb-1.5">
@@ -209,7 +287,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                       )}
                                     </div>
 
-                                    {foto ? (
+                                    {!paso.fotoUnica && (foto ? (
                                       <div className="relative mb-2">
                                         <img
                                           src={foto}
@@ -273,7 +351,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                           🖼️
                                         </button>
                                       </div>
-                                    )}
+                                    ))}
 
                                     {mostrarTexto && (
                                       <input
