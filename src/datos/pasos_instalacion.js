@@ -119,8 +119,9 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 17,
     titulo: 'Validar to_be_replaced.properties (staging)',
-    detalle: 'Revisar nuevamente el archivo to_be_replaced.properties generado en staging y confirmar que todos los valores del paso 12 siguen correctos.',
+    detalle: 'Revisar nuevamente el archivo [[to_be_replaced.properties]] en [[C:\\staging\\environment-files\\PROD]] y confirmar que todos los valores del paso 12 siguen correctos (orgId, rtlLocId, terminalId, storeprimary.host, storeName, locate.XstoreSystemCode).',
     faseId: 'cuenta-dominio-instalacion',
+    imagenes: ['/instalacion/p12-a.png'],
   }),
   new PasoInstalacion({
     numero: 18,
@@ -133,7 +134,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 19,
     titulo: 'Ejecutar KillXStore',
-    detalle: 'Ejecutar KillXStore para detener los procesos de Xstore antes de configurar los permisos de las carpetas nuevas.',
+    detalle: 'Ejecutar [[KillXStore]], ubicado en el [[Escritorio]], para detener los procesos de Xstore antes de configurar los permisos de las carpetas nuevas.',
     faseId: 'cuenta-dominio-instalacion',
   }),
   new PasoInstalacion({
