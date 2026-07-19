@@ -16,6 +16,7 @@ export class VisorImagen {
   #ultimoTap = 0;
   #tapInicio = null;
   #tapValido = false;
+  #ultimoDobleTapTactil = 0;
 
   get estilo() {
     return `translate(${this.#x}px, ${this.#y}px) scale(${this.#escala})`;
@@ -92,6 +93,7 @@ export class VisorImagen {
       const ahora = Date.now();
       if (ahora - this.#ultimoTap < VENTANA_DOBLE_TAP) {
         huboDobleTap = true;
+        this.#ultimoDobleTapTactil = ahora;
         if (this.ampliada) this.reiniciar();
         else this.#escala = ESCALA_DOBLE_TAP;
         this.#ultimoTap = 0;
@@ -107,6 +109,8 @@ export class VisorImagen {
   }
 
   alternarDobleClic() {
+    // Ignorar el dblclick sintético que el móvil dispara tras un doble tap táctil
+    if (Date.now() - this.#ultimoDobleTapTactil < 700) return;
     if (this.ampliada) this.reiniciar();
     else this.#escala = ESCALA_DOBLE_TAP;
   }
