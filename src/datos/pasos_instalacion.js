@@ -12,7 +12,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 2,
     titulo: 'Obtener IP',
-    detalle: 'Guardar la configuración de red actual del equipo (pantalla de Propiedades de TCP/IPv4). Se necesitará para restaurarla después de instalar la imagen.\n\nCon una sola foto de esa pantalla la app puede reconocer varios campos a la vez.',
+    detalle: 'Guardar la configuración de red actual del equipo (pantalla de Propiedades de TCP/IPv4). Se necesitará para restaurarla después de instalar la imagen.\n\nPara abrirla: Win + R → escribir ncpa.cpl → Enter → clic derecho en el adaptador → Propiedades → TCP/IPv4.\n\nCon una sola foto de esa pantalla la app puede reconocer varios campos a la vez.',
     faseId: 'respaldo',
     campos: ['Dirección IP', 'Máscara de subred', 'Puerta de enlace', 'DNS preferido', 'DNS alternativo'],
   }),
