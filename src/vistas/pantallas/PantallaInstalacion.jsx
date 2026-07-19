@@ -18,6 +18,7 @@ export default function PantallaInstalacion({ onVolver }) {
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
+  const [menuFoto, setMenuFoto] = useState(null);
   const campoActivo = useRef(null);
   const vieneDeCamara = useRef(false);
   const archivoCamaraRef = useRef(null);
@@ -62,19 +63,20 @@ export default function PantallaInstalacion({ onVolver }) {
   };
 
   useEffect(() => {
-    if (!imagenAmpliada) return;
+    if (!imagenAmpliada && !menuFoto) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
     const cerrarConRetroceso = () => {
       visor.current.reiniciar();
       setImagenAmpliada(null);
+      setMenuFoto(null);
     };
     window.addEventListener('popstate', cerrarConRetroceso);
     return () => {
       window.removeEventListener('popstate', cerrarConRetroceso);
       if (window.history.state?.visorFoto) window.history.back();
     };
-  }, [imagenAmpliada]);
+  }, [imagenAmpliada, menuFoto]);
 
   const total = PASOS_INSTALACION.length;
   const completados = gestor.current.totalCompletados;
@@ -197,50 +199,27 @@ export default function PantallaInstalacion({ onVolver }) {
                                       <input
                                         value={gestor.current.obtenerCampo(paso.numero, campo)}
                                         onChange={(e) => { gestor.current.guardarCampo(paso.numero, campo, e.target.value); setVersion(v => v + 1); }}
-                                        placeholder={procesando ? `Reconociendo... ${reconociendo.progreso}%` : `Escribe o sube foto...`}
+                                        placeholder={procesando ? `Reconociendo... ${reconociendo.progreso}%` : `Escribe o toca la cámara...`}
                                         className="flex-1 min-w-0 border rounded-lg px-3 py-2 text-xs focus:outline-none"
                                         style={{ backgroundColor: 'var(--fondo-panel)', borderColor: procesando ? 'var(--acento)' : 'var(--borde)', color: 'var(--texto-primario)', fontFamily: 'var(--fuente-mono)' }}
                                         spellCheck={false}
                                       />
                                       <button
-                                        onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
+                                        onClick={() => setMenuFoto({ paso, campo })}
                                         disabled={reconociendo !== null}
-                                        className="w-9 flex-shrink-0 border rounded-lg text-sm flex items-center justify-center transition-colors disabled:opacity-40"
-                                        style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
-                                        title={`Tomar foto para ${campo}`}
+                                        className="w-9 h-9 flex-shrink-0 border rounded-lg text-sm flex items-center justify-center overflow-hidden transition-colors disabled:opacity-40"
+                                        style={{ borderColor: foto ? 'var(--acento)' : 'var(--borde)', color: 'var(--acento)' }}
+                                        title={`Foto de ${campo}`}
                                       >
-                                        📷
+                                        {foto ? (
+                                          <img src={foto} alt={`Foto de ${campo}`} className="w-full h-full object-cover" />
+                                        ) : (
+                                          '📷'
+                                        )}
                                       </button>
-                                      <button
-                                        onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
-                                        disabled={reconociendo !== null}
-                                        className="w-9 flex-shrink-0 border rounded-lg text-sm flex items-center justify-center transition-colors disabled:opacity-40"
-                                        style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
-                                        title={`Subir foto de la galería para ${campo}`}
-                                      >
-                                        🖼️
-                                      </button>
-                                      {foto && (
-                                        <img
-                                          src={foto}
-                                          alt={`Foto de ${campo}`}
-                                          onClick={() => setImagenAmpliada(foto)}
-                                          className="w-9 h-9 flex-shrink-0 object-cover rounded-lg border cursor-zoom-in"
-                                          style={{ borderColor: 'var(--borde)' }}
-                                        />
-                                      )}
                                     </div>
                                     {avisoCampo === campo && (
                                       <p className="text-[10px] mt-1" style={{ color: 'var(--advertencia)' }}>No se reconoció el {campo.toLowerCase()} en la foto — escribilo a mano.</p>
-                                    )}
-                                    {foto && (
-                                      <button
-                                        onClick={() => { gestor.current.eliminarFoto(paso.numero, campo); setVersion(v => v + 1); }}
-                                        className="text-[10px] mt-1"
-                                        style={{ color: 'var(--texto-tenue)' }}
-                                      >
-                                        Eliminar foto de {campo.toLowerCase()}
-                                      </button>
                                     )}
                                   </div>
                                 );
@@ -318,6 +297,61 @@ export default function PantallaInstalacion({ onVolver }) {
           )
         )}
       </div>
+
+      {/* Menú de foto por campo */}
+      {menuFoto && (() => {
+        const fotoActual = gestor.current.obtenerFoto(menuFoto.paso.numero, menuFoto.campo);
+        const cerrar = () => setMenuFoto(null);
+        return (
+          <>
+            <div className="fixed inset-0 z-30" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={cerrar} />
+            <div className="fixed bottom-0 left-0 right-0 z-40 rounded-t-2xl border-t px-4 pt-4 pb-6 banner-animado" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--borde)' }}>
+              <p className="text-xs font-semibold mb-3 text-center" style={{ color: 'var(--texto-secundario)' }}>Foto de {menuFoto.campo}</p>
+              <div className="space-y-2 max-w-sm mx-auto">
+                <button
+                  onClick={() => { campoActivo.current = menuFoto.campo; vieneDeCamara.current = true; cerrar(); archivoCamaraRef.current?.click(); }}
+                  className="w-full py-3 rounded-xl text-sm font-semibold transition-colors"
+                  style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}
+                >
+                  📷 Tomar foto
+                </button>
+                <button
+                  onClick={() => { campoActivo.current = menuFoto.campo; vieneDeCamara.current = false; cerrar(); archivoFotoRef.current?.click(); }}
+                  className="w-full py-3 border rounded-xl text-sm transition-colors"
+                  style={{ borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
+                >
+                  🖼️ Elegir de la galería
+                </button>
+                {fotoActual && (
+                  <button
+                    onClick={() => { cerrar(); setImagenAmpliada(fotoActual); }}
+                    className="w-full py-3 border rounded-xl text-sm transition-colors"
+                    style={{ borderColor: 'var(--borde)', color: 'var(--texto-primario)' }}
+                  >
+                    👁 Ver foto
+                  </button>
+                )}
+                {fotoActual && (
+                  <button
+                    onClick={() => { gestor.current.eliminarFoto(menuFoto.paso.numero, menuFoto.campo); cerrar(); setVersion(v => v + 1); }}
+                    className="w-full py-3 border rounded-xl text-sm transition-colors"
+                    style={{ borderColor: 'color-mix(in srgb, var(--error) 40%, transparent)', color: 'var(--error)' }}
+                  >
+                    🗑 Eliminar foto
+                  </button>
+                )}
+                <button
+                  onClick={cerrar}
+                  className="w-full py-2.5 text-xs transition-colors"
+                  style={{ color: 'var(--texto-tenue)' }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </>
+        );
+      })()}
 
       {/* Imagen ampliada con zoom y arrastre */}
       {imagenAmpliada && (
