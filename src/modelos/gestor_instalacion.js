@@ -1,18 +1,21 @@
-const CLAVE = 'sqlab_instalacion';
-const CLAVE_DATOS = 'sqlab_instalacion_datos';
-
 export class GestorInstalacion {
   #completados;
   #datos;
+  #clave;
+  #claveDatos;
 
-  constructor() {
+  constructor(caja = 1) {
+    // Caja 1 usa las claves originales; caja 2 las suyas propias
+    const sufijo = caja === 2 ? '_caja2' : '';
+    this.#clave = `sqlab_instalacion${sufijo}`;
+    this.#claveDatos = `sqlab_instalacion_datos${sufijo}`;
     try {
-      this.#completados = new Set(JSON.parse(localStorage.getItem(CLAVE) ?? '[]'));
+      this.#completados = new Set(JSON.parse(localStorage.getItem(this.#clave) ?? '[]'));
     } catch {
       this.#completados = new Set();
     }
     try {
-      this.#datos = JSON.parse(localStorage.getItem(CLAVE_DATOS) ?? '{}');
+      this.#datos = JSON.parse(localStorage.getItem(this.#claveDatos) ?? '{}');
     } catch {
       this.#datos = {};
     }
@@ -49,14 +52,14 @@ export class GestorInstalacion {
 
   #persistirDatos() {
     try {
-      localStorage.setItem(CLAVE_DATOS, JSON.stringify(this.#datos));
+      localStorage.setItem(this.#claveDatos, JSON.stringify(this.#datos));
     } catch {
       // localStorage lleno: guardar sin fotos para no perder los campos
       const sinFotos = {};
       for (const [num, d] of Object.entries(this.#datos)) {
         sinFotos[num] = { campos: d.campos };
       }
-      localStorage.setItem(CLAVE_DATOS, JSON.stringify(sinFotos));
+      localStorage.setItem(this.#claveDatos, JSON.stringify(sinFotos));
     }
   }
 
@@ -85,6 +88,6 @@ export class GestorInstalacion {
   }
 
   #persistir() {
-    localStorage.setItem(CLAVE, JSON.stringify([...this.#completados]));
+    localStorage.setItem(this.#clave, JSON.stringify([...this.#completados]));
   }
 }

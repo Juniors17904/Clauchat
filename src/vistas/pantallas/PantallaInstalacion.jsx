@@ -21,8 +21,8 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaInstalacion({ onVolver }) {
-  const gestor = useRef(new GestorInstalacion());
+export default function PantallaInstalacion({ onVolver, caja = 1 }) {
+  const gestor = useRef(new GestorInstalacion(caja));
   const compresor = useRef(new CompresorImagen());
   const mejorador = useRef(new MejoradorImagen());
   const reconocedor = useRef(new ReconocedorTexto());
@@ -152,7 +152,7 @@ export default function PantallaInstalacion({ onVolver }) {
             ← Volver
           </button>
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-lg font-bold" style={{ color: 'var(--texto-primario)' }}>Instalación Xstore</h1>
+            <h1 className="text-lg font-bold" style={{ color: 'var(--texto-primario)' }}>Instalación Xstore · Caja {caja}</h1>
             <span className="text-xs font-mono" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-secundario)' }}>
               {completados}/{total}
             </span>

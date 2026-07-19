@@ -29,6 +29,7 @@ export default function App() {
   const [temaActual, setTemaActual] = useState(null);
   const [ejercicioActual, setEjercicioActual] = useState(null);
   const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
+  const [cajaInstalacion, setCajaInstalacion] = useState(1);
   const ctrlPerfil = useRef(new ControladorPerfil());
   const ctrlRecordatorios = useRef(new ControladorRecordatorios());
   useRef(new GestorTemas());
@@ -52,6 +53,8 @@ export default function App() {
       if (estado.pantalla === pantallaRef.current) return;
 
       navegar('atras', () => {
+        if (estado.caja) setCajaInstalacion(estado.caja);
+
         if (estado.areaId) {
           const area = [...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === estado.areaId);
           setAreaActual(area ?? null);
@@ -149,11 +152,12 @@ export default function App() {
     window.history.pushState({ pantalla: 'herramientas' }, '');
   };
 
-  const irAInstalacion = () => {
+  const irAInstalacion = (caja = 1) => {
     navegar('adelante', () => {
+      setCajaInstalacion(caja);
       setPantalla('instalacion');
     });
-    window.history.pushState({ pantalla: 'instalacion' }, '');
+    window.history.pushState({ pantalla: 'instalacion', caja }, '');
   };
 
   const irASoftware = () => {
@@ -216,7 +220,7 @@ export default function App() {
   }
 
   if (pantalla === 'instalacion') {
-    return <PantallaInstalacion onVolver={() => window.history.back()} />;
+    return <PantallaInstalacion onVolver={() => window.history.back()} caja={cajaInstalacion} />;
   }
 
   if (pantalla === 'software') {

@@ -4,29 +4,38 @@ import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 
 export default function PantallaHerramientas({ onVolver, onXstore, onSoftware }) {
-  const gestorInstalacion = new GestorInstalacion();
-  const gestorSoftware = new GestorSoftware();
-
   const totalXstore = PASOS_INSTALACION.length;
-  const hechosXstore = gestorInstalacion.totalCompletados;
+  const hechosCaja1 = new GestorInstalacion(1).totalCompletados;
+  const hechosCaja2 = new GestorInstalacion(2).totalCompletados;
   const totalSoftware = PROGRAMAS_SOFTWARE.length;
-  const hechosSoftware = gestorSoftware.totalCompletados;
+  const hechosSoftware = new GestorSoftware().totalCompletados;
 
   const opciones = [
     {
-      id: 'xstore',
+      id: 'xstore-1',
       numero: '1',
-      titulo: 'Instalación de Xstore',
-      descripcion: 'Guía paso a paso para instalar la imagen y configurar Xstore en la caja.',
+      titulo: 'Instalación Xstore · Caja 1',
+      descripcion: 'Checklist completo para la caja 1 (incluye los pasos exclusivos de caja 1).',
       icono: '🖥️',
       color: 'var(--acento)',
-      hechos: hechosXstore,
+      hechos: hechosCaja1,
       total: totalXstore,
-      onClick: onXstore,
+      onClick: () => onXstore(1),
+    },
+    {
+      id: 'xstore-2',
+      numero: '2',
+      titulo: 'Instalación Xstore · Caja 2',
+      descripcion: 'Checklist para la caja 2, con su propio avance independiente.',
+      icono: '🖥️',
+      color: '#39c5cf',
+      hechos: hechosCaja2,
+      total: totalXstore,
+      onClick: () => onXstore(2),
     },
     {
       id: 'software',
-      numero: '2',
+      numero: '3',
       titulo: 'Instalación de software y aplicaciones',
       descripcion: 'Programas y aplicaciones que se instalan después de configurar Xstore.',
       icono: '📦',
