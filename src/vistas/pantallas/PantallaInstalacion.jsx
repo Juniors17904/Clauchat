@@ -275,7 +275,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                 const valor = gestor.current.obtenerCampo(paso.numero, campo);
                                 const procesando = reconociendo?.campo === campo;
                                 const clave = `${paso.numero}-${campo}`;
-                                const mostrarTexto = paso.fotoUnica || valor !== '' || camposAbiertos.has(clave) || procesando;
+                                const mostrarTexto = valor !== '' || camposAbiertos.has(clave) || procesando;
                                 return (
                                   <div key={campo}>
                                     <div className="flex items-center justify-between mb-1.5">
