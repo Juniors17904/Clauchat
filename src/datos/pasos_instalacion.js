@@ -146,18 +146,16 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 21,
     titulo: 'Copiar archivos TOTP Authentication',
-    detalle: 'Copiar todo el contenido de:\n[[C:\\staging\\environment-files\\PROD\\security\\Xenvironment TOTP Authentication]]\n\nY pegarlo en:\n[[C:\\xstoredata\\xstore\\download]]',
+    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCopiar todo el contenido de:\n[[C:\\staging\\environment-files\\PROD\\security\\Xenvironment TOTP Authentication]]\n\nY pegarlo en:\n[[C:\\xstoredata\\xstore\\download]]',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p21-a.png', '/instalacion/p21-b.png'],
-    advertencia: 'SOLO CAJA 1 — en caja 2 omitir este paso',
   }),
   new PasoInstalacion({
     numero: 22,
     titulo: 'Ejecutar dataloader2.bat',
-    detalle: 'Cuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar [[dataloader2.bat]].\n\nAl finalizar: abrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
+    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutar [[dataloader2.bat]].\n\nAl finalizar: abrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
     faseId: 'cuenta-dominio-instalacion',
     imagenes: ['/instalacion/p22-a.png', '/instalacion/p22-b.png'],
-    advertencia: 'SOLO CAJA 1 — en caja 2 omitir este paso',
   }),
   new PasoInstalacion({
     numero: 23,
