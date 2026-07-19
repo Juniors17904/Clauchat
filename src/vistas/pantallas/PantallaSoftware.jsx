@@ -151,7 +151,7 @@ export default function PantallaSoftware({ onVolver }) {
                               alt={programa.nombre}
                               onClick={() => abrirGaleria(img)}
                               className="w-full rounded-lg cursor-zoom-in"
-                              style={{ border: esUltima ? '2px solid var(--acento)' : '1px solid var(--borde)' }}
+                              style={{ border: esUltima ? '3px solid var(--acento)' : '1px solid var(--borde)', boxShadow: esUltima ? '0 0 0 2px var(--acento-suave)' : 'none' }}
                               loading="lazy"
                             />
                           );

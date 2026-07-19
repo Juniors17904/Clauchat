@@ -450,7 +450,7 @@ export default function PantallaInstalacion({ onVolver }) {
                                   alt={`Paso ${paso.numero}`}
                                   onClick={() => abrirManual(img)}
                                   className="w-full rounded-lg cursor-zoom-in"
-                                  style={{ border: img === ultimaImagen ? '2px solid var(--acento)' : '1px solid var(--borde)' }}
+                                  style={{ border: img === ultimaImagen ? '3px solid var(--acento)' : '1px solid var(--borde)', boxShadow: img === ultimaImagen ? '0 0 0 2px var(--acento-suave)' : 'none' }}
                                   loading="lazy"
                                 />
                               ))}

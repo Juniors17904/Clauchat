@@ -142,18 +142,25 @@ export default function VisorGaleria({ imagenes, indiceInicial, onCerrar, onCamb
         )}
       </div>
 
-      {/* Barra de progreso del punto actual, dividida en tramos (uno por imagen) */}
-      <div key={actual.grupo} className="flex items-center gap-1 px-6 pb-6 pt-2 carita-pop">
-        {delGrupo.map((_, i) => (
-          <div
-            key={i}
-            className="flex-1 rounded-full transition-all duration-200"
-            style={{
-              height: 4,
-              backgroundColor: i < posEnGrupo ? (actual.color ?? '#3fb950') : 'rgba(255,255,255,0.2)',
-            }}
-          />
-        ))}
+      {/* Indicador del punto actual: barra alargada para la foto actual, puntos para el resto */}
+      <div key={actual.grupo} className="flex items-center justify-center gap-1.5 px-6 pb-6 pt-2">
+        {delGrupo.map((_, i) => {
+          const esActual = i === posEnGrupo - 1;
+          const completada = i < posEnGrupo - 1;
+          return (
+            <div
+              key={i}
+              className="rounded-full transition-all duration-200"
+              style={{
+                width: esActual ? 26 : 7,
+                height: 7,
+                backgroundColor: esActual
+                  ? (actual.color ?? '#3fb950')
+                  : completada ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.25)',
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
