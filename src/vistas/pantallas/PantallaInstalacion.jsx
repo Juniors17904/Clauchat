@@ -13,9 +13,18 @@ const GALERIA_MANUAL = PASOS_INSTALACION.flatMap(p =>
 );
 
 function renderizarDetalle(texto) {
-  return texto.split(/(\[\[.*?\]\])/g).map((parte, i) => {
+  return texto.split(/(\[\[.*?\]\]|\{\{.*?\}\}|!!.*?!!)/g).map((parte, i) => {
+    // Rutas y archivos → amarillo, negrita, más grande
     if (parte.startsWith('[[') && parte.endsWith(']]')) {
-      return <span key={i} style={{ color: 'var(--advertencia)', fontWeight: 600 }}>{parte.slice(2, -2)}</span>;
+      return <span key={i} style={{ color: 'var(--advertencia)', fontWeight: 700, fontSize: '1.12em', wordBreak: 'break-all' }}>{parte.slice(2, -2)}</span>;
+    }
+    // Comandos → verde, negrita, más grande, monoespaciado
+    if (parte.startsWith('{{') && parte.endsWith('}}')) {
+      return <span key={i} style={{ color: 'var(--acento)', fontWeight: 700, fontSize: '1.12em', fontFamily: 'var(--fuente-mono)', wordBreak: 'break-all' }}>{parte.slice(2, -2)}</span>;
+    }
+    // Reiniciar / iniciar sesión → aviso grande y notorio
+    if (parte.startsWith('!!') && parte.endsWith('!!')) {
+      return <span key={i} className="inline-block my-1" style={{ color: '#fff', backgroundColor: 'var(--acento-btn)', fontWeight: 800, fontSize: '1.15em', padding: '3px 10px', borderRadius: 8 }}>{parte.slice(2, -2)}</span>;
     }
     return parte;
   });

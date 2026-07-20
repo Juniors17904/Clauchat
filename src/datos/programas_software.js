@@ -39,7 +39,7 @@ export const PROGRAMAS_SOFTWARE = [
     id: 'chrome',
     nombre: 'Configuración de Chrome',
     descripcion: 'Sesión y favoritos',
-    detalle: 'a. Iniciar sesión con el correo de tienda al abrir Chrome por primera vez, para activar la sincronización.\n\nb. Agregar como favorito Mi Tienda e iniciar sesión con Google:\n[[https://mitienda.lindcorp.pe/]]\n\nc. Agregar GLPI e iniciar sesión con la cuenta de Red de la tienda (guardar la contraseña):\n[[https://helpdesk.lindcorptiendas.net/]]',
+    detalle: 'a. Al abrir Chrome por primera vez: !!INICIAR SESIÓN CON EL CORREO DE TIENDA!! para activar la sincronización.\n\nb. Agregar como favorito Mi Tienda e !!INICIAR SESIÓN CON GOOGLE!!:\n[[https://mitienda.lindcorp.pe/]]\n\nc. Agregar GLPI e !!INICIAR SESIÓN CON LA CUENTA DE RED!! de la tienda (guardar la contraseña):\n[[https://helpdesk.lindcorptiendas.net/]]',
     imagenes: ['/software/s04-a.png', '/software/s04-b.png', '/software/s04-c.png', '/software/s04-d.png', '/software/s04-e.png', '/software/s04-f.png', '/software/s04-g.png'],
     notas: { '/software/s04-a.png': 'Chrome — primero iniciar sesión con el correo de tienda.' },
   }),
