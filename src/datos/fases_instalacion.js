@@ -6,27 +6,23 @@ export const FASES_INSTALACION = [
     nombre: 'Respaldo',
     descripcion: 'Antes de instalar la imagen: respaldar los datos del equipo actual',
     orden: 1,
-    color: '#f0883e',
   }),
   new FaseInstalacion({
     id: 'cuenta-local',
     nombre: 'Cuenta local Lindcorp',
     descripcion: 'Con la imagen nueva instalada, iniciar sesión con la cuenta local',
     orden: 2,
-    color: '#3fb6f0',
   }),
   new FaseInstalacion({
     id: 'cuenta-dominio-config',
     nombre: 'Cuenta dominio T o A · Configuración',
     descripcion: 'Iniciar sesión con la cuenta de dominio de Tambo o Aruma',
     orden: 3,
-    color: '#c77dff',
   }),
   new FaseInstalacion({
     id: 'cuenta-dominio-instalacion',
     nombre: 'Cuenta dominio T o A · Instalación',
     descripcion: 'Instalación y validación final de Xstore',
     orden: 4,
-    color: '#f0507a',
   }),
 ];
