@@ -76,7 +76,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 11,
     titulo: 'Configurar listener.ora y tnsnames.ora',
-    detalle: 'Editar los archivos [[listener.ora]] y [[tnsnames.ora]] con el usuario de tienda.\n\nRuta: [[C:\\Oracle\\19c\\db_home\\network\\admin]]\n\nEn ambos archivos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).',
+    detalle: 'Editar los archivos [[listener.ora]] y [[tnsnames.ora]] con el usuario de tienda.\n\nRuta: [[C:\\Oracle\\19c\\db_home\\network\\admin]]\n\nEn ambos archivos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).\n\nPara sacar el nombre completo: Win + R → sysdm.cpl → ahí aparece "Nombre completo del equipo".',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p11-a.png', '/instalacion/p11-b.png', '/instalacion/p11-c.png'],
   }),
