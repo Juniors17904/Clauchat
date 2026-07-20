@@ -52,6 +52,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
   const tema = TEMAS.find(t => t.id === ejercicio?.temaId) ?? null;
   const esCorrecto = estado === 'feliz' || estado === 'celebrando';
   const estadoCarita = segundos > 120 && !esCorrecto && estado !== 'neutral' ? 'estresado' : estado;
+  // Factor de escala del texto según el zoom (12px = tamaño base)
+  const escalaTexto = nivelZoom / 12;
 
   const controlador = useRef(new ControladorEditor());
   const textareaRef = useRef(null);
@@ -394,7 +396,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
                   </span>
                 )}
               </div>
-              <p className="text-sm leading-relaxed pr-20" style={{ color: 'var(--texto-primario)' }}>{ejercicio.enunciado}</p>
+              <p className="leading-relaxed pr-20" style={{ color: 'var(--texto-primario)', fontSize: 14 * escalaTexto }}>{ejercicio.enunciado}</p>
               <div className="absolute right-2.5 top-9 w-[72px] h-[72px] opacity-[0.15]">
                 <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--texto-secundario)' }}>
                   <rect x="20" y="20" width="40" height="55" rx="2"/>
@@ -421,7 +423,7 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
               )}
               {mostrarPista && ejercicio?.pistas && (
                 <div className="mt-2 pt-2 border-t" style={{ borderColor: 'var(--borde)' }}>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--texto-secundario)' }}>{ejercicio.pistas[indicePista]}</p>
+                  <p className="leading-relaxed" style={{ color: 'var(--texto-secundario)', fontSize: 12 * escalaTexto }}>{ejercicio.pistas[indicePista]}</p>
                   {indicePista < ejercicio.pistas.length - 1 && (
                     <button onClick={siguientePista} className="text-[11px] mt-1 opacity-70 hover:opacity-100 transition-opacity" style={{ color: 'var(--advertencia)' }}>
                       Otra pista →
@@ -629,7 +631,8 @@ export default function PantallaEditor({ ejercicio, progreso, onVolver, onSiguie
 
           {/* Zoom del editor */}
           <div>
-            <p className="text-xs font-semibold mb-2.5" style={{ color: 'var(--texto-secundario)' }}>Zoom del editor</p>
+            <p className="text-xs font-semibold mb-2.5" style={{ color: 'var(--texto-secundario)' }}>Tamaño de letra</p>
+            <p className="text-[10px] mb-2.5 -mt-1.5" style={{ color: 'var(--texto-tenue)' }}>Afecta el enunciado y la consulta SQL</p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => cambiarZoom(-2)}
