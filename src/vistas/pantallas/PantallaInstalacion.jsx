@@ -187,7 +187,10 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
           return (
             <div key={fase.id} className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--texto-secundario)' }}>{fase.nombre}</h2>
+                <h2 className="text-sm font-extrabold uppercase tracking-wider flex items-center gap-2" style={{ color: fase.color }}>
+                  <span className="inline-block w-1 h-4 rounded-full" style={{ backgroundColor: fase.color }} />
+                  {fase.nombre}
+                </h2>
                 <span className="text-xs font-mono" style={{ color: completadosFase === pasosDeFase.length ? 'var(--acento)' : 'var(--texto-tenue)' }}>
                   {completadosFase}/{pasosDeFase.length}
                 </span>
