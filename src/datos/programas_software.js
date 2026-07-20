@@ -19,8 +19,8 @@ export const PROGRAMAS_SOFTWARE = [
     nombre: 'Instalación de Cortex XDR',
     descripcion: 'Antivirus',
     detalle: 'Ingresar a la ruta para instalar el antivirus:\n[[D:\\Instaladores\\Cortex\\TAMBO]]',
-    imagenes: ['/software/s02-a.png', '/software/s02-b.png'],
-    notas: { '/software/s02-a.png': 'Antivirus Cortex XDR — ejecutar como Administrator.' },
+    imagenes: ['/software/s02-b.png', '/software/s02-a.png'],
+    notas: { '/software/s02-b.png': 'Antivirus Cortex XDR — presioná Shift + clic derecho y ejecutá con el usuario Administrator.' },
   }),
   new ProgramaSoftware({
     numero: 3,
@@ -28,8 +28,11 @@ export const PROGRAMAS_SOFTWARE = [
     nombre: 'Instalación de Zabbix',
     descripcion: 'Monitoreo',
     detalle: 'El instalador está en la raíz del disco [[D:\\]].\n\nEjecutar con el usuario Administrator y dar todo a "Siguiente" hasta finalizar.\n\nÚnico dato a tener en cuenta — IP: [[10.180.13.201]]',
-    imagenes: ['/software/s03-a.png', '/software/s03-b.png', '/software/s03-c.png', '/software/s03-d.png', '/software/s03-e.png'],
-    notas: { '/software/s03-a.png': 'Zabbix (monitoreo) — ojo con la IP: 10.180.13.201' },
+    imagenes: ['/software/s03-c.png', '/software/s03-a.png', '/software/s03-e.png', '/software/s03-d.png', '/software/s03-b.png'],
+    notas: {
+      '/software/s03-c.png': 'Zabbix (monitoreo) — ejecutar con el usuario Administrator.',
+      '/software/s03-d.png': 'Validar el HOSTNAME y digitar la MISMA IP en ambas casillas: 10.180.13.201',
+    },
   }),
   new ProgramaSoftware({
     numero: 4,
