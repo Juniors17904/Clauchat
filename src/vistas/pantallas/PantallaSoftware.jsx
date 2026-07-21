@@ -116,6 +116,17 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
           </div>
         )}
 
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-sm font-extrabold uppercase tracking-wider flex items-center gap-2" style={{ color: 'var(--acento)' }}>
+            <span className="inline-block w-1 h-4 rounded-full" style={{ backgroundColor: 'var(--acento)' }} />
+            Software y aplicaciones
+          </h2>
+          <span className="text-xs font-mono" style={{ color: completados === total ? 'var(--acento)' : 'var(--texto-tenue)' }}>
+            {completados}/{total}
+          </span>
+        </div>
+        <p className="text-xs mb-2.5" style={{ color: 'var(--texto-tenue)' }}>Programas que se instalan después de configurar Xstore</p>
+
         <div className="border rounded-xl overflow-hidden" style={{ borderColor: 'var(--borde)' }}>
           {PROGRAMAS_SOFTWARE.map((programa, i) => {
             const completado = gestor.current.estaCompletado(programa.id);
