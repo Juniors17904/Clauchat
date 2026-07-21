@@ -8,8 +8,9 @@ export class PasoInstalacion {
   #campos;
   #fotoUnica;
   #notas;
+  #referencias;
 
-  constructor({ numero, titulo, detalle, faseId, imagenes = [], advertencia = null, campos = [], fotoUnica = false, notas = {} }) {
+  constructor({ numero, titulo, detalle, faseId, imagenes = [], advertencia = null, campos = [], fotoUnica = false, notas = {}, referencias = [] }) {
     this.#numero = numero;
     this.#titulo = titulo;
     this.#detalle = detalle;
@@ -19,6 +20,7 @@ export class PasoInstalacion {
     this.#campos = campos;
     this.#fotoUnica = fotoUnica;
     this.#notas = notas;
+    this.#referencias = referencias;
   }
 
   get numero() { return this.#numero; }
@@ -29,5 +31,6 @@ export class PasoInstalacion {
   get advertencia() { return this.#advertencia; }
   get campos() { return [...this.#campos]; }
   get fotoUnica() { return this.#fotoUnica; }
+  get referencias() { return [...this.#referencias]; }
   notaDe(src) { return this.#notas[src] ?? null; }
 }

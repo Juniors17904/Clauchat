@@ -55,6 +55,35 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
   const [avisoCampo, setAvisoCampo] = useState(null);
   const [camposAbiertos, setCamposAbiertos] = useState(new Set());
   const [pasosManuales, setPasosManuales] = useState(new Set());
+  const [referenciasAbiertas, setReferenciasAbiertas] = useState(new Set());
+
+  const alternarReferencia = (numero) => {
+    setReferenciasAbiertas(prev => {
+      const copia = new Set(prev);
+      if (copia.has(numero)) copia.delete(numero); else copia.add(numero);
+      return copia;
+    });
+  };
+
+  // Reúne los datos (campos con valor y fotos) que un paso anterior ya guardó
+  const datosDePaso = (numero) => {
+    const pasoRef = PASOS_INSTALACION.find(p => p.numero === numero);
+    if (!pasoRef) return null;
+    const campos = pasoRef.campos
+      .map(c => ({ campo: c, valor: gestor.current.obtenerCampo(numero, c) }))
+      .filter(c => c.valor !== '');
+    const fotos = [];
+    if (pasoRef.fotoUnica) {
+      const f = gestor.current.obtenerFoto(numero, '__paso');
+      if (f) fotos.push(f);
+    } else {
+      for (const c of pasoRef.campos) {
+        const f = gestor.current.obtenerFoto(numero, c);
+        if (f) fotos.push(f);
+      }
+    }
+    return { pasoRef, campos, fotos };
+  };
   const campoActivo = useRef(null);
   const vieneDeCamara = useRef(false);
   const archivoCamaraRef = useRef(null);
@@ -263,6 +292,69 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                             </div>
                           )}
                           <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(paso.detalle)}</p>
+
+                          {/* Datos guardados en pasos anteriores (IP, hostname, nombre de tienda…) */}
+                          {paso.referencias.length > 0 && (() => {
+                            const refAbierta = referenciasAbiertas.has(paso.numero);
+                            const refs = paso.referencias.map(datosDePaso).filter(Boolean);
+                            const hayDatos = refs.some(r => r.campos.length > 0 || r.fotos.length > 0);
+                            return (
+                              <div className="mb-3">
+                                <button
+                                  onClick={() => alternarReferencia(paso.numero)}
+                                  className="w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-colors"
+                                  style={{ borderColor: 'var(--acento)', backgroundColor: 'color-mix(in srgb, var(--acento) 8%, transparent)' }}
+                                >
+                                  <span className="text-xs font-semibold flex items-center gap-1.5" style={{ color: 'var(--acento)' }}>
+                                    📋 Ver datos que ya guardaste
+                                  </span>
+                                  <span className="text-xs" style={{ color: 'var(--acento)' }}>{refAbierta ? '▲' : '▼'}</span>
+                                </button>
+                                {refAbierta && (
+                                  <div className="mt-2 space-y-3">
+                                    {!hayDatos && (
+                                      <p className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
+                                        Todavía no cargaste estos datos. Volvé al paso {paso.referencias.join(' y ')} para tomarlos.
+                                      </p>
+                                    )}
+                                    {refs.map(({ pasoRef, campos, fotos }) => (
+                                      (campos.length > 0 || fotos.length > 0) && (
+                                        <div key={pasoRef.numero} className="rounded-lg border p-2.5" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-panel)' }}>
+                                          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'var(--texto-tenue)' }}>
+                                            Paso {pasoRef.numero} · {pasoRef.titulo}
+                                          </p>
+                                          {campos.length > 0 && (
+                                            <div className="space-y-1 mb-2">
+                                              {campos.map(({ campo, valor }) => (
+                                                <div key={campo} className="flex items-baseline justify-between gap-2">
+                                                  <span className="text-[11px]" style={{ color: 'var(--texto-tenue)' }}>{campo}</span>
+                                                  <span className="text-sm font-mono font-bold text-right break-all" style={{ color: 'var(--acento)' }}>{valor}</span>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+                                          {fotos.length > 0 && (
+                                            <div className="flex gap-2 flex-wrap">
+                                              {fotos.map((foto, k) => (
+                                                <img
+                                                  key={k}
+                                                  src={foto}
+                                                  alt="Dato guardado"
+                                                  onClick={() => abrirFoto(foto)}
+                                                  className="h-20 w-auto rounded-md border cursor-zoom-in"
+                                                  style={{ borderColor: 'var(--borde)' }}
+                                                />
+                                              ))}
+                                            </div>
+                                          )}
+                                        </div>
+                                      )
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
 
                           {/* Campos de datos: la foto primero, el texto si se reconoció */}
                           {paso.campos.length > 0 && (

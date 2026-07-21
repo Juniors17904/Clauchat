@@ -37,6 +37,7 @@ export const PASOS_INSTALACION = [
     detalle: 'Con la imagen nueva instalada, poner la IP de la tienda (si no se puede en tienda, realizarlo en el centro de capas), la máscara de red y el DNS del dominio de Lindcorp.\n\nAbrir con: Win + R → {{ncpa.cpl}} → clic derecho en el adaptador → Propiedades → TCP/IPv4.',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p05-a.png'],
+    referencias: [2],
   }),
   new PasoInstalacion({
     numero: 6,
@@ -51,6 +52,7 @@ export const PASOS_INSTALACION = [
     detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nFormato: [[XX-NNNN-C]]\n· [[NNNN = número de tienda de 4 dígitos]]\n· [[C = caja (1 o 2)]]\n\nEjemplo: [[TL-1046-1]]\nDominio: LindcorpTiendas.net\n\nAbrir con: Win + R → {{sysdm.cpl}} → botón Cambiar.\n\nDespués del cambio: !!REINICIAR EL EQUIPO!!',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
+    referencias: [1],
   }),
   new PasoInstalacion({
     numero: 8,
@@ -79,6 +81,7 @@ export const PASOS_INSTALACION = [
     detalle: 'Editar los archivos [[listener.ora]] y [[tnsnames.ora]] con el usuario de tienda.\n\nRuta: [[C:\\Oracle\\19c\\db_home\\network\\admin]]\n\nEn ambos archivos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).\n\nPara sacar el nombre completo: Win + R → {{sysdm.cpl}} → ahí aparece "Nombre completo del equipo".',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p11-a.png', '/instalacion/p11-b.png', '/instalacion/p11-c.png'],
+    referencias: [1],
   }),
   new PasoInstalacion({
     numero: 12,
@@ -86,6 +89,7 @@ export const PASOS_INSTALACION = [
     detalle: 'Este es el archivo [[to_be_replaced.properties]] que se EDITA. Está en [[C:\\staging\\environment-files\\PROD]].\n\nCambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
     faseId: 'cuenta-dominio-config',
     imagenes: ['/instalacion/p12-a.png'],
+    referencias: [1, 2],
   }),
 
   // ===== FASE 4: CUENTA DOMINIO — INSTALACIÓN =====
