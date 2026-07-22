@@ -88,6 +88,16 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
   const vieneDeCamara = useRef(false);
   const archivoCamaraRef = useRef(null);
   const pasosRef = useRef({});
+  const encabezadoRef = useRef(null);
+  const [altoEncabezado, setAltoEncabezado] = useState(88);
+
+  // Mide la altura del encabezado principal para pegar debajo la cabecera del paso abierto
+  useEffect(() => {
+    const medir = () => { if (encabezadoRef.current) setAltoEncabezado(encabezadoRef.current.offsetHeight); };
+    medir();
+    window.addEventListener('resize', medir);
+    return () => window.removeEventListener('resize', medir);
+  }, []);
 
   const completarYAvanzar = (paso) => {
     const estaba = gestor.current.estaCompletado(paso.numero);
@@ -184,7 +194,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
   return (
     <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
       {/* Header */}
-      <div className="sticky top-0 z-10 border-b" style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--borde)' }}>
+      <div ref={encabezadoRef} className="sticky top-0 z-10 border-b" style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--borde)' }}>
         <div className="w-full max-w-sm mx-auto px-5 pt-4 pb-3">
           <button onClick={onVolver} className="flex items-center gap-2 text-sm mb-3 transition-colors" style={{ color: 'var(--texto-secundario)' }}>
             ← Volver
@@ -226,11 +236,13 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
               </div>
               <p className="text-xs mb-2.5" style={{ color: 'var(--texto-tenue)' }}>{fase.descripcion}</p>
 
-              <div className="border rounded-xl overflow-hidden" style={{ borderColor: 'var(--borde)' }}>
+              <div className="border rounded-xl" style={{ borderColor: 'var(--borde)' }}>
                 {pasosDeFase.map((paso, i) => {
                   const completado = gestor.current.estaCompletado(paso.numero);
                   const abierto = pasoAbierto === paso.numero;
                   const esUltimoVisto = !abierto && ultimoVisto === paso.numero;
+                  const esPrimero = i === 0;
+                  const esUltimo = i === pasosDeFase.length - 1;
 
                   return (
                     <div
@@ -240,10 +252,22 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                         borderTop: i > 0 ? '1px solid var(--borde)' : 'none',
                         backgroundColor: abierto ? 'var(--fondo-base)' : 'var(--fondo-panel)',
                         borderLeft: abierto ? '3px solid var(--acento)' : esUltimoVisto ? '3px solid var(--acento-suave)' : '3px solid transparent',
-                        scrollMarginTop: '96px',
+                        borderTopLeftRadius: esPrimero ? 11 : 0,
+                        borderTopRightRadius: esPrimero ? 11 : 0,
+                        borderBottomLeftRadius: esUltimo ? 11 : 0,
+                        borderBottomRightRadius: esUltimo ? 11 : 0,
+                        scrollMarginTop: `${altoEncabezado}px`,
                       }}
                     >
-                      <div className="flex items-center gap-3 px-3.5 py-3" style={{ backgroundColor: abierto ? 'var(--fondo-elevado)' : 'transparent' }}>
+                      <div
+                        className="flex items-center gap-3 px-3.5 py-3"
+                        style={{
+                          backgroundColor: abierto ? 'var(--fondo-elevado)' : 'transparent',
+                          borderTopLeftRadius: esPrimero ? 9 : 0,
+                          borderTopRightRadius: esPrimero ? 9 : 0,
+                          ...(abierto ? { position: 'sticky', top: altoEncabezado, zIndex: 5, borderBottom: '1px solid var(--borde)' } : {}),
+                        }}
+                      >
                         {/* Checkbox */}
                         <button
                           onClick={() => marcarConCheck(paso.numero)}
