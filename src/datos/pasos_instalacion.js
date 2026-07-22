@@ -197,11 +197,4 @@ export const PASOS_INSTALACION = [
     archivos: ['configPath.properties'],
     imagenes: ['/instalacion/p23-a.png', '/instalacion/p23-b.png'],
   }),
-  new PasoInstalacion({
-    numero: 24,
-    titulo: 'Abrir Xstore y dejar Chrome en enroll',
-    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nAbrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
-    faseId: 'cuenta-dominio-instalacion',
-    imagenes: ['/instalacion/p22-b.png'],
-  }),
 ];

@@ -97,4 +97,13 @@ export const PROGRAMAS_SOFTWARE = [
     imagenes: ['/software/s10-a.png', '/software/s10-b.png'],
     notas: { '/software/s10-a.png': 'Izipay — el POS debe estar 100% encendido antes.' },
   }),
+  new ProgramaSoftware({
+    numero: 11,
+    id: 'abrir-xstore-enroll',
+    nombre: 'Abrir Xstore y dejar Chrome en enroll',
+    descripcion: 'Paso final — solo en caja 1',
+    detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nAbrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',
+    imagenes: ['/software/s11-a.png'],
+    notas: { '/software/s11-a.png': 'Dejar Chrome abierto en la página de enroll (solo caja 1).' },
+  }),
 ];
