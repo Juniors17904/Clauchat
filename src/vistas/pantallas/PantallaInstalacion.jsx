@@ -56,6 +56,28 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
   const [camposAbiertos, setCamposAbiertos] = useState(new Set());
   const [pasosManuales, setPasosManuales] = useState(new Set());
   const [referenciasAbiertas, setReferenciasAbiertas] = useState(new Set());
+  const [pasoEnfocado, setPasoEnfocado] = useState(null);
+  const scrollEnfoqueRef = useRef(null);
+  const tactilRef = useRef({ x: 0, y: 0 });
+
+  // Modo enfoque: abre un paso a pantalla completa; se cambia de paso deslizando de costado
+  const abrirEnfoque = (numero) => { setPasoEnfocado(numero); setUltimoVisto(numero); };
+  const cerrarEnfoque = () => setPasoEnfocado(null);
+  const enfocarAdyacente = (dir) => {
+    const idx = PASOS_INSTALACION.findIndex(p => p.numero === pasoEnfocado);
+    const sig = PASOS_INSTALACION[idx + dir];
+    if (sig) { setPasoEnfocado(sig.numero); setUltimoVisto(sig.numero); }
+  };
+  const inicioDeslizar = (e) => { const t = e.touches[0]; tactilRef.current = { x: t.clientX, y: t.clientY }; };
+  const finDeslizar = (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - tactilRef.current.x;
+    const dy = t.clientY - tactilRef.current.y;
+    // Solo cuenta como cambio de paso si el gesto es claramente horizontal
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      enfocarAdyacente(dx < 0 ? 1 : -1);
+    }
+  };
 
   const alternarReferencia = (numero) => {
     setReferenciasAbiertas(prev => {
@@ -105,6 +127,12 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     if (estaba) return; // se desmarcó: no avanzar
     const idx = PASOS_INSTALACION.findIndex(p => p.numero === paso.numero);
     const siguiente = PASOS_INSTALACION[idx + 1];
+    // En modo enfoque, avanzar al siguiente paso a pantalla completa
+    if (pasoEnfocado !== null) {
+      if (siguiente) { setPasoEnfocado(siguiente.numero); setUltimoVisto(siguiente.numero); }
+      else setPasoEnfocado(null);
+      return;
+    }
     if (siguiente) {
       setPasoAbierto(siguiente.numero);
       setTimeout(() => {
@@ -167,6 +195,20 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
       if (window.history.state?.visorFoto) window.history.back();
     };
   }, [galeria]);
+
+  // El botón atrás cierra el modo enfoque (se empuja un estado al abrirlo)
+  const enfoqueAbierto = pasoEnfocado !== null;
+  useEffect(() => {
+    if (!enfoqueAbierto) return;
+    const estadoActual = window.history.state;
+    window.history.pushState({ ...estadoActual, enfoquePaso: true }, '');
+    const cerrar = () => setPasoEnfocado(null);
+    window.addEventListener('popstate', cerrar);
+    return () => {
+      window.removeEventListener('popstate', cerrar);
+      if (window.history.state?.enfoquePaso) window.history.back();
+    };
+  }, [enfoqueAbierto]);
 
   const total = PASOS_INSTALACION.length;
   const completados = gestor.current.totalCompletados;
@@ -239,6 +281,8 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
               <div className="border rounded-xl" style={{ borderColor: 'var(--borde)' }}>
                 {pasosDeFase.map((paso, i) => {
                   const completado = gestor.current.estaCompletado(paso.numero);
+                  const estaEnfocado = pasoEnfocado === paso.numero;
+                  const indiceGlobal = PASOS_INSTALACION.findIndex(p => p.numero === paso.numero);
                   const abierto = pasoAbierto === paso.numero;
                   const esUltimoVisto = !abierto && ultimoVisto === paso.numero;
                   const esPrimero = i === 0;
@@ -286,7 +330,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
 
                         {/* Título */}
                         <button
-                          onClick={() => { setPasoAbierto(abierto ? null : paso.numero); setUltimoVisto(paso.numero); }}
+                          onClick={() => abrirEnfoque(paso.numero)}
                           className="flex-1 min-w-0 text-left"
                         >
                           <p className="text-base leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
@@ -301,15 +345,47 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                           {paso.imagenes.length > 0 && (
                             <span className="text-[10px] font-mono" style={{ color: 'var(--texto-tenue)' }}>📷{paso.imagenes.length}</span>
                           )}
-                          <button onClick={() => { setPasoAbierto(abierto ? null : paso.numero); setUltimoVisto(paso.numero); }} className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
-                            {abierto ? '▲' : '▼'}
+                          <button onClick={() => abrirEnfoque(paso.numero)} className="text-base" style={{ color: 'var(--texto-tenue)' }}>
+                            ›
                           </button>
                         </div>
                       </div>
 
-                      {/* Detalle expandido */}
-                      {abierto && (
-                        <div className="px-3.5 pb-3.5 pt-1" style={{ backgroundColor: 'var(--fondo-base)' }}>
+                      {/* Modo enfoque: el paso ocupa toda la pantalla; se cambia de paso deslizando de costado */}
+                      {estaEnfocado && (
+                        <div
+                          className="fixed inset-0 z-40 flex flex-col select-none"
+                          style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}
+                          onTouchStart={inicioDeslizar}
+                          onTouchEnd={finDeslizar}
+                        >
+                          {/* Cabecera del modo enfoque */}
+                          <div className="flex-shrink-0 border-b" style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)' }}>
+                            <div className="w-full max-w-sm mx-auto px-4 pt-4 pb-3">
+                              <div className="flex items-center gap-3 mb-2">
+                                <button onClick={cerrarEnfoque} className="text-xl flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>←</button>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[11px] uppercase tracking-wide font-semibold" style={{ color: 'var(--acento)' }}>Paso {indiceGlobal + 1} de {total}</p>
+                                  <p className="text-base font-bold leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
+                                    <span className="font-mono text-sm mr-1.5" style={{ color: 'var(--acento)' }}>{paso.numero}.</span>{paso.titulo}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => marcarConCheck(paso.numero)}
+                                  className="w-7 h-7 rounded-full border-2 flex-shrink-0 flex items-center justify-center"
+                                  style={{ borderColor: completado ? 'var(--acento)' : 'var(--texto-tenue)', backgroundColor: completado ? 'var(--acento)' : 'transparent' }}
+                                >
+                                  {completado && <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                                </button>
+                              </div>
+                              <div className="w-full h-1 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-base)' }}>
+                                <div className="h-full rounded-full transition-all duration-300" style={{ width: `${((indiceGlobal + 1) / total) * 100}%`, backgroundColor: 'var(--acento)' }} />
+                              </div>
+                            </div>
+                          </div>
+                          {/* Contenido desplazable del paso */}
+                          <div ref={scrollEnfoqueRef} className="flex-1 overflow-y-auto">
+                            <div className="w-full max-w-sm mx-auto px-4 pt-3 pb-6" style={{ backgroundColor: 'var(--fondo-base)' }}>
                           {paso.advertencia && (
                             <div className="border rounded-lg px-3 py-2.5 mb-3" style={{ borderColor: 'var(--advertencia)', backgroundColor: 'color-mix(in srgb, var(--advertencia) 10%, transparent)' }}>
                               <p className="text-sm font-semibold" style={{ color: 'var(--advertencia)' }}>⚠️ {paso.advertencia}</p>
@@ -608,6 +684,14 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                           >
                             {completado ? 'Desmarcar paso' : '✓ Marcar como completado y continuar'}
                           </button>
+                            </div>
+                          </div>
+                          {/* Navegación entre pasos: deslizá de costado o usá las flechas */}
+                          <div className="flex-shrink-0 flex items-center justify-between border-t px-4 py-3" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-elevado)' }}>
+                            <button onClick={() => enfocarAdyacente(-1)} disabled={indiceGlobal <= 0} className="text-sm font-semibold disabled:opacity-30" style={{ color: 'var(--texto-secundario)' }}>‹ Anterior</button>
+                            <span className="text-[11px]" style={{ color: 'var(--texto-tenue)' }}>Deslizá ‹ › para cambiar</span>
+                            <button onClick={() => enfocarAdyacente(1)} disabled={indiceGlobal >= total - 1} className="text-sm font-semibold disabled:opacity-30" style={{ color: 'var(--texto-secundario)' }}>Siguiente ›</button>
+                          </div>
                         </div>
                       )}
                     </div>
