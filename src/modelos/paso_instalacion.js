@@ -11,8 +11,9 @@ export class PasoInstalacion {
   #referencias;
   #ubicaciones;
   #archivos;
+  #comandos;
 
-  constructor({ numero, titulo, detalle, faseId, imagenes = [], advertencia = null, campos = [], fotoUnica = false, notas = {}, referencias = [], ubicaciones = [], archivos = [] }) {
+  constructor({ numero, titulo, detalle, faseId, imagenes = [], advertencia = null, campos = [], fotoUnica = false, notas = {}, referencias = [], ubicaciones = [], archivos = [], comandos = [] }) {
     this.#numero = numero;
     this.#titulo = titulo;
     this.#detalle = detalle;
@@ -25,6 +26,7 @@ export class PasoInstalacion {
     this.#referencias = referencias;
     this.#ubicaciones = ubicaciones;
     this.#archivos = archivos;
+    this.#comandos = comandos;
   }
 
   get numero() { return this.#numero; }
@@ -38,5 +40,6 @@ export class PasoInstalacion {
   get referencias() { return [...this.#referencias]; }
   get ubicaciones() { return [...this.#ubicaciones]; }
   get archivos() { return [...this.#archivos]; }
+  get comandos() { return [...this.#comandos]; }
   notaDe(src) { return this.#notas[src] ?? null; }
 }
