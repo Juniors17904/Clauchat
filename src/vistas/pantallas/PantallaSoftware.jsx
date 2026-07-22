@@ -36,6 +36,16 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
   const [ultimaImagen, setUltimaImagen] = useState(null);
   const [ultimoVisto, setUltimoVisto] = useState(null);
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
+  const encabezadoRef = useRef(null);
+  const [altoEncabezado, setAltoEncabezado] = useState(88);
+
+  // Mide la altura del encabezado principal para pegar debajo la cabecera del programa abierto
+  useEffect(() => {
+    const medir = () => { if (encabezadoRef.current) setAltoEncabezado(encabezadoRef.current.offsetHeight); };
+    medir();
+    window.addEventListener('resize', medir);
+    return () => window.removeEventListener('resize', medir);
+  }, []);
 
   const total = PROGRAMAS_SOFTWARE.length;
   const completados = gestor.current.totalCompletados;
@@ -91,7 +101,7 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
   return (
     <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
       {/* Header */}
-      <div className="sticky top-0 z-10 border-b" style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--borde)' }}>
+      <div ref={encabezadoRef} className="sticky top-0 z-10 border-b" style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--borde)' }}>
         <div className="w-full max-w-sm mx-auto px-5 pt-4 pb-3">
           <button onClick={onVolver} className="flex items-center gap-2 text-sm mb-3 transition-colors" style={{ color: 'var(--texto-secundario)' }}>
             ← Volver
@@ -127,11 +137,13 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
         </div>
         <p className="text-xs mb-2.5" style={{ color: 'var(--texto-tenue)' }}>Programas que se instalan después de configurar Xstore</p>
 
-        <div className="border rounded-xl overflow-hidden" style={{ borderColor: 'var(--borde)' }}>
+        <div className="border rounded-xl" style={{ borderColor: 'var(--borde)' }}>
           {PROGRAMAS_SOFTWARE.map((programa, i) => {
             const completado = gestor.current.estaCompletado(programa.id);
             const estaAbierto = abierto === programa.id;
             const esUltimoVisto = !estaAbierto && ultimoVisto === programa.id;
+            const esPrimero = i === 0;
+            const esUltimo = i === PROGRAMAS_SOFTWARE.length - 1;
             return (
               <div
                 key={programa.id}
@@ -140,10 +152,22 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
                   borderTop: i > 0 ? '1px solid var(--borde)' : 'none',
                   backgroundColor: estaAbierto ? 'var(--fondo-base)' : 'var(--fondo-panel)',
                   borderLeft: estaAbierto ? '3px solid var(--acento)' : esUltimoVisto ? '3px solid var(--acento-suave)' : '3px solid transparent',
-                  scrollMarginTop: '96px',
+                  borderTopLeftRadius: esPrimero ? 11 : 0,
+                  borderTopRightRadius: esPrimero ? 11 : 0,
+                  borderBottomLeftRadius: esUltimo ? 11 : 0,
+                  borderBottomRightRadius: esUltimo ? 11 : 0,
+                  scrollMarginTop: `${altoEncabezado}px`,
                 }}
               >
-                <div className="flex items-center gap-3 px-3.5 py-3" style={{ backgroundColor: estaAbierto ? 'var(--fondo-elevado)' : 'transparent' }}>
+                <div
+                  className="flex items-center gap-3 px-3.5 py-3"
+                  style={{
+                    backgroundColor: estaAbierto ? 'var(--fondo-elevado)' : 'transparent',
+                    borderTopLeftRadius: esPrimero ? 9 : 0,
+                    borderTopRightRadius: esPrimero ? 9 : 0,
+                    ...(estaAbierto ? { position: 'sticky', top: altoEncabezado, zIndex: 5, borderBottom: '1px solid var(--borde)' } : {}),
+                  }}
+                >
                   <button
                     onClick={() => marcarConCheck(programa)}
                     className="w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all"
