@@ -395,6 +395,18 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                           )}
                           <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(paso.detalle)}</p>
 
+                          {/* Ubicaciones (celeste) y luego archivos (amarillo) */}
+                          {(paso.ubicaciones.length > 0 || paso.archivos.length > 0) && (
+                            <div className="mb-3 space-y-1">
+                              {paso.ubicaciones.map((u, k) => (
+                                <p key={`u${k}`} className="text-sm font-mono font-bold break-all leading-snug" style={{ color: '#39c5cf' }}>{u}</p>
+                              ))}
+                              {paso.archivos.map((a, k) => (
+                                <p key={`a${k}`} className="text-sm font-mono font-bold break-all leading-snug" style={{ color: 'var(--advertencia)' }}>{a}</p>
+                              ))}
+                            </div>
+                          )}
+
                           {/* Datos guardados en pasos anteriores (IP, hostname, nombre de tienda…) */}
                           {paso.referencias.length > 0 && (() => {
                             const refAbierta = referenciasAbiertas.has(paso.numero);
