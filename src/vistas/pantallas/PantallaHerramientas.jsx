@@ -58,7 +58,7 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                {[1, 2].map(caja => {
+                {[2, 1].map(caja => {
                   const hechos = t.hechos(caja);
                   const porcentaje = t.total > 0 ? Math.round((hechos / t.total) * 100) : 0;
                   const color = colorCaja(caja);
