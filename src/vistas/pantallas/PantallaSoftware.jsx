@@ -47,6 +47,42 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
     return () => window.removeEventListener('resize', medir);
   }, []);
 
+  const [programaEnfocado, setProgramaEnfocado] = useState(null);
+  const scrollEnfoqueRef = useRef(null);
+  const tactilRef = useRef({ x: 0, y: 0 });
+
+  // Modo enfoque: abre un programa a pantalla completa; se cambia deslizando de costado
+  const abrirEnfoque = (id) => { setProgramaEnfocado(id); setUltimoVisto(id); };
+  const cerrarEnfoque = () => setProgramaEnfocado(null);
+  const enfocarAdyacente = (dir) => {
+    const idx = PROGRAMAS_SOFTWARE.findIndex(p => p.id === programaEnfocado);
+    const sig = PROGRAMAS_SOFTWARE[idx + dir];
+    if (sig) { setProgramaEnfocado(sig.id); setUltimoVisto(sig.id); }
+  };
+  const inicioDeslizar = (e) => { const t = e.touches[0]; tactilRef.current = { x: t.clientX, y: t.clientY }; };
+  const finDeslizar = (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - tactilRef.current.x;
+    const dy = t.clientY - tactilRef.current.y;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      enfocarAdyacente(dx < 0 ? 1 : -1);
+    }
+  };
+
+  // El botón atrás cierra el modo enfoque
+  const enfoqueAbierto = programaEnfocado !== null;
+  useEffect(() => {
+    if (!enfoqueAbierto) return;
+    const estadoActual = window.history.state;
+    window.history.pushState({ ...estadoActual, enfoquePrograma: true }, '');
+    const cerrar = () => setProgramaEnfocado(null);
+    window.addEventListener('popstate', cerrar);
+    return () => {
+      window.removeEventListener('popstate', cerrar);
+      if (window.history.state?.enfoquePrograma) window.history.back();
+    };
+  }, [enfoqueAbierto]);
+
   const total = PROGRAMAS_SOFTWARE.length;
   const completados = gestor.current.totalCompletados;
   const porcentaje = total > 0 ? Math.round((completados / total) * 100) : 0;
@@ -76,6 +112,12 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
     if (estaba) return;
     const idx = PROGRAMAS_SOFTWARE.findIndex(p => p.id === programa.id);
     const siguiente = PROGRAMAS_SOFTWARE[idx + 1];
+    // En modo enfoque, avanzar al siguiente programa a pantalla completa
+    if (programaEnfocado !== null) {
+      if (siguiente) { setProgramaEnfocado(siguiente.id); setUltimoVisto(siguiente.id); }
+      else setProgramaEnfocado(null);
+      return;
+    }
     if (siguiente) {
       setAbierto(siguiente.id);
       setTimeout(() => { pasosRef.current[siguiente.id]?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
@@ -141,6 +183,8 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
           {PROGRAMAS_SOFTWARE.map((programa, i) => {
             const completado = gestor.current.estaCompletado(programa.id);
             const estaAbierto = abierto === programa.id;
+            const estaEnfocado = programaEnfocado === programa.id;
+            const indiceGlobal = i;
             const esUltimoVisto = !estaAbierto && ultimoVisto === programa.id;
             const esPrimero = i === 0;
             const esUltimo = i === PROGRAMAS_SOFTWARE.length - 1;
@@ -179,7 +223,7 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
                       </svg>
                     )}
                   </button>
-                  <button onClick={() => { setAbierto(estaAbierto ? null : programa.id); setUltimoVisto(programa.id); }} className="flex-1 min-w-0 text-left">
+                  <button onClick={() => abrirEnfoque(programa.id)} className="flex-1 min-w-0 text-left">
                     <p className="text-base leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
                       <span className="font-mono text-sm mr-1.5" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--acento)' }}>{programa.numero}.</span>
                       {programa.nombre}
@@ -190,14 +234,46 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
                     {programa.imagenes.length > 0 && (
                       <span className="text-[10px] font-mono" style={{ color: 'var(--texto-tenue)' }}>📷{programa.imagenes.length}</span>
                     )}
-                    <button onClick={() => { setAbierto(estaAbierto ? null : programa.id); setUltimoVisto(programa.id); }} className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
-                      {estaAbierto ? '▲' : '▼'}
+                    <button onClick={() => abrirEnfoque(programa.id)} className="text-base" style={{ color: 'var(--texto-tenue)' }}>
+                      ›
                     </button>
                   </div>
                 </div>
 
-                {estaAbierto && (
-                  <div className="px-3.5 pb-3.5 pt-1" style={{ backgroundColor: 'var(--fondo-base)' }}>
+                {estaEnfocado && (
+                  <div
+                    className="fixed inset-0 z-40 flex flex-col select-none"
+                    style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}
+                    onTouchStart={inicioDeslizar}
+                    onTouchEnd={finDeslizar}
+                  >
+                    {/* Cabecera del modo enfoque */}
+                    <div className="flex-shrink-0 border-b" style={{ backgroundColor: 'var(--fondo-elevado)', borderColor: 'var(--borde)' }}>
+                      <div className="w-full max-w-sm mx-auto px-4 pt-4 pb-3">
+                        <div className="flex items-center gap-3 mb-2">
+                          <button onClick={cerrarEnfoque} className="text-xl flex-shrink-0" style={{ color: 'var(--texto-secundario)' }}>←</button>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] uppercase tracking-wide font-semibold" style={{ color: 'var(--acento)' }}>Programa {indiceGlobal + 1} de {total}</p>
+                            <p className="text-base font-bold leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
+                              <span className="font-mono text-sm mr-1.5" style={{ color: 'var(--acento)' }}>{programa.numero}.</span>{programa.nombre}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => marcarConCheck(programa)}
+                            className="w-7 h-7 rounded-full border-2 flex-shrink-0 flex items-center justify-center"
+                            style={{ borderColor: completado ? 'var(--acento)' : 'var(--texto-tenue)', backgroundColor: completado ? 'var(--acento)' : 'transparent' }}
+                          >
+                            {completado && <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                          </button>
+                        </div>
+                        <div className="w-full h-1 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-base)' }}>
+                          <div className="h-full rounded-full transition-all duration-300" style={{ width: `${((indiceGlobal + 1) / total) * 100}%`, backgroundColor: 'var(--acento)' }} />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Contenido desplazable del programa */}
+                    <div ref={scrollEnfoqueRef} className="flex-1 overflow-y-auto">
+                      <div className="w-full max-w-sm mx-auto px-4 pt-3 pb-6" style={{ backgroundColor: 'var(--fondo-base)' }}>
                     <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(programa.detalle)}</p>
                     {programa.imagenes.length > 0 && (
                       <div className="space-y-2">
@@ -224,6 +300,14 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
                     >
                       {completado ? 'Desmarcar' : '✓ Marcar como listo y continuar'}
                     </button>
+                      </div>
+                    </div>
+                    {/* Navegación entre programas: deslizá de costado o usá las flechas */}
+                    <div className="flex-shrink-0 flex items-center justify-between border-t px-4 py-3" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-elevado)' }}>
+                      <button onClick={() => enfocarAdyacente(-1)} disabled={indiceGlobal <= 0} className="text-sm font-semibold disabled:opacity-30" style={{ color: 'var(--texto-secundario)' }}>‹ Anterior</button>
+                      <span className="text-[11px]" style={{ color: 'var(--texto-tenue)' }}>Deslizá ‹ › para cambiar</span>
+                      <button onClick={() => enfocarAdyacente(1)} disabled={indiceGlobal >= total - 1} className="text-sm font-semibold disabled:opacity-30" style={{ color: 'var(--texto-secundario)' }}>Siguiente ›</button>
+                    </div>
                   </div>
                 )}
               </div>
