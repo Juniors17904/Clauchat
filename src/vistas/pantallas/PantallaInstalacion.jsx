@@ -188,7 +188,8 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     if (!galeria) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
-    const cerrarConRetroceso = () => cerrarGaleria();
+    // Solo cerrar la galería cuando se retrocede fuera de su estado (no cerrar además el modo enfoque)
+    const cerrarConRetroceso = (e) => { if (!e.state?.visorFoto) cerrarGaleria(); };
     window.addEventListener('popstate', cerrarConRetroceso);
     return () => {
       window.removeEventListener('popstate', cerrarConRetroceso);
@@ -202,7 +203,8 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     if (!enfoqueAbierto) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, enfoquePaso: true }, '');
-    const cerrar = () => setPasoEnfocado(null);
+    // Solo cerrar el enfoque cuando su marca ya no está (si hay una imagen encima, el atrás cierra la imagen primero)
+    const cerrar = (e) => { if (!e.state?.enfoquePaso) setPasoEnfocado(null); };
     window.addEventListener('popstate', cerrar);
     return () => {
       window.removeEventListener('popstate', cerrar);

@@ -75,7 +75,8 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
     if (!enfoqueAbierto) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, enfoquePrograma: true }, '');
-    const cerrar = () => setProgramaEnfocado(null);
+    // Solo cerrar el enfoque cuando su marca ya no está (si hay una imagen encima, el atrás cierra la imagen primero)
+    const cerrar = (e) => { if (!e.state?.enfoquePrograma) setProgramaEnfocado(null); };
     window.addEventListener('popstate', cerrar);
     return () => {
       window.removeEventListener('popstate', cerrar);
@@ -97,7 +98,8 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
     if (indiceGaleria === null) return;
     const estadoActual = window.history.state;
     window.history.pushState({ ...estadoActual, visorFoto: true }, '');
-    const cerrar = () => { setUltimaImagen(GALERIA[indiceGaleriaRef.current]?.src ?? null); setIndiceGaleria(null); };
+    // Solo cerrar la galería cuando se retrocede fuera de su estado (no cerrar además el modo enfoque)
+    const cerrar = (e) => { if (!e.state?.visorFoto) { setUltimaImagen(GALERIA[indiceGaleriaRef.current]?.src ?? null); setIndiceGaleria(null); } };
     window.addEventListener('popstate', cerrar);
     return () => {
       window.removeEventListener('popstate', cerrar);
