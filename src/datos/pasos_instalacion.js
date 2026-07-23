@@ -79,7 +79,8 @@ export const PASOS_INSTALACION = [
     titulo: 'Permisos de las 3 carpetas',
     detalle: 'Compartir estas 3 carpetas con la entidad "Authentic User" (la última, 19c, está dentro de Oracle).\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
     faseId: 'cuenta-dominio-config',
-    ubicaciones: ['Oracle', 'Staging', 'C:\\Oracle\\19c'],
+    ubicaciones: ['C:\\Oracle\\19c'],
+    archivos: ['Oracle', 'Staging', '19c'],
     imagenes: ['/instalacion/p10-a.png', '/instalacion/p10-b.png', '/instalacion/p10-c.png', '/instalacion/p10-d.png', '/instalacion/p10-e.png', '/instalacion/p10-f.png'],
   }),
   new PasoInstalacion({
@@ -168,7 +169,8 @@ export const PASOS_INSTALACION = [
     titulo: 'Permisos de las 6 carpetas Xstore',
     detalle: 'Compartir las 6 carpetas nuevas que se crearon en C:\\ tras instalar Xstore, de la misma forma que las anteriores (entidad "Authentic User" y desmarcar siempre "Solo lectura").',
     faseId: 'cuenta-dominio-instalacion',
-    ubicaciones: ['eftlink', 'environment', 'jre', 'xstore', 'xstoredata', 'xstore-mobile'],
+    ubicaciones: ['C:\\'],
+    archivos: ['eftlink', 'environment', 'jre', 'xstore', 'xstoredata', 'xstore-mobile'],
     imagenes: ['/instalacion/p20-a.png', '/instalacion/p20-b.png', '/instalacion/p20-c.png', '/instalacion/p20-d.png'],
   }),
   new PasoInstalacion({
