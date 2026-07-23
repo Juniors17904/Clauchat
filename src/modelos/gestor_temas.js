@@ -44,6 +44,17 @@ export class GestorTemas {
     for (const [clave, valor] of Object.entries(tema.fuentes)) {
       root.style.setProperty(`--${clave}`, valor);
     }
+    // La barra de estado del teléfono toma el color de fondo del tema
+    const fondo = tema.colores['fondo-base'];
+    if (fondo) {
+      let meta = document.querySelector('meta[name="theme-color"]');
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', 'theme-color');
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', fondo);
+    }
   }
 
   #inyectarCSSGlobal() {
