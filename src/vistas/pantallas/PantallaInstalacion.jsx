@@ -703,11 +703,25 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                           </button>
                             </div>
                           </div>
-                          {/* Navegación entre pasos: deslizá de costado o usá las flechas */}
-                          <div className="flex-shrink-0 flex items-center justify-between border-t px-4 py-3" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-elevado)' }}>
-                            <button onClick={() => enfocarAdyacente(-1)} disabled={indiceGlobal <= 0} className="text-sm font-semibold disabled:opacity-30" style={{ color: 'var(--texto-secundario)' }}>‹ Anterior</button>
-                            <span className="text-[11px]" style={{ color: 'var(--texto-tenue)' }}>Deslizá ‹ › para cambiar</span>
-                            <button onClick={() => enfocarAdyacente(1)} disabled={indiceGlobal >= total - 1} className="text-sm font-semibold disabled:opacity-30" style={{ color: 'var(--texto-secundario)' }}>Siguiente ›</button>
+                          {/* Indicador de posición: barra verde en el paso actual, puntos para el resto; los ya marcados quedan opacos */}
+                          <div className="flex-shrink-0 flex items-center justify-center gap-1 border-t px-4 py-3" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-elevado)' }}>
+                            {PASOS_INSTALACION.map(pp => {
+                              const actual = pp.numero === paso.numero;
+                              const hecho = gestor.current.estaCompletado(pp.numero);
+                              return (
+                                <button
+                                  key={pp.numero}
+                                  onClick={() => { setPasoEnfocado(pp.numero); setUltimoVisto(pp.numero); }}
+                                  className="h-1.5 rounded-full transition-all"
+                                  style={{
+                                    width: actual ? 22 : 7,
+                                    backgroundColor: (actual || hecho) ? 'var(--acento)' : 'var(--texto-tenue)',
+                                    opacity: actual ? 1 : hecho ? 0.4 : 0.3,
+                                  }}
+                                  aria-label={`Ir al paso ${pp.numero}`}
+                                />
+                              );
+                            })}
                           </div>
                         </div>
                       )}
