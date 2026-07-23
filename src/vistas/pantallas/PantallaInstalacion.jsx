@@ -488,33 +488,27 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                           style={{ borderColor: 'var(--borde)' }}
                                         />
                                         {procesandoPaso && (
-                                          <div className="absolute inset-0 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}>
-                                            <p className="text-xs font-semibold text-white">Reconociendo... {reconociendo.progreso}%</p>
+                                          <div className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md pointer-events-none" style={{ backgroundColor: 'rgba(0,0,0,0.65)' }}>
+                                            <p className="text-[10px] font-semibold text-white">Reconociendo... {reconociendo.progreso}%</p>
                                           </div>
                                         )}
                                         <div className="absolute bottom-1.5 right-1.5 flex gap-1.5">
                                           <button
-                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
-                                            disabled={reconociendo !== null}
-                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Tomar otra foto"
                                           >
                                             📷
                                           </button>
                                           <button
-                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
-                                            disabled={reconociendo !== null}
-                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Elegir de la galería"
                                           >
                                             🖼️
                                           </button>
                                           <button
-                                            onClick={() => { gestor.current.eliminarFoto(paso.numero, '__paso'); setVersion(v => v + 1); }}
-                                            disabled={reconociendo !== null}
-                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => { gestor.current.eliminarFoto(paso.numero, '__paso'); setVersion(v => v + 1); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Eliminar foto"
                                           >
@@ -525,17 +519,13 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                     ) : (
                                       <div className="flex gap-2">
                                         <button
-                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
-                                          disabled={reconociendo !== null}
-                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
+                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
                                         >
                                           📷 Tomar foto de la pantalla de red
                                         </button>
                                         <button
-                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
-                                          disabled={reconociendo !== null}
-                                          className="w-11 border rounded-lg text-xs flex items-center justify-center transition-colors disabled:opacity-40"
+                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}                                          className="w-11 border rounded-lg text-xs flex items-center justify-center transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
                                           title="Elegir de la galería"
                                         >
@@ -583,33 +573,27 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                           style={{ borderColor: 'var(--borde)' }}
                                         />
                                         {procesando && (
-                                          <div className="absolute inset-0 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}>
-                                            <p className="text-xs font-semibold text-white">Reconociendo... {reconociendo.progreso}%</p>
+                                          <div className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md pointer-events-none" style={{ backgroundColor: 'rgba(0,0,0,0.65)' }}>
+                                            <p className="text-[10px] font-semibold text-white">Reconociendo... {reconociendo.progreso}%</p>
                                           </div>
                                         )}
                                         <div className="absolute bottom-1.5 right-1.5 flex gap-1.5">
                                           <button
-                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
-                                            disabled={reconociendo !== null}
-                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Tomar otra foto"
                                           >
                                             📷
                                           </button>
                                           <button
-                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
-                                            disabled={reconociendo !== null}
-                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Elegir de la galería"
                                           >
                                             🖼️
                                           </button>
                                           <button
-                                            onClick={() => { gestor.current.eliminarFoto(paso.numero, campo); setVersion(v => v + 1); }}
-                                            disabled={reconociendo !== null}
-                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => { gestor.current.eliminarFoto(paso.numero, campo); setVersion(v => v + 1); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Eliminar foto"
                                           >
@@ -620,17 +604,13 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                     ) : (
                                       <div className="flex gap-2 mb-2">
                                         <button
-                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}
-                                          disabled={reconociendo !== null}
-                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
+                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
                                         >
                                           📷 Tomar foto
                                         </button>
                                         <button
-                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}
-                                          disabled={reconociendo !== null}
-                                          className="w-11 border rounded-lg text-xs flex items-center justify-center transition-colors disabled:opacity-40"
+                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = false; archivoFotoRef.current?.click(); }}                                          className="w-11 border rounded-lg text-xs flex items-center justify-center transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
                                           title="Elegir de la galería"
                                         >
