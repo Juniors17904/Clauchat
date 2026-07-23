@@ -679,6 +679,21 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                           </button>
                             </div>
                           </div>
+                          {/* Botón flotante: marca y avanza sin scrollear ni tocar la esquina */}
+                          <button
+                            onClick={() => completarYAvanzar(paso)}
+                            className="absolute right-4 z-10 w-14 h-14 rounded-full flex items-center justify-center transition-transform active:scale-90"
+                            style={{
+                              bottom: 70,
+                              backgroundColor: completado ? 'var(--fondo-elevado)' : 'var(--acento-btn)',
+                              border: completado ? '2px solid var(--acento)' : 'none',
+                              boxShadow: '0 4px 14px rgba(0,0,0,0.45)',
+                            }}
+                            aria-label={completado ? 'Desmarcar paso' : 'Marcar como completado y continuar'}
+                          >
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={completado ? 'var(--acento)' : '#fff'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                          </button>
+
                           {/* Indicador de posición: barra verde en el paso actual, puntos para el resto; los ya marcados quedan opacos */}
                           <div className="flex-shrink-0 flex items-center justify-center gap-1 border-t px-4 py-3" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-elevado)' }}>
                             {PASOS_INSTALACION.map(pp => {
