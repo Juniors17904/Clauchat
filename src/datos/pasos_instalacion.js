@@ -62,14 +62,14 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 8,
     titulo: 'Desactivar Firewall',
-    detalle: 'Después del reinicio: !!INICIAR SESIÓN COMO ADMINISTRATOR!!\n\nDesactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.\n\nAbrir con Win + R y el comando de abajo → Activar o desactivar Firewall de Windows Defender.',
+    detalle: 'Después del reinicio: !!INICIAR SESIÓN COMO ADMINISTRATOR!!\n\nDesactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.\n\nAbrir con Win + R y el comando de abajo → Activar o desactivar Firewall de Windows Defender.\n\nAl terminar: !!CERRAR SESIÓN!!',
     faseId: 'cuenta-local',
     comandos: ['firewall.cpl'],
   }),
   new PasoInstalacion({
     numero: 9,
     titulo: 'Ver datos [INICIAR SESIÓN]',
-    detalle: 'Verificar los datos configurados y !!CERRAR SESIÓN!!\n\nA partir del siguiente paso: !!INICIAR SESIÓN CON EL USUARIO DE TIENDA!! (cuenta de dominio Tambo o Aruma).',
+    detalle: 'Verificar los datos configurados.\n\n!!INICIAR SESIÓN CON EL USUARIO DE TIENDA!! (cuenta de dominio Tambo o Aruma).',
     faseId: 'cuenta-local',
   }),
 
