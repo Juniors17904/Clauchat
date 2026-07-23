@@ -151,14 +151,8 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     setAvisoCampo(null);
     try {
       const dataUrl = await compresor.current.comprimir(archivo);
+      // Todo interno: la foto se guarda en la app, sin descargas ni notificaciones
       gestor.current.guardarFoto(paso.numero, campo, dataUrl);
-      if (vieneDeCamara.current) {
-        // Guardar copia en el teléfono (carpeta Descargas) por si acaso
-        const enlace = document.createElement('a');
-        enlace.href = dataUrl;
-        enlace.download = `paso${paso.numero}-${campo.toLowerCase().replace(/\s+/g, '-')}.jpg`;
-        enlace.click();
-      }
       setVersion(v => v + 1);
       setReconociendo({ campo, progreso: 0 });
       // El OCR trabaja sobre la foto original en alta resolución, mejorada
