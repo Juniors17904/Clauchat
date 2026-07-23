@@ -62,7 +62,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 8,
     titulo: 'Desactivar Firewall',
-    detalle: 'Desactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.\n\nAbrir con Win + R y el comando de abajo → Activar o desactivar Firewall de Windows Defender.',
+    detalle: 'Después del reinicio: !!INICIAR SESIÓN COMO ADMINISTRATOR!!\n\nDesactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.\n\nAbrir con Win + R y el comando de abajo → Activar o desactivar Firewall de Windows Defender.',
     faseId: 'cuenta-local',
     comandos: ['firewall.cpl'],
   }),
@@ -97,7 +97,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 12,
     titulo: 'Configurar to_be_replaced.properties',
-    detalle: 'Este es el archivo que se EDITA. Cambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)',
+    detalle: 'Este es el archivo que se EDITA. Cambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)\n\nAl terminar: !!CONFIRMAR Y REINICIAR EL EQUIPO!!',
     faseId: 'cuenta-dominio-config',
     ubicaciones: ['C:\\staging\\environment-files\\PROD'],
     archivos: ['to_be_replaced.properties'],
@@ -109,7 +109,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 13,
     titulo: 'Agregar usuario a ORA_DBA',
-    detalle: 'Abrir con Win + R el comando de abajo → Grupos.\n\nAgregar el usuario de tienda al grupo:\n[[ORA_DBA]]',
+    detalle: 'Después del reinicio: !!INICIAR SESIÓN COMO USUARIO LOCAL!!\n\nAbrir con Win + R el comando de abajo → Grupos.\n\nAgregar el usuario de tienda al grupo:\n[[ORA_DBA]]',
     faseId: 'cuenta-dominio-instalacion',
     comandos: ['lusrmgr.msc'],
     imagenes: ['/instalacion/p13-a.png'],
