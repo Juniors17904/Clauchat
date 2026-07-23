@@ -297,7 +297,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                       style={{
                         borderTop: i > 0 ? '1px solid var(--borde)' : 'none',
                         backgroundColor: abierto ? 'var(--fondo-base)' : 'var(--fondo-panel)',
-                        borderLeft: abierto ? '3px solid var(--acento)' : esUltimoVisto ? '3px solid var(--acento-suave)' : '3px solid transparent',
+                        borderLeft: abierto ? '3px solid var(--acento)' : '3px solid transparent',
                         borderTopLeftRadius: esPrimero ? 11 : 0,
                         borderTopRightRadius: esPrimero ? 11 : 0,
                         borderBottomLeftRadius: esUltimo ? 11 : 0,
@@ -308,9 +308,11 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                       <div
                         className="flex items-center gap-3 px-3.5 py-3"
                         style={{
-                          backgroundColor: abierto ? 'var(--fondo-elevado)' : 'transparent',
+                          backgroundColor: abierto ? 'var(--fondo-elevado)' : esUltimoVisto ? 'var(--acento-suave)' : 'transparent',
                           borderTopLeftRadius: esPrimero ? 9 : 0,
                           borderTopRightRadius: esPrimero ? 9 : 0,
+                          // Recuadro alrededor de la cabecera del último paso visto, para reubicarte en la lista
+                          ...(esUltimoVisto ? { boxShadow: 'inset 0 0 0 2px var(--acento)', borderRadius: 8 } : {}),
                           ...(abierto ? { position: 'sticky', top: altoEncabezado, zIndex: 5, borderBottom: '1px solid var(--borde)' } : {}),
                         }}
                       >
