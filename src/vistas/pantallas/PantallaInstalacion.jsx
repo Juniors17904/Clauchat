@@ -54,6 +54,30 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
   const abrirFoto = (src) => { galeriaRef.current = [{ src, grupo: 0, etiqueta: 'Foto guardada', color: '#8250df' }]; indiceGalRef.current = 0; setGaleria({ imagenes: galeriaRef.current, indice: 0 }); };
   // Abre una galería navegable con varias fotos guardadas (deslizar entre ellas como en la guía)
   const abrirFotosGuardadas = (imagenes, indice) => { galeriaRef.current = imagenes; indiceGalRef.current = indice; setGaleria({ imagenes, indice }); };
+  // Junta TODAS las fotos guardadas (todos los pasos, ambas cajas) para poder navegar entre ellas
+  const todasLasFotosGuardadas = () => {
+    const lista = [];
+    for (const nc of [caja, caja === 1 ? 2 : 1]) {
+      const g = gestorDeCaja(nc);
+      for (const pp of PASOS_INSTALACION) {
+        if (pp.campos.length === 0) continue;
+        if (pp.fotoUnica) {
+          const f = g.obtenerFoto(pp.numero, '__paso');
+          if (f) lista.push({ src: f, grupo: `${pp.numero}-${nc}`, etiqueta: `Paso ${pp.numero} · ${pp.titulo} · Caja ${nc}`, color: nc === 1 ? '#3fb950' : '#39c5cf' });
+        } else {
+          for (const c of pp.campos) {
+            const f = g.obtenerFoto(pp.numero, c);
+            if (f) lista.push({ src: f, grupo: `${pp.numero}-${nc}`, etiqueta: `${c} · Caja ${nc}`, color: nc === 1 ? '#3fb950' : '#39c5cf' });
+          }
+        }
+      }
+    }
+    return lista;
+  };
+  const abrirTodasLasFotos = (src) => {
+    const lista = todasLasFotosGuardadas();
+    abrirFotosGuardadas(lista, Math.max(0, lista.findIndex(g => g.src === src)));
+  };
   const cerrarGaleria = () => { setUltimaImagen(galeriaRef.current?.[indiceGalRef.current]?.src ?? null); setGaleria(null); };
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
@@ -424,9 +448,6 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                               }
                             }
                             const hayDatos = bloques.length > 0;
-                            // Todas las fotos guardadas juntas, para navegar entre ellas en la galería
-                            const galeriaFotos = [];
-                            bloques.forEach(bl => bl.fotos.forEach(f => galeriaFotos.push({ src: f, grupo: bl.nc, etiqueta: `Paso ${bl.pasoRef.numero} · Caja ${bl.nc}`, color: bl.nc === 1 ? '#3fb950' : '#39c5cf' })));
 
                             // Si el paso pide un dato puntual (ej. storeName), mostrar solo ese, en miniatura,
                             // priorizando la caja actual y con respaldo de la otra caja
@@ -439,7 +460,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                 for (const nc of [caja, caja === 1 ? 2 : 1]) {
                                   const g = gestorDeCaja(nc);
                                   const valor = g.obtenerCampo(num, campo);
-                                  const foto = g.obtenerFoto(num, campo);
+                                  const foto = pref.fotoUnica ? g.obtenerFoto(num, '__paso') : g.obtenerFoto(num, campo);
                                   if (valor || foto) { elegido = { nc, valor, foto }; break; }
                                 }
                                 if (elegido) break;
@@ -455,7 +476,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                         <img
                                           src={elegido.foto}
                                           alt={campo}
-                                          onClick={() => abrirFotosGuardadas(galeriaFotos, Math.max(0, galeriaFotos.findIndex(g => g.src === elegido.foto)))}
+                                          onClick={() => abrirTodasLasFotos(elegido.foto)}
                                           className="h-16 w-auto rounded-md border cursor-zoom-in flex-shrink-0"
                                           style={{ borderColor: 'var(--borde)' }}
                                         />
@@ -514,7 +535,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                                   key={k}
                                                   src={foto}
                                                   alt="Dato guardado"
-                                                  onClick={() => abrirFotosGuardadas(galeriaFotos, galeriaFotos.findIndex(g => g.src === foto))}
+                                                  onClick={() => abrirTodasLasFotos(foto)}
                                                   className="h-20 w-auto rounded-md border cursor-zoom-in"
                                                   style={{ borderColor: 'var(--borde)' }}
                                                 />

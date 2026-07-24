@@ -40,6 +40,7 @@ export const PASOS_INSTALACION = [
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p05-a.png'],
     referencias: [2],
+    datoNecesario: 'Dirección IP',
     comandos: ['ncpa.cpl'],
   }),
   new PasoInstalacion({
@@ -57,6 +58,7 @@ export const PASOS_INSTALACION = [
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
     referencias: [1],
+    datoNecesario: 'Hostname',
     comandos: ['sysdm.cpl'],
   }),
   new PasoInstalacion({
@@ -72,6 +74,7 @@ export const PASOS_INSTALACION = [
     detalle: 'Verificar los datos configurados.\n\n!!INICIAR SESIÓN CON EL USUARIO DE TIENDA!! (cuenta de dominio Tambo o Aruma).',
     faseId: 'cuenta-local',
     referencias: [1],
+    datoNecesario: 'Username',
   }),
 
   // ===== FASE 3: CUENTA DOMINIO — CONFIGURACIÓN =====
@@ -94,6 +97,7 @@ export const PASOS_INSTALACION = [
     comandos: ['sysdm.cpl'],
     imagenes: ['/instalacion/p11-a.png', '/instalacion/p11-b.png', '/instalacion/p11-c.png'],
     referencias: [1],
+    datoNecesario: 'Hostname',
   }),
   new PasoInstalacion({
     numero: 12,
