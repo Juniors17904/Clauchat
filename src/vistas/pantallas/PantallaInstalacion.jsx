@@ -427,6 +427,48 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                             // Todas las fotos guardadas juntas, para navegar entre ellas en la galería
                             const galeriaFotos = [];
                             bloques.forEach(bl => bl.fotos.forEach(f => galeriaFotos.push({ src: f, grupo: bl.nc, etiqueta: `Paso ${bl.pasoRef.numero} · Caja ${bl.nc}`, color: bl.nc === 1 ? '#3fb950' : '#39c5cf' })));
+
+                            // Si el paso pide un dato puntual (ej. storeName), mostrar solo ese, en miniatura,
+                            // priorizando la caja actual y con respaldo de la otra caja
+                            if (paso.datoNecesario) {
+                              const campo = paso.datoNecesario;
+                              let elegido = null;
+                              for (const num of paso.referencias) {
+                                const pref = PASOS_INSTALACION.find(p => p.numero === num);
+                                if (!pref || !pref.campos.includes(campo)) continue;
+                                for (const nc of [caja, caja === 1 ? 2 : 1]) {
+                                  const g = gestorDeCaja(nc);
+                                  const valor = g.obtenerCampo(num, campo);
+                                  const foto = g.obtenerFoto(num, campo);
+                                  if (valor || foto) { elegido = { nc, valor, foto }; break; }
+                                }
+                                if (elegido) break;
+                              }
+                              return (
+                                <div className="mb-3">
+                                  <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--acento)' }}>📋 {campo} guardado</p>
+                                  {!elegido ? (
+                                    <p className="text-xs" style={{ color: 'var(--texto-tenue)' }}>Todavía no cargaste el {campo.toLowerCase()} en ninguna caja.</p>
+                                  ) : (
+                                    <div className="flex items-center gap-2.5 rounded-lg border p-2" style={{ borderColor: 'var(--acento)', backgroundColor: 'var(--fondo-panel)' }}>
+                                      {elegido.foto && (
+                                        <img
+                                          src={elegido.foto}
+                                          alt={campo}
+                                          onClick={() => abrirFotosGuardadas(galeriaFotos, Math.max(0, galeriaFotos.findIndex(g => g.src === elegido.foto)))}
+                                          className="h-16 w-auto rounded-md border cursor-zoom-in flex-shrink-0"
+                                          style={{ borderColor: 'var(--borde)' }}
+                                        />
+                                      )}
+                                      <div className="min-w-0">
+                                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ color: '#fff', backgroundColor: elegido.nc === 1 ? '#3fb950' : '#39c5cf' }}>CAJA {elegido.nc}</span>
+                                        <p className="text-sm font-mono font-bold break-all mt-1" style={{ color: 'var(--acento)' }}>{elegido.valor || '(ver foto)'}</p>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
                             return (
                               <div className="mb-3">
                                 <button

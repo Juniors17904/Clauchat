@@ -104,6 +104,7 @@ export const PASOS_INSTALACION = [
     archivos: ['to_be_replaced.properties'],
     imagenes: ['/instalacion/p12-a.png'],
     referencias: [1, 2],
+    datoNecesario: 'Nombre de tienda',
   }),
 
   // ===== FASE 4: CUENTA DOMINIO — INSTALACIÓN =====
