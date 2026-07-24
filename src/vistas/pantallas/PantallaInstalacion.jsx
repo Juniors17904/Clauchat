@@ -52,6 +52,8 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     if (indice >= 0) { galeriaRef.current = GALERIA_MANUAL; indiceGalRef.current = indice; setGaleria({ imagenes: GALERIA_MANUAL, indice }); }
   };
   const abrirFoto = (src) => { galeriaRef.current = [{ src, grupo: 0, etiqueta: 'Foto guardada', color: '#8250df' }]; indiceGalRef.current = 0; setGaleria({ imagenes: galeriaRef.current, indice: 0 }); };
+  // Abre una galería navegable con varias fotos guardadas (deslizar entre ellas como en la guía)
+  const abrirFotosGuardadas = (imagenes, indice) => { galeriaRef.current = imagenes; indiceGalRef.current = indice; setGaleria({ imagenes, indice }); };
   const cerrarGaleria = () => { setUltimaImagen(galeriaRef.current?.[indiceGalRef.current]?.src ?? null); setGaleria(null); };
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
@@ -422,6 +424,9 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                               }
                             }
                             const hayDatos = bloques.length > 0;
+                            // Todas las fotos guardadas juntas, para navegar entre ellas en la galería
+                            const galeriaFotos = [];
+                            bloques.forEach(bl => bl.fotos.forEach(f => galeriaFotos.push({ src: f, grupo: bl.nc, etiqueta: `Paso ${bl.pasoRef.numero} · Caja ${bl.nc}`, color: bl.nc === 1 ? '#3fb950' : '#39c5cf' })));
                             return (
                               <div className="mb-3">
                                 <button
@@ -467,7 +472,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                                   key={k}
                                                   src={foto}
                                                   alt="Dato guardado"
-                                                  onClick={() => abrirFoto(foto)}
+                                                  onClick={() => abrirFotosGuardadas(galeriaFotos, galeriaFotos.findIndex(g => g.src === foto))}
                                                   className="h-20 w-auto rounded-md border cursor-zoom-in"
                                                   style={{ borderColor: 'var(--borde)' }}
                                                 />
