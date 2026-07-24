@@ -32,6 +32,9 @@ function renderizarDetalle(texto) {
 
 export default function PantallaInstalacion({ onVolver, caja = 1 }) {
   const gestor = useRef(new GestorInstalacion(caja));
+  // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
+  const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
+  const gestorDeCaja = (nc) => (nc === caja ? gestor.current : otroGestor.current);
   const compresor = useRef(new CompresorImagen());
   const mejorador = useRef(new MejoradorImagen());
   const reconocedor = useRef(new ReconocedorTexto());
@@ -87,20 +90,21 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     });
   };
 
-  // Reúne los datos (campos con valor y fotos) que un paso anterior ya guardó
-  const datosDePaso = (numero) => {
+  // Reúne los datos (campos con valor y fotos) que un paso anterior ya guardó, en una caja dada
+  const datosDePaso = (numero, nc) => {
     const pasoRef = PASOS_INSTALACION.find(p => p.numero === numero);
     if (!pasoRef) return null;
+    const g = gestorDeCaja(nc);
     const campos = pasoRef.campos
-      .map(c => ({ campo: c, valor: gestor.current.obtenerCampo(numero, c) }))
+      .map(c => ({ campo: c, valor: g.obtenerCampo(numero, c) }))
       .filter(c => c.valor !== '');
     const fotos = [];
     if (pasoRef.fotoUnica) {
-      const f = gestor.current.obtenerFoto(numero, '__paso');
+      const f = g.obtenerFoto(numero, '__paso');
       if (f) fotos.push(f);
     } else {
       for (const c of pasoRef.campos) {
-        const f = gestor.current.obtenerFoto(numero, c);
+        const f = g.obtenerFoto(numero, c);
         if (f) fotos.push(f);
       }
     }
@@ -409,8 +413,15 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                           {/* Datos guardados en pasos anteriores (IP, hostname, nombre de tienda…) */}
                           {paso.referencias.length > 0 && (() => {
                             const refAbierta = referenciasAbiertas.has(paso.numero);
-                            const refs = paso.referencias.map(datosDePaso).filter(Boolean);
-                            const hayDatos = refs.some(r => r.campos.length > 0 || r.fotos.length > 0);
+                            // Traer los datos de AMBAS cajas para cada paso referenciado
+                            const bloques = [];
+                            for (const num of paso.referencias) {
+                              for (const nc of [1, 2]) {
+                                const d = datosDePaso(num, nc);
+                                if (d && (d.campos.length > 0 || d.fotos.length > 0)) bloques.push({ nc, ...d });
+                              }
+                            }
+                            const hayDatos = bloques.length > 0;
                             return (
                               <div className="mb-3">
                                 <button
@@ -419,7 +430,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                   style={{ borderColor: 'var(--acento)', backgroundColor: 'color-mix(in srgb, var(--acento) 8%, transparent)' }}
                                 >
                                   <span className="text-xs font-semibold flex items-center gap-1.5" style={{ color: 'var(--acento)' }}>
-                                    📋 Ver datos que ya guardaste
+                                    📋 Ver datos que ya guardaste (caja 1 y 2)
                                   </span>
                                   <span className="text-xs" style={{ color: 'var(--acento)' }}>{refAbierta ? '▲' : '▼'}</span>
                                 </button>
@@ -427,15 +438,18 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
                                   <div className="mt-2 space-y-3">
                                     {!hayDatos && (
                                       <p className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
-                                        Todavía no cargaste estos datos. Volvé al paso {paso.referencias.join(' y ')} para tomarlos.
+                                        Todavía no cargaste estos datos en ninguna caja. Volvé al paso {paso.referencias.join(' y ')} para tomarlos.
                                       </p>
                                     )}
-                                    {refs.map(({ pasoRef, campos, fotos }) => (
+                                    {bloques.map(({ nc, pasoRef, campos, fotos }) => (
                                       (campos.length > 0 || fotos.length > 0) && (
-                                        <div key={pasoRef.numero} className="rounded-lg border p-2.5" style={{ borderColor: 'var(--borde)', backgroundColor: 'var(--fondo-panel)' }}>
-                                          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: 'var(--texto-tenue)' }}>
-                                            Paso {pasoRef.numero} · {pasoRef.titulo}
-                                          </p>
+                                        <div key={`${pasoRef.numero}-${nc}`} className="rounded-lg border p-2.5" style={{ borderColor: nc === caja ? 'var(--acento)' : 'var(--borde)', backgroundColor: 'var(--fondo-panel)' }}>
+                                          <div className="flex items-center justify-between gap-2 mb-2">
+                                            <p className="text-[11px] font-semibold uppercase tracking-wide min-w-0 truncate" style={{ color: 'var(--texto-tenue)' }}>
+                                              Paso {pasoRef.numero} · {pasoRef.titulo}
+                                            </p>
+                                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0" style={{ color: '#fff', backgroundColor: nc === 1 ? 'var(--acento)' : '#39c5cf' }}>CAJA {nc}</span>
+                                          </div>
                                           {campos.length > 0 && (
                                             <div className="space-y-1 mb-2">
                                               {campos.map(({ campo, valor }) => (
