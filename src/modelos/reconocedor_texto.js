@@ -33,11 +33,21 @@ export class ReconocedorTexto {
   extraerDatos(texto) {
     const datos = {};
 
-    const usuario = texto.match(/\b((?:tambo|aruma)\.[\w.]+)/i) ?? texto.match(/([\w.]+)@Lindcorp/i);
-    if (usuario) datos['Username'] = usuario[1];
+    // Username: lo que aparece en el prompt del cmd, entre "Users\" y ">"  (ej. C:\Users\tambo.colonialc26>)
+    let usuario = null;
+    for (const linea of texto.split('\n')) {
+      const m = linea.match(/Users\s*[\\/|]{0,2}\s*([A-Za-z0-9._-]{2,})\s*[>»]/i);
+      if (m) { usuario = m[1]; break; }
+    }
+    // Respaldo: formatos tambo.xxx / aruma.xxx / xxx@Lindcorp
+    if (!usuario) {
+      const alt = texto.match(/\b((?:tambo|aruma)\.[\w.]+)/i) ?? texto.match(/([\w.]+)@Lindcorp/i);
+      if (alt) usuario = alt[1];
+    }
+    if (usuario) datos['Username'] = usuario;
 
     const hostnameCompleto = texto.match(/\b([\w-]+)\.LindcorpTiendas\.net\b/i);
-    const hostnameCorto = texto.match(/\b((?:TL|TP|AL|AP)-\d{2,5}-\d)\b/i);
+    const hostnameCorto = texto.match(/\b((?:TL|TP|AL|AP)-\d{2,5}-\d{1,2})\b/i);
     if (hostnameCompleto) {
       datos['Hostname'] = `${hostnameCompleto[1]}.LindcorpTiendas.net`;
     } else if (hostnameCorto) {
