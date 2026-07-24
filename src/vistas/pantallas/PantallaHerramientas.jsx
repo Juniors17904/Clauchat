@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { GestorSoftware } from '../../modelos/gestor_software';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
@@ -6,6 +7,18 @@ import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 export default function PantallaHerramientas({ onVolver, onXstore, onSoftware }) {
   const totalXstore = PASOS_INSTALACION.length;
   const totalSoftware = PROGRAMAS_SOFTWARE.length;
+  const [confirmandoBorrado, setConfirmandoBorrado] = useState(false);
+  const [, setVersion] = useState(0);
+
+  // Borra TODO el avance: Xstore y Software, ambas cajas, con sus datos y fotos
+  const borrarTodo = () => {
+    for (const caja of [1, 2]) {
+      new GestorInstalacion(caja).reiniciar();
+      new GestorSoftware(caja).reiniciar();
+    }
+    setConfirmandoBorrado(false);
+    setVersion(v => v + 1);
+  };
 
   const herramientas = [
     {
@@ -81,6 +94,30 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
             </div>
           );
         })}
+
+        {/* Borrar todo el avance */}
+        {confirmandoBorrado ? (
+          <div className="space-y-3 mt-2 rounded-xl border p-4" style={{ borderColor: 'var(--error)', backgroundColor: 'color-mix(in srgb, var(--error) 8%, transparent)' }}>
+            <p className="text-sm font-semibold" style={{ color: 'var(--error)' }}>¿Borrar TODO el avance?</p>
+            <p className="text-xs" style={{ color: 'var(--texto-secundario)' }}>Se desmarcarán todos los pasos y programas de las dos cajas, y se borrarán los datos y fotos guardados. No se puede deshacer.</p>
+            <div className="flex gap-2">
+              <button onClick={borrarTodo} className="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-colors" style={{ backgroundColor: 'var(--error)', color: '#fff' }}>
+                Sí, borrar todo
+              </button>
+              <button onClick={() => setConfirmandoBorrado(false)} className="flex-1 py-2.5 border text-sm rounded-xl transition-colors" style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmandoBorrado(true)}
+            className="w-full mt-2 py-3 border text-sm font-medium rounded-xl transition-colors"
+            style={{ borderColor: 'color-mix(in srgb, var(--error) 40%, transparent)', color: 'var(--error)' }}
+          >
+            🗑 Borrar todo el avance
+          </button>
+        )}
       </div>
     </div>
   );
