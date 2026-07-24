@@ -71,6 +71,7 @@ export const PASOS_INSTALACION = [
     titulo: 'Ver datos [INICIAR SESIÓN]',
     detalle: 'Verificar los datos configurados.\n\n!!INICIAR SESIÓN CON EL USUARIO DE TIENDA!! (cuenta de dominio Tambo o Aruma).',
     faseId: 'cuenta-local',
+    referencias: [1],
   }),
 
   // ===== FASE 3: CUENTA DOMINIO — CONFIGURACIÓN =====
