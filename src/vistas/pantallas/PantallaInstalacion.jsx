@@ -30,7 +30,7 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaInstalacion({ onVolver, caja = 1 }) {
+export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware }) {
   const gestor = useRef(new GestorInstalacion(caja));
   // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
   const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
@@ -160,7 +160,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
     // En modo enfoque, avanzar al siguiente paso a pantalla completa
     if (pasoEnfocado !== null) {
       if (siguiente) { setPasoEnfocado(siguiente.numero); setUltimoVisto(siguiente.numero); }
-      else setPasoEnfocado(null);
+      else { setPasoEnfocado(null); onIrASoftware?.(); } // último paso: enlazar con Software de esta caja
       return;
     }
     if (siguiente) {
@@ -283,7 +283,14 @@ export default function PantallaInstalacion({ onVolver, caja = 1 }) {
       <div className="flex-1 w-full max-w-sm mx-auto px-5 py-4 pb-10">
         {porcentaje === 100 && (
           <div className="border rounded-xl px-4 py-3 mb-4 banner-animado" style={{ backgroundColor: 'var(--exito-fondo)', borderColor: 'var(--acento-btn)' }}>
-            <p className="text-sm" style={{ color: 'var(--acento)' }}>✓ Instalación completa — los {total} pasos están listos</p>
+            <p className="text-sm mb-2.5" style={{ color: 'var(--acento)' }}>✓ Instalación completa — los {total} pasos están listos</p>
+            <button
+              onClick={() => onIrASoftware?.()}
+              className="w-full py-2.5 rounded-lg text-sm font-semibold transition-colors"
+              style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}
+            >
+              Continuar con Software y aplicaciones (Caja {caja}) →
+            </button>
           </div>
         )}
 

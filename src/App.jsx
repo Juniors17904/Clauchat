@@ -221,7 +221,7 @@ export default function App() {
   }
 
   if (pantalla === 'instalacion') {
-    return <PantallaInstalacion onVolver={() => window.history.back()} caja={cajaInstalacion} />;
+    return <PantallaInstalacion onVolver={() => window.history.back()} caja={cajaInstalacion} onIrASoftware={() => irASoftware(cajaInstalacion)} />;
   }
 
   if (pantalla === 'software') {
