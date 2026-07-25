@@ -71,21 +71,19 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
                     <button
                       key={t.id}
                       onClick={() => t.abrir(caja)}
-                      className="w-full rounded-2xl border p-4 text-left active:scale-[0.99] transition-all flex items-center gap-4"
+                      className="w-full rounded-2xl border p-4 text-left active:scale-[0.99] transition-all"
                       style={{ backgroundColor: 'var(--fondo-panel)', borderColor: color }}
                     >
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-3" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
                         {t.icono}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <h3 className="text-base font-bold truncate" style={{ color: 'var(--texto-primario)' }}>{t.titulo}</h3>
-                          <span className="text-[11px] font-mono flex-shrink-0" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-tenue)' }}>{hechos}/{t.total}</span>
-                        </div>
-                        <p className="text-[11px] leading-snug mb-2" style={{ color: 'var(--texto-tenue)' }}>{t.descripcion}</p>
-                        <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
-                          <div className="h-full rounded-full transition-all" style={{ width: `${porcentaje}%`, backgroundColor: color }} />
-                        </div>
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <h3 className="text-base font-bold truncate" style={{ color: 'var(--texto-primario)' }}>{t.titulo}</h3>
+                        <span className="text-[11px] font-mono flex-shrink-0" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-tenue)' }}>{hechos}/{t.total}</span>
+                      </div>
+                      <p className="text-[11px] leading-snug mb-2.5" style={{ color: 'var(--texto-tenue)' }}>{t.descripcion}</p>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+                        <div className="h-full rounded-full transition-all" style={{ width: `${porcentaje}%`, backgroundColor: color }} />
                       </div>
                     </button>
                   );
