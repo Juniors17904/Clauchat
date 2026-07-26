@@ -53,45 +53,47 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
         <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--texto-primario)' }}>Herramientas técnicas</h1>
         <p className="text-sm mb-6" style={{ color: 'var(--texto-secundario)' }}>Elegí primero la caja y después qué instalar</p>
 
-        {/* Agrupado por caja: Caja 1 y Caja 2, cada una con sus dos herramientas */}
-        {[1, 2].map(caja => {
-          const color = colorCaja(caja);
-          return (
-            <div key={caja} className="mb-7">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-1.5 h-5 rounded-full" style={{ backgroundColor: color }} />
-                <h2 className="text-lg font-extrabold uppercase tracking-wide" style={{ color }}>Caja {caja}</h2>
-              </div>
+        {/* Dos columnas: Caja 2 y Caja 1; dentro de cada una, Xstore y Software apilados */}
+        <div className="grid grid-cols-2 gap-3">
+          {[2, 1].map(caja => {
+            const color = colorCaja(caja);
+            return (
+              <div key={caja}>
+                <div className="flex items-center gap-1.5 mb-3">
+                  <span className="w-1.5 h-5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+                  <h2 className="text-base font-extrabold uppercase tracking-wide" style={{ color }}>Caja {caja}</h2>
+                </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {herramientas.map(t => {
-                  const hechos = t.hechos(caja);
-                  const porcentaje = t.total > 0 ? Math.round((hechos / t.total) * 100) : 0;
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => t.abrir(caja)}
-                      className="rounded-2xl border p-4 flex flex-col items-center text-center active:scale-[0.98] transition-all"
-                      style={{ backgroundColor: 'var(--fondo-panel)', borderColor: color, minHeight: 190 }}
-                    >
-                      <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-3" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
-                        {t.icono}
-                      </div>
-                      <h3 className="text-sm font-bold leading-snug mb-1" style={{ color: 'var(--texto-primario)' }}>{t.titulo}</h3>
-                      <p className="text-[10px] leading-snug mb-3" style={{ color: 'var(--texto-tenue)' }}>{t.descripcion}</p>
-                      <div className="w-full mt-auto">
-                        <span className="block text-[11px] font-mono mb-1.5" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-tenue)' }}>{hechos}/{t.total}</span>
-                        <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
-                          <div className="h-full rounded-full transition-all" style={{ width: `${porcentaje}%`, backgroundColor: color }} />
+                <div className="space-y-3">
+                  {herramientas.map(t => {
+                    const hechos = t.hechos(caja);
+                    const porcentaje = t.total > 0 ? Math.round((hechos / t.total) * 100) : 0;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => t.abrir(caja)}
+                        className="w-full rounded-2xl border p-4 flex flex-col items-center text-center active:scale-[0.98] transition-all"
+                        style={{ backgroundColor: 'var(--fondo-panel)', borderColor: color, minHeight: 190 }}
+                      >
+                        <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-3" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+                          {t.icono}
                         </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                        <h3 className="text-sm font-bold leading-snug mb-1" style={{ color: 'var(--texto-primario)' }}>{t.titulo}</h3>
+                        <p className="text-[10px] leading-snug mb-3" style={{ color: 'var(--texto-tenue)' }}>{t.descripcion}</p>
+                        <div className="w-full mt-auto">
+                          <span className="block text-[11px] font-mono mb-1.5" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-tenue)' }}>{hechos}/{t.total}</span>
+                          <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+                            <div className="h-full rounded-full transition-all" style={{ width: `${porcentaje}%`, backgroundColor: color }} />
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {/* Borrar todo el avance */}
         {confirmandoBorrado ? (
