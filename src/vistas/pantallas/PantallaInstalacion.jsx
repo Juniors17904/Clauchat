@@ -151,6 +151,20 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware 
     return () => window.removeEventListener('resize', medir);
   }, []);
 
+  // Al entrar, retomar donde se dejó: bajar y resaltar el último paso visto
+  useEffect(() => {
+    const ult = gestor.current.ultimoVisto;
+    if (ult != null) {
+      setUltimoVisto(ult);
+      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'auto', block: 'center' }); }, 150);
+    }
+  }, []);
+
+  // Guardar el último paso visto para retomar la próxima vez
+  useEffect(() => {
+    if (ultimoVisto != null) gestor.current.guardarUltimoVisto(ultimoVisto);
+  }, [ultimoVisto]);
+
   const completarYAvanzar = (paso) => {
     const estaba = gestor.current.estaCompletado(paso.numero);
     alternarPaso(paso.numero);

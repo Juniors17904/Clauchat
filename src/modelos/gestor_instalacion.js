@@ -3,12 +3,14 @@ export class GestorInstalacion {
   #datos;
   #clave;
   #claveDatos;
+  #claveUltimo;
 
   constructor(caja = 1) {
     // Caja 1 usa las claves originales; caja 2 las suyas propias
     const sufijo = caja === 2 ? '_caja2' : '';
     this.#clave = `sqlab_instalacion${sufijo}`;
     this.#claveDatos = `sqlab_instalacion_datos${sufijo}`;
+    this.#claveUltimo = `sqlab_instalacion_ultimo${sufijo}`;
     try {
       this.#completados = new Set(JSON.parse(localStorage.getItem(this.#clave) ?? '[]'));
     } catch {
@@ -63,6 +65,16 @@ export class GestorInstalacion {
     }
   }
 
+  // Recuerda el último paso que se estuvo viendo, para retomar al reingresar
+  guardarUltimoVisto(numero) {
+    localStorage.setItem(this.#claveUltimo, String(numero));
+  }
+
+  get ultimoVisto() {
+    const v = localStorage.getItem(this.#claveUltimo);
+    return v == null ? null : Number(v);
+  }
+
   estaCompletado(numero) {
     return this.#completados.has(numero);
   }
@@ -83,6 +95,7 @@ export class GestorInstalacion {
   reiniciar() {
     this.#completados.clear();
     this.#datos = {};
+    localStorage.removeItem(this.#claveUltimo);
     this.#persistir();
     this.#persistirDatos();
   }

@@ -47,6 +47,20 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
     return () => window.removeEventListener('resize', medir);
   }, []);
 
+  // Al entrar, retomar donde se dejó: bajar y resaltar el último programa visto
+  useEffect(() => {
+    const ult = gestor.current.ultimoVisto;
+    if (ult) {
+      setUltimoVisto(ult);
+      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'auto', block: 'center' }); }, 150);
+    }
+  }, []);
+
+  // Guardar el último programa visto para retomar la próxima vez
+  useEffect(() => {
+    if (ultimoVisto) gestor.current.guardarUltimoVisto(ultimoVisto);
+  }, [ultimoVisto]);
+
   const [programaEnfocado, setProgramaEnfocado] = useState(null);
   const scrollEnfoqueRef = useRef(null);
   const tactilRef = useRef({ x: 0, y: 0 });
