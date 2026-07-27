@@ -9,9 +9,8 @@ import PantallaConcepto from './vistas/pantallas/PantallaConcepto';
 import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import PantallaRecordatorios from './vistas/pantallas/PantallaRecordatorios';
-import PantallaInstalacion from './vistas/pantallas/PantallaInstalacion';
 import PantallaHerramientas from './vistas/pantallas/PantallaHerramientas';
-import PantallaSoftware from './vistas/pantallas/PantallaSoftware';
+import PantallaCaja from './vistas/pantallas/PantallaCaja';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
 import { NIVELES } from './datos/niveles';
@@ -30,6 +29,7 @@ export default function App() {
   const [ejercicioActual, setEjercicioActual] = useState(null);
   const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
   const [cajaInstalacion, setCajaInstalacion] = useState(1);
+  const [seccionCaja, setSeccionCaja] = useState('xstore');
   const ctrlPerfil = useRef(new ControladorPerfil());
   const ctrlRecordatorios = useRef(new ControladorRecordatorios());
   useRef(new GestorTemas());
@@ -54,6 +54,7 @@ export default function App() {
 
       navegar('atras', () => {
         if (estado.caja) setCajaInstalacion(estado.caja);
+        if (estado.seccion) setSeccionCaja(estado.seccion);
 
         if (estado.areaId) {
           const area = [...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === estado.areaId);
@@ -152,21 +153,16 @@ export default function App() {
     window.history.pushState({ pantalla: 'herramientas' }, '');
   };
 
-  const irAInstalacion = (caja = 1) => {
+  const irACaja = (caja, seccion) => {
     navegar('adelante', () => {
       setCajaInstalacion(caja);
-      setPantalla('instalacion');
+      setSeccionCaja(seccion);
+      setPantalla('caja');
     });
-    window.history.pushState({ pantalla: 'instalacion', caja }, '');
+    window.history.pushState({ pantalla: 'caja', caja, seccion }, '');
   };
-
-  const irASoftware = (caja = 1) => {
-    navegar('adelante', () => {
-      setCajaInstalacion(caja);
-      setPantalla('software');
-    });
-    window.history.pushState({ pantalla: 'software', caja }, '');
-  };
+  const irAInstalacion = (caja = 1) => irACaja(caja, 'xstore');
+  const irASoftware = (caja = 1) => irACaja(caja, 'software');
 
   const irAContinuar = () => {
     const pos = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
@@ -220,12 +216,8 @@ export default function App() {
     );
   }
 
-  if (pantalla === 'instalacion') {
-    return <PantallaInstalacion onVolver={() => window.history.back()} caja={cajaInstalacion} onIrASoftware={() => irASoftware(cajaInstalacion)} />;
-  }
-
-  if (pantalla === 'software') {
-    return <PantallaSoftware onVolver={() => window.history.back()} caja={cajaInstalacion} />;
+  if (pantalla === 'caja') {
+    return <PantallaCaja caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} />;
   }
 
   if (pantalla === 'base-datos') {

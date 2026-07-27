@@ -30,7 +30,7 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware }) {
+export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware, embebido = false }) {
   const gestor = useRef(new GestorInstalacion(caja));
   // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
   const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
@@ -156,7 +156,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware 
     const ult = gestor.current.ultimoVisto;
     if (ult != null) {
       setUltimoVisto(ult);
-      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 220);
+      if (!embebido) setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 220);
     }
   }, []);
 
@@ -274,27 +274,29 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware 
   };
 
   return (
-    <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
-      {/* Header */}
-      <div ref={encabezadoRef} className="sticky top-0 z-10 border-b" style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--borde)' }}>
-        <div className="w-full max-w-sm mx-auto px-5 pt-4 pb-3">
-          <button onClick={onVolver} className="flex items-center gap-2 text-sm mb-3 transition-colors" style={{ color: 'var(--texto-secundario)' }}>
-            ← Volver
-          </button>
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-lg font-bold" style={{ color: 'var(--texto-primario)' }}>Instalación Xstore · Caja {caja}</h1>
-            <span className="text-xs font-mono" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-secundario)' }}>
-              {completados}/{total}
-            </span>
-          </div>
-          <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
-            <div className="h-full rounded-full transition-all duration-300" style={{ width: `${porcentaje}%`, backgroundColor: 'var(--acento)' }} />
+    <div className={embebido ? 'select-none' : 'min-h-[100svh] flex flex-col select-none'} style={{ backgroundColor: embebido ? 'transparent' : 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
+      {/* Header (solo pantalla completa; en modo embebido lo pone la pantalla contenedora) */}
+      {!embebido && (
+        <div ref={encabezadoRef} className="sticky top-0 z-10 border-b" style={{ backgroundColor: 'var(--fondo-base)', borderColor: 'var(--borde)' }}>
+          <div className="w-full max-w-sm mx-auto px-5 pt-4 pb-3">
+            <button onClick={onVolver} className="flex items-center gap-2 text-sm mb-3 transition-colors" style={{ color: 'var(--texto-secundario)' }}>
+              ← Volver
+            </button>
+            <div className="flex items-center justify-between mb-2">
+              <h1 className="text-lg font-bold" style={{ color: 'var(--texto-primario)' }}>Instalación Xstore · Caja {caja}</h1>
+              <span className="text-xs font-mono" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-secundario)' }}>
+                {completados}/{total}
+              </span>
+            </div>
+            <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
+              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${porcentaje}%`, backgroundColor: 'var(--acento)' }} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Contenido */}
-      <div className="flex-1 w-full max-w-sm mx-auto px-5 py-4 pb-10">
+      <div className={embebido ? 'w-full max-w-sm mx-auto px-5 pt-2 pb-8' : 'flex-1 w-full max-w-sm mx-auto px-5 py-4 pb-10'}>
         {porcentaje === 100 && (
           <div className="border rounded-xl px-4 py-3 mb-4 banner-animado" style={{ backgroundColor: 'var(--exito-fondo)', borderColor: 'var(--acento-btn)' }}>
             <p className="text-sm mb-2.5" style={{ color: 'var(--acento)' }}>✓ Instalación completa — los {total} pasos están listos</p>
