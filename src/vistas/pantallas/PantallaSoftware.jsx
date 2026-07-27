@@ -52,7 +52,7 @@ export default function PantallaSoftware({ onVolver, caja = 1 }) {
     const ult = gestor.current.ultimoVisto;
     if (ult) {
       setUltimoVisto(ult);
-      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'auto', block: 'center' }); }, 150);
+      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 220);
     }
   }, []);
 

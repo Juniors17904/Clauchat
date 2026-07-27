@@ -156,7 +156,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware 
     const ult = gestor.current.ultimoVisto;
     if (ult != null) {
       setUltimoVisto(ult);
-      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'auto', block: 'center' }); }, 150);
+      setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 220);
     }
   }, []);
 
