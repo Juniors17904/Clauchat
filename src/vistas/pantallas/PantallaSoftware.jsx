@@ -26,7 +26,7 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaSoftware({ onVolver, caja = 1, embebido = false }) {
+export default function PantallaSoftware({ onVolver, caja = 1, embebido = false, activarRetomar = false }) {
   const gestor = useRef(new GestorSoftware(caja));
   const pasosRef = useRef({});
   const indiceGaleriaRef = useRef(0);
@@ -52,7 +52,7 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false 
     const ult = gestor.current.ultimoVisto;
     if (ult) {
       setUltimoVisto(ult);
-      if (!embebido) setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 220);
+      if (!embebido || activarRetomar) setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 320);
     }
   }, []);
 

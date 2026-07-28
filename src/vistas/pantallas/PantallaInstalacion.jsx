@@ -30,7 +30,7 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware, embebido = false }) {
+export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware, embebido = false, activarRetomar = false }) {
   const gestor = useRef(new GestorInstalacion(caja));
   // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
   const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
@@ -156,7 +156,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
     const ult = gestor.current.ultimoVisto;
     if (ult != null) {
       setUltimoVisto(ult);
-      if (!embebido) setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 220);
+      if (!embebido || activarRetomar) setTimeout(() => { pasosRef.current[ult]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 320);
     }
   }, []);
 
@@ -297,19 +297,6 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
 
       {/* Contenido */}
       <div className={embebido ? 'w-full max-w-sm mx-auto px-5 pt-2 pb-8' : 'flex-1 w-full max-w-sm mx-auto px-5 py-4 pb-10'}>
-        {porcentaje === 100 && (
-          <div className="border rounded-xl px-4 py-3 mb-4 banner-animado" style={{ backgroundColor: 'var(--exito-fondo)', borderColor: 'var(--acento-btn)' }}>
-            <p className="text-sm mb-2.5" style={{ color: 'var(--acento)' }}>✓ Instalación completa — los {total} pasos están listos</p>
-            <button
-              onClick={() => onIrASoftware?.()}
-              className="w-full py-2.5 rounded-lg text-sm font-semibold transition-colors"
-              style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}
-            >
-              Continuar con Software y aplicaciones (Caja {caja}) →
-            </button>
-          </div>
-        )}
-
         {FASES_INSTALACION.map(fase => {
           const pasosDeFase = PASOS_INSTALACION.filter(p => p.faseId === fase.id);
           const completadosFase = pasosDeFase.filter(p => gestor.current.estaCompletado(p.numero)).length;

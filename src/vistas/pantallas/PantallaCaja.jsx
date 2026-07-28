@@ -39,13 +39,13 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
       {/* Sección Instalación Xstore */}
       <div style={{ backgroundColor: 'var(--fondo-base)' }}>
         <Titulo texto="Instalación Xstore" />
-        <PantallaInstalacion caja={caja} embebido onIrASoftware={irASoftware} />
+        <PantallaInstalacion caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} onIrASoftware={irASoftware} />
       </div>
 
       {/* Sección Software (leve cambio de fondo + separador) */}
       <div ref={refSoftware} className="border-t" style={{ backgroundColor: 'color-mix(in srgb, var(--acento) 5%, var(--fondo-base))', borderColor: 'var(--borde)', scrollMarginTop: 64 }}>
         <Titulo texto="Software y aplicaciones" />
-        <PantallaSoftware caja={caja} embebido />
+        <PantallaSoftware caja={caja} embebido activarRetomar={seccionInicial === 'software'} />
       </div>
     </div>
   );
