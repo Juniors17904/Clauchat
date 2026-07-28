@@ -26,7 +26,7 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaSoftware({ onVolver, caja = 1, embebido = false, activarRetomar = false }) {
+export default function PantallaSoftware({ onVolver, caja = 1, embebido = false, activarRetomar = false, resaltarUltimo = true, onTrabajo }) {
   const gestor = useRef(new GestorSoftware(caja));
   const pasosRef = useRef({});
   const indiceGaleriaRef = useRef(0);
@@ -66,7 +66,7 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false,
   const tactilRef = useRef({ x: 0, y: 0 });
 
   // Modo enfoque: abre un programa a pantalla completa; se cambia deslizando de costado
-  const abrirEnfoque = (id) => { setProgramaEnfocado(id); setUltimoVisto(id); };
+  const abrirEnfoque = (id) => { setProgramaEnfocado(id); setUltimoVisto(id); onTrabajo?.(); };
   const cerrarEnfoque = () => setProgramaEnfocado(null);
   const enfocarAdyacente = (dir) => {
     const idx = PROGRAMAS_SOFTWARE.findIndex(p => p.id === programaEnfocado);
@@ -150,6 +150,7 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false,
     if (estaba) return;
     const idx = PROGRAMAS_SOFTWARE.findIndex(p => p.id === programa.id);
     const siguiente = PROGRAMAS_SOFTWARE[idx + 1];
+    onTrabajo?.();
     if (siguiente) {
       setUltimoVisto(siguiente.id);
       setTimeout(() => { pasosRef.current[siguiente.id]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
@@ -203,7 +204,7 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false,
             const estaAbierto = abierto === programa.id;
             const estaEnfocado = programaEnfocado === programa.id;
             const indiceGlobal = i;
-            const esUltimoVisto = !estaAbierto && ultimoVisto === programa.id;
+            const esUltimoVisto = !estaAbierto && ultimoVisto === programa.id && resaltarUltimo;
             const esPrimero = i === 0;
             const esUltimo = i === PROGRAMAS_SOFTWARE.length - 1;
             return (

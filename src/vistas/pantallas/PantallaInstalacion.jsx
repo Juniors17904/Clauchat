@@ -30,7 +30,7 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware, embebido = false, activarRetomar = false }) {
+export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware, embebido = false, activarRetomar = false, resaltarUltimo = true, onTrabajo }) {
   const gestor = useRef(new GestorInstalacion(caja));
   // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
   const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
@@ -90,7 +90,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
   const tactilRef = useRef({ x: 0, y: 0 });
 
   // Modo enfoque: abre un paso a pantalla completa; se cambia de paso deslizando de costado
-  const abrirEnfoque = (numero) => { setPasoEnfocado(numero); setUltimoVisto(numero); };
+  const abrirEnfoque = (numero) => { setPasoEnfocado(numero); setUltimoVisto(numero); onTrabajo?.(); };
   const cerrarEnfoque = () => setPasoEnfocado(null);
   const enfocarAdyacente = (dir) => {
     const idx = PASOS_INSTALACION.findIndex(p => p.numero === pasoEnfocado);
@@ -267,6 +267,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
     if (estaba) return;
     const idx = PASOS_INSTALACION.findIndex(p => p.numero === numero);
     const siguiente = PASOS_INSTALACION[idx + 1];
+    onTrabajo?.();
     if (siguiente) {
       setUltimoVisto(siguiente.numero);
       setTimeout(() => { pasosRef.current[siguiente.numero]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
@@ -320,7 +321,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                   const estaEnfocado = pasoEnfocado === paso.numero;
                   const indiceGlobal = PASOS_INSTALACION.findIndex(p => p.numero === paso.numero);
                   const abierto = pasoAbierto === paso.numero;
-                  const esUltimoVisto = !abierto && ultimoVisto === paso.numero;
+                  const esUltimoVisto = !abierto && ultimoVisto === paso.numero && resaltarUltimo;
                   const esPrimero = i === 0;
                   const esUltimo = i === pasosDeFase.length - 1;
 

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import PantallaInstalacion from './PantallaInstalacion';
 import PantallaSoftware from './PantallaSoftware';
 
@@ -7,6 +7,8 @@ import PantallaSoftware from './PantallaSoftware';
 export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVolver }) {
   const refSoftware = useRef(null);
   const color = caja === 1 ? 'var(--acento)' : '#39c5cf';
+  // Solo una sección resalta su último punto a la vez (la última donde se trabajó)
+  const [seccionActiva, setSeccionActiva] = useState(seccionInicial);
 
   const irASoftware = () => refSoftware.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -39,13 +41,13 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
       {/* Sección Instalación Xstore */}
       <div style={{ backgroundColor: 'var(--fondo-base)' }}>
         <Titulo texto="Instalación Xstore" />
-        <PantallaInstalacion caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} onIrASoftware={irASoftware} />
+        <PantallaInstalacion caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => setSeccionActiva('xstore')} onIrASoftware={irASoftware} />
       </div>
 
       {/* Sección Software (leve cambio de fondo + separador) */}
       <div ref={refSoftware} className="border-t" style={{ backgroundColor: 'color-mix(in srgb, var(--acento) 5%, var(--fondo-base))', borderColor: 'var(--borde)', scrollMarginTop: 64 }}>
         <Titulo texto="Software y aplicaciones" />
-        <PantallaSoftware caja={caja} embebido activarRetomar={seccionInicial === 'software'} />
+        <PantallaSoftware caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => setSeccionActiva('software')} />
       </div>
     </div>
   );
