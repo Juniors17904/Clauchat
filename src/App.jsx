@@ -21,11 +21,9 @@ import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
 
 export default function App() {
+  const registroSW = useRef(null);
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW({
-    // Revisar solo si hay versión nueva cada 30 s, para avisar sin que el usuario recargue
-    onRegisteredSW(swUrl, r) {
-      if (r) setInterval(() => r.update(), 30000);
-    },
+    onRegisteredSW(swUrl, r) { registroSW.current = r; },
   });
   const [pantalla, setPantalla] = useState('areas');
   const [areaActual, setAreaActual] = useState(null);
@@ -43,6 +41,13 @@ export default function App() {
 
   useEffect(() => {
     pantallaRef.current = pantalla;
+  }, [pantalla]);
+
+  // Buscar versión nueva cada 3 s, solo mientras estás en la pantalla principal
+  useEffect(() => {
+    if (pantalla !== 'areas') return;
+    const id = setInterval(() => registroSW.current?.update(), 3000);
+    return () => clearInterval(id);
   }, [pantalla]);
 
   const navegar = (direccion, actualizar) => {
