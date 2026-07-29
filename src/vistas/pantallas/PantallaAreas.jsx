@@ -577,7 +577,7 @@ const TABS_NAV = [
   },
 ];
 
-export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, onInstalacion, needRefresh, onActualizar, ultimaPosicion, onContinuar }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, onInstalacion, onActualizar, ultimaPosicion, onContinuar }) {
   const [tabActual, setTabActual] = useState('inicio');
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
@@ -670,7 +670,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           </button>
         )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-          <h1 className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg" style={{ color: esClasico ? '#1f2328' : '#fff' }}>DevLab</h1>
+          <h1 onClick={onActualizar} className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg titulo-tocable" style={{ color: esClasico ? '#1f2328' : '#fff' }}>DevLab</h1>
           <p className="mt-1 text-sm font-sans" style={{ color: esClasico ? 'rgba(31,35,40,0.5)' : 'rgba(255,255,255,0.6)' }}>Elige un área de estudio</p>
         </div>
         </>); })()}

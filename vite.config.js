@@ -12,8 +12,7 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png'],
       workbox: {
-        cacheId: 'sqlab-v11',
-        clientsClaim: true,
+        cacheId: 'sqlab-v12',
         cleanupOutdatedCaches: true,
         globIgnores: ['**/*.wasm', '**/*.data', '**/ocr/**'],
       },
