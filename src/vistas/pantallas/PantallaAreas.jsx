@@ -6,6 +6,7 @@ import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
 import { GestorTemas } from '../../modelos/gestor_temas';
 import { MetaDiaria } from '../../modelos/meta_diaria';
 import { GestorRespaldo } from '../../modelos/gestor_respaldo';
+import { DetectorTiro } from '../../modelos/detector_tiro';
 import { version } from '../../../package.json';
 
 const UMBRAL_PULL = 65;
@@ -582,7 +583,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
   const [promptInstalar, setPromptInstalar] = useState(null);
-  const inicioRef = useRef(null);
+  const detectorTiro = useRef(new DetectorTiro(UMBRAL_PULL));
 
   useEffect(() => {
     const manejar = (e) => { e.preventDefault(); setPromptInstalar(e); };
@@ -597,16 +598,14 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
     if (outcome === 'accepted') setPromptInstalar(null);
   };
 
-  const manejarTouchStart = (e) => { inicioRef.current = e.touches[0].clientY; };
+  const manejarTouchStart = (e) => { detectorTiro.current.comenzar(e.touches[0].clientY); };
   const manejarTouchMove = (e) => {
-    if (inicioRef.current === null) return;
-    const delta = e.touches[0].clientY - inicioRef.current;
-    if (delta > 0) setDistanciaTiro(Math.min(delta, UMBRAL_PULL * 1.5));
+    const distancia = detectorTiro.current.mover(e.touches[0].clientY);
+    if (distancia !== distanciaTiro) setDistanciaTiro(distancia);
   };
   const manejarTouchEnd = () => {
-    if (distanciaTiro >= UMBRAL_PULL) { setActualizando(true); window.location.reload(); }
+    if (detectorTiro.current.terminar()) { setActualizando(true); window.location.reload(); }
     setDistanciaTiro(0);
-    inicioRef.current = null;
   };
 
   const tirando = distanciaTiro > 8;
