@@ -10,7 +10,6 @@
     <link rel="icon" href="/icon-192.png" />
   </head>
   <body>
-    <div id="splash" style="position:fixed;inset:0;background:#0d1117;z-index:9999;transition:opacity .3s ease"></div>
     <div id="root"></div>
     <script>
       (function () {
@@ -41,21 +40,6 @@
           if (esErrorIgnorable(texto)) return;
           mostrarError(texto);
         });
-
-        // Red de seguridad: si la app no cargó (splash sigue), ofrecer recargar en vez de quedar en negro
-        setTimeout(function () {
-          var s = document.getElementById('splash');
-          if (s) {
-            s.style.display = 'flex';
-            s.style.alignItems = 'center';
-            s.style.justifyContent = 'center';
-            s.innerHTML =
-              '<div style="text-align:center;font-family:sans-serif;padding:24px">' +
-              '<p style="color:#8b949e;font-size:13px;margin-bottom:16px">La app tardó en cargar</p>' +
-              '<button onclick="location.reload()" style="background:#238636;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer">Recargar</button>' +
-              '</div>';
-          }
-        }, 8000);
       })();
     </script>
     <script type="module" src="/src/main.jsx"></script>
