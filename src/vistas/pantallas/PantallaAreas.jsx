@@ -621,15 +621,6 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
       onTouchMove={manejarTouchMove}
       onTouchEnd={manejarTouchEnd}
     >
-      {needRefresh && !actualizando && (
-        <div className="fixed top-0 left-0 right-0 z-50 px-4 py-2 flex items-center justify-between font-sans" style={{ backgroundColor: 'var(--fondo-elevado)', borderBottom: '1px solid var(--acento)' }}>
-          <p className="text-xs" style={{ color: 'var(--acento)' }}>Nueva versión disponible</p>
-          <button onClick={() => { setActualizando(true); onActualizar(); }} className="text-xs px-3 py-1 rounded-md transition-colors" style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}>
-            Actualizar
-          </button>
-        </div>
-      )}
-
       {(tirando || actualizando) && (
         <div className="fixed top-3 left-0 right-0 flex justify-center z-40 pointer-events-none" style={{ opacity: actualizando ? 1 : opacidadIndicador }}>
           <p className="text-xs font-sans" style={{ color: 'var(--texto-tenue)' }}>
@@ -638,7 +629,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         </div>
       )}
 
-      <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
+      <div className="relative overflow-hidden flex-shrink-0 h-60">
         {(() => { const esClasico = localStorage.getItem('tema-visual') === 'clasico'; return (<>
         <img src={esClasico ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
         <div className="absolute inset-0" style={{ background: esClasico
