@@ -680,7 +680,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
           <h1 className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg" style={{ color: esClasico ? '#1f2328' : '#fff' }}>DevLab</h1>
-          <p className="mt-1 text-sm font-sans" style={{ color: esClasico ? 'rgba(31,35,40,0.3)' : 'rgba(255,255,255,0.4)' }}>Elige un área de estudio</p>
+          <p className="mt-1 text-sm font-sans" style={{ color: esClasico ? 'rgba(31,35,40,0.5)' : 'rgba(255,255,255,0.6)' }}>Elige un área de estudio</p>
         </div>
         </>); })()}
       </div>
