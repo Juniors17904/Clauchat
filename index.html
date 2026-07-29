@@ -25,12 +25,20 @@
             '<button onclick="location.reload()" style="background:#238636;color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:14px">Recargar</button>' +
             '</div></div>';
         }
+        function esErrorIgnorable(texto) {
+          // Errores transitorios del chequeo de actualización: no molestar al usuario
+          return /ServiceWorker|sw\.js|Failed to update|fetching the script/i.test(String(texto));
+        }
         window.onerror = function (msg, src, line, col, error) {
-          mostrarError(error ? error.message : msg);
+          var texto = error ? error.message : msg;
+          if (esErrorIgnorable(texto)) return true;
+          mostrarError(texto);
           return true;
         };
         window.addEventListener('unhandledrejection', function (e) {
-          mostrarError(e.reason && e.reason.message ? e.reason.message : String(e.reason));
+          var texto = e.reason && e.reason.message ? e.reason.message : String(e.reason);
+          if (esErrorIgnorable(texto)) return;
+          mostrarError(texto);
         });
       })();
     </script>

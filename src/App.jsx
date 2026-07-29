@@ -43,10 +43,11 @@ export default function App() {
     pantallaRef.current = pantalla;
   }, [pantalla]);
 
-  // Buscar versión nueva cada 3 s, solo mientras estás en la pantalla principal
+  // Buscar versión nueva cada 3 s, solo mientras estás en la pantalla principal.
+  // Los errores del chequeo (ej. sw.js momentáneamente no disponible al desplegar) se ignoran.
   useEffect(() => {
     if (pantalla !== 'areas') return;
-    const id = setInterval(() => registroSW.current?.update(), 3000);
+    const id = setInterval(() => { registroSW.current?.update?.().catch(() => {}); }, 3000);
     return () => clearInterval(id);
   }, [pantalla]);
 
