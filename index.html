@@ -26,8 +26,9 @@
             '</div></div>';
         }
         function esErrorIgnorable(texto) {
-          // Errores transitorios del chequeo de actualización: no molestar al usuario
-          return /ServiceWorker|sw\.js|Failed to update|fetching the script/i.test(String(texto));
+          // Solo el error transitorio del chequeo de actualización del ServiceWorker.
+          // Cualquier otro error se muestra normal para poder verlo.
+          return /ServiceWorker|sw\.js/i.test(String(texto));
         }
         window.onerror = function (msg, src, line, col, error) {
           var texto = error ? error.message : msg;
