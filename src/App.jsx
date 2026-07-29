@@ -19,13 +19,9 @@ import { ControladorPerfil } from './controladores/controlador_perfil';
 import { ControladorRecordatorios } from './controladores/controlador_recordatorios';
 import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
-import { ActualizadorApp } from './modelos/actualizador_app';
 
 export default function App() {
-  const actualizador = useRef(new ActualizadorApp());
-  const { updateServiceWorker } = useRegisterSW({
-    onRegisteredSW(swUrl, r) { actualizador.current.guardarRegistro(r); },
-  });
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
   const [pantalla, setPantalla] = useState('areas');
   const [areaActual, setAreaActual] = useState(null);
   const [nivelActual, setNivelActual] = useState(null);
@@ -197,8 +193,6 @@ export default function App() {
 
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
 
-  const render = () => {
-
   if (pantalla === 'recordatorios') {
     return (
       <PantallaRecordatorios
@@ -303,19 +297,17 @@ export default function App() {
     );
   }
 
-    return (
-      <PantallaAreas
-        onSeleccionar={irANiveles}
-        controladorPerfil={ctrlPerfil.current}
-        onVerArbol={irAArbol}
-        onRecordatorios={irARecordatorios}
-        onInstalacion={irAHerramientas}
-        onActualizar={() => actualizador.current.actualizar(updateServiceWorker)}
-        ultimaPosicion={ultimaPosicion}
-        onContinuar={irAContinuar}
-      />
-    );
-  };
-
-  return render();
+  return (
+    <PantallaAreas
+      onSeleccionar={irANiveles}
+      controladorPerfil={ctrlPerfil.current}
+      onVerArbol={irAArbol}
+      onRecordatorios={irARecordatorios}
+      onInstalacion={irAHerramientas}
+      needRefresh={needRefresh}
+      onActualizar={() => updateServiceWorker(true)}
+      ultimaPosicion={ultimaPosicion}
+      onContinuar={irAContinuar}
+    />
+  );
 }

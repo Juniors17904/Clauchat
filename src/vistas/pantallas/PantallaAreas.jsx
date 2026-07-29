@@ -6,7 +6,6 @@ import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
 import { GestorTemas } from '../../modelos/gestor_temas';
 import { MetaDiaria } from '../../modelos/meta_diaria';
 import { GestorRespaldo } from '../../modelos/gestor_respaldo';
-import { DetectorTiro } from '../../modelos/detector_tiro';
 import { version } from '../../../package.json';
 
 const UMBRAL_PULL = 65;
@@ -578,12 +577,12 @@ const TABS_NAV = [
   },
 ];
 
-export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, onInstalacion, onActualizar, ultimaPosicion, onContinuar }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, onInstalacion, needRefresh, onActualizar, ultimaPosicion, onContinuar }) {
   const [tabActual, setTabActual] = useState('inicio');
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
   const [promptInstalar, setPromptInstalar] = useState(null);
-  const detectorTiro = useRef(new DetectorTiro(UMBRAL_PULL));
+  const inicioRef = useRef(null);
 
   useEffect(() => {
     const manejar = (e) => { e.preventDefault(); setPromptInstalar(e); };
@@ -598,14 +597,16 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
     if (outcome === 'accepted') setPromptInstalar(null);
   };
 
-  const manejarTouchStart = (e) => { detectorTiro.current.comenzar(e.touches[0].clientY); };
+  const manejarTouchStart = (e) => { inicioRef.current = e.touches[0].clientY; };
   const manejarTouchMove = (e) => {
-    const distancia = detectorTiro.current.mover(e.touches[0].clientY);
-    if (distancia !== distanciaTiro) setDistanciaTiro(distancia);
+    if (inicioRef.current === null) return;
+    const delta = e.touches[0].clientY - inicioRef.current;
+    if (delta > 0) setDistanciaTiro(Math.min(delta, UMBRAL_PULL * 1.5));
   };
   const manejarTouchEnd = () => {
-    if (detectorTiro.current.terminar()) { setActualizando(true); window.location.reload(); }
+    if (distanciaTiro >= UMBRAL_PULL) { setActualizando(true); window.location.reload(); }
     setDistanciaTiro(0);
+    inicioRef.current = null;
   };
 
   const tirando = distanciaTiro > 8;
@@ -620,6 +621,15 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
       onTouchMove={manejarTouchMove}
       onTouchEnd={manejarTouchEnd}
     >
+      {needRefresh && !actualizando && (
+        <div className="fixed top-0 left-0 right-0 z-50 px-4 py-2 flex items-center justify-between font-sans" style={{ backgroundColor: 'var(--fondo-elevado)', borderBottom: '1px solid var(--acento)' }}>
+          <p className="text-xs" style={{ color: 'var(--acento)' }}>Nueva versión disponible</p>
+          <button onClick={() => { setActualizando(true); onActualizar(); }} className="text-xs px-3 py-1 rounded-md transition-colors" style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}>
+            Actualizar
+          </button>
+        </div>
+      )}
+
       {(tirando || actualizando) && (
         <div className="fixed top-3 left-0 right-0 flex justify-center z-40 pointer-events-none" style={{ opacity: actualizando ? 1 : opacidadIndicador }}>
           <p className="text-xs font-sans" style={{ color: 'var(--texto-tenue)' }}>
@@ -628,7 +638,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
         </div>
       )}
 
-      <div className="relative overflow-hidden flex-shrink-0 h-60">
+      <div className={`relative overflow-hidden flex-shrink-0 ${needRefresh ? 'h-52' : 'h-60'}`}>
         {(() => { const esClasico = localStorage.getItem('tema-visual') === 'clasico'; return (<>
         <img src={esClasico ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
         <div className="absolute inset-0" style={{ background: esClasico
@@ -669,7 +679,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           </button>
         )}
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-          <h1 onClick={onActualizar} className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg titulo-tocable" style={{ color: esClasico ? '#1f2328' : '#fff' }}>DevLab</h1>
+          <h1 className="text-4xl font-bold tracking-tight font-sans drop-shadow-lg" style={{ color: esClasico ? '#1f2328' : '#fff' }}>DevLab</h1>
           <p className="mt-1 text-sm font-sans" style={{ color: esClasico ? 'rgba(31,35,40,0.5)' : 'rgba(255,255,255,0.6)' }}>Elige un área de estudio</p>
         </div>
         </>); })()}

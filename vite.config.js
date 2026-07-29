@@ -9,10 +9,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png'],
       workbox: {
-        cacheId: 'sqlab-v12',
+        cacheId: 'sqlab-v9',
+        skipWaiting: true,
+        clientsClaim: true,
         cleanupOutdatedCaches: true,
         globIgnores: ['**/*.wasm', '**/*.data', '**/ocr/**'],
       },

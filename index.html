@@ -10,6 +10,7 @@
     <link rel="icon" href="/icon-192.png" />
   </head>
   <body>
+    <div id="splash" style="position:fixed;inset:0;background:#0d1117;z-index:9999;transition:opacity .3s ease"></div>
     <div id="root"></div>
     <script>
       (function () {
@@ -24,21 +25,12 @@
             '<button onclick="location.reload()" style="background:#238636;color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:14px">Recargar</button>' +
             '</div></div>';
         }
-        function esErrorIgnorable(texto) {
-          // Solo el error transitorio del chequeo de actualización del ServiceWorker.
-          // Cualquier otro error se muestra normal para poder verlo.
-          return /ServiceWorker|sw\.js/i.test(String(texto));
-        }
         window.onerror = function (msg, src, line, col, error) {
-          var texto = error ? error.message : msg;
-          if (esErrorIgnorable(texto)) return true;
-          mostrarError(texto);
+          mostrarError(error ? error.message : msg);
           return true;
         };
         window.addEventListener('unhandledrejection', function (e) {
-          var texto = e.reason && e.reason.message ? e.reason.message : String(e.reason);
-          if (esErrorIgnorable(texto)) return;
-          mostrarError(texto);
+          mostrarError(e.reason && e.reason.message ? e.reason.message : String(e.reason));
         });
       })();
     </script>
