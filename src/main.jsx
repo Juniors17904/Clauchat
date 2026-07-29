@@ -11,12 +11,3 @@ createRoot(document.getElementById('root')).render(
     </LimitadorErrores>
   </StrictMode>,
 )
-
-// Quitar el splash con un fundido apenas la app pintó, para que no parpadee ni salte
-function ocultarSplash() {
-  const splash = document.getElementById('splash');
-  if (!splash) return;
-  splash.style.opacity = '0';
-  setTimeout(() => splash.remove(), 380);
-}
-requestAnimationFrame(() => requestAnimationFrame(ocultarSplash));
