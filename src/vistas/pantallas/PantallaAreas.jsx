@@ -710,7 +710,6 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
             >
               <Icono activo={activo} />
               <span className="text-[10px] font-sans">{label}</span>
-              {activo && <div className="absolute bottom-0 w-8 h-0.5 rounded-full" style={{ backgroundColor: 'var(--acento)' }} />}
             </button>
           );
         })}
