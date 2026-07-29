@@ -8,9 +8,47 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Maestro Dev</title>
     <link rel="icon" href="/icon-192.png" />
+    <style>
+      /* Bloque de arranque: tapa el hueco entre el splash del sistema y el
+         primer render de React. Sin animación, para que no parpadee. */
+      #arranque {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--fondo-base, #0d1117);
+      }
+      #arranque img {
+        width: 128px;
+        height: 128px;
+        object-fit: contain;
+      }
+    </style>
+    <script>
+      // Corre antes de pintar nada: fija el fondo del tema guardado para que no
+      // haya flash de oscuro a claro cuando React aplica el tema al montar.
+      (function () {
+        var FONDOS = {
+          verde: '#0d1117',
+          clasico: '#ffffff',
+          mocha: '#1e1e2e',
+          medianoche: '#2e3440',
+        };
+        var id = 'verde';
+        try { id = localStorage.getItem('tema-visual') || 'verde'; } catch (e) {}
+        var fondo = FONDOS[id] || FONDOS.verde;
+        document.documentElement.style.backgroundColor = fondo;
+        document.documentElement.style.setProperty('--fondo-base', fondo);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', fondo);
+      })();
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="arranque"><img src="/icon-512.png" alt="" /></div>
+    </div>
     <script>
       (function () {
         function mostrarError(msg) {
