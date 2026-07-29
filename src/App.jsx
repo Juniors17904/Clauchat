@@ -21,7 +21,12 @@ import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
 
 export default function App() {
-  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW({
+    // Revisar solo si hay versión nueva cada 30 s, para avisar sin que el usuario recargue
+    onRegisteredSW(swUrl, r) {
+      if (r) setInterval(() => r.update(), 30000);
+    },
+  });
   const [pantalla, setPantalla] = useState('areas');
   const [areaActual, setAreaActual] = useState(null);
   const [nivelActual, setNivelActual] = useState(null);
@@ -193,6 +198,24 @@ export default function App() {
 
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
 
+  // Banner global de actualización: aparece en cualquier pantalla cuando hay versión nueva
+  const bannerActualizar = needRefresh ? (
+    <div className="fixed left-0 right-0 bottom-0 z-[60] flex justify-center px-3 pb-3" style={{ pointerEvents: 'none' }}>
+      <div className="w-full max-w-sm flex items-center gap-3 rounded-xl border px-4 py-3 shadow-lg banner-animado" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: 'var(--acento)', pointerEvents: 'auto' }}>
+        <span className="text-sm flex-1" style={{ color: 'var(--texto-primario)' }}>🔄 Hay una versión nueva</span>
+        <button
+          onClick={() => updateServiceWorker(true)}
+          className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+          style={{ backgroundColor: 'var(--acento-btn)', color: '#fff' }}
+        >
+          Actualizar
+        </button>
+      </div>
+    </div>
+  ) : null;
+
+  const render = () => {
+
   if (pantalla === 'recordatorios') {
     return (
       <PantallaRecordatorios
@@ -297,17 +320,25 @@ export default function App() {
     );
   }
 
+    return (
+      <PantallaAreas
+        onSeleccionar={irANiveles}
+        controladorPerfil={ctrlPerfil.current}
+        onVerArbol={irAArbol}
+        onRecordatorios={irARecordatorios}
+        onInstalacion={irAHerramientas}
+        needRefresh={needRefresh}
+        onActualizar={() => updateServiceWorker(true)}
+        ultimaPosicion={ultimaPosicion}
+        onContinuar={irAContinuar}
+      />
+    );
+  };
+
   return (
-    <PantallaAreas
-      onSeleccionar={irANiveles}
-      controladorPerfil={ctrlPerfil.current}
-      onVerArbol={irAArbol}
-      onRecordatorios={irARecordatorios}
-      onInstalacion={irAHerramientas}
-      needRefresh={needRefresh}
-      onActualizar={() => updateServiceWorker(true)}
-      ultimaPosicion={ultimaPosicion}
-      onContinuar={irAContinuar}
-    />
+    <>
+      {render()}
+      {bannerActualizar}
+    </>
   );
 }
