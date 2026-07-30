@@ -6,6 +6,7 @@ import { GestorEstadisticas } from '../../modelos/gestor_estadisticas';
 import { GestorTemas } from '../../modelos/gestor_temas';
 import { MetaDiaria } from '../../modelos/meta_diaria';
 import { GestorRespaldo } from '../../modelos/gestor_respaldo';
+import { DescargadorData } from '../../modelos/descargador_data';
 import { version } from '../../../package.json';
 
 const UMBRAL_PULL = 65;
@@ -267,6 +268,8 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
   const [objetivo, setObjetivo] = useState(metaDiaria.current.objetivo);
   const [textoImportar, setTextoImportar] = useState(null);
   const [avisoImportar, setAvisoImportar] = useState(null);
+  const descargador = useRef(new DescargadorData());
+  const [descarga, setDescarga] = useState(descargador.current.listo ? 'listo' : null);
 
   const ejerciciosHoy = gestorEstadisticas.current.ejerciciosHoy;
 
@@ -292,6 +295,13 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
     const lector = new FileReader();
     lector.onload = () => setTextoImportar(lector.result);
     lector.readAsText(archivo);
+  };
+
+  const descargarData = async () => {
+    if (descarga && descarga !== 'listo') return;
+    setDescarga({ hechas: 0, total: descargador.current.total });
+    await descargador.current.descargar((hechas, total) => setDescarga({ hechas, total }));
+    setDescarga('listo');
   };
 
   const confirmarImportar = () => {
@@ -427,6 +437,23 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
           📋 Ver currículo completo
         </button>
       )}
+
+      {/* Descargar data */}
+      <button
+        onClick={descargarData}
+        disabled={descarga !== null && descarga !== 'listo'}
+        className="w-full py-3 border rounded-xl text-sm font-sans transition-colors"
+        style={{
+          borderColor: descarga === 'listo' ? 'var(--acento)' : 'var(--borde)',
+          color: descarga === 'listo' ? 'var(--acento)' : 'var(--texto-secundario)',
+        }}
+      >
+        {descarga === 'listo'
+          ? '✓ Data descargada'
+          : descarga
+            ? `${descarga.hechas}/${descarga.total}`
+            : 'Descargar data'}
+      </button>
 
       {/* Respaldo del progreso */}
       <div>

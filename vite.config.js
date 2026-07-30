@@ -17,6 +17,14 @@ export default defineConfig({
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         globIgnores: ['**/*.wasm', '**/*.data', '**/ocr/**'],
+        // Las imágenes quedan guardadas al verlas; "Descargar data" las guarda todas de una
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: { cacheName: 'imagenes-app', cacheableResponse: { statuses: [0, 200] } },
+          },
+        ],
       },
       manifest: {
         name: 'Maestro Dev',
