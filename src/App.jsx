@@ -19,6 +19,7 @@ import { ControladorPerfil } from './controladores/controlador_perfil';
 import { ControladorRecordatorios } from './controladores/controlador_recordatorios';
 import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
+import { UltimaSeccionCaja } from './modelos/ultima_seccion_caja';
 
 export default function App() {
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
@@ -161,8 +162,10 @@ export default function App() {
     });
     window.history.pushState({ pantalla: 'caja', caja, seccion }, '');
   };
-  // Cambiar de caja reemplaza la entrada actual del historial: no apila, así "volver" sale de una vez
-  const cambiarCaja = (caja, seccion = seccionCaja) => {
+  // Cambiar de caja lleva a la parte donde se trabajó por última vez en ESA caja.
+  // Reemplaza la entrada actual del historial: no apila, así "volver" sale de una vez.
+  const cambiarCaja = (caja) => {
+    const seccion = new UltimaSeccionCaja(caja).seccion;
     setCajaInstalacion(caja);
     setSeccionCaja(seccion);
     window.history.replaceState({ pantalla: 'caja', caja, seccion }, '');

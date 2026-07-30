@@ -3,6 +3,7 @@ import PantallaInstalacion from './PantallaInstalacion';
 import PantallaSoftware from './PantallaSoftware';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { GestorSoftware } from '../../modelos/gestor_software';
+import { UltimaSeccionCaja } from '../../modelos/ultima_seccion_caja';
 
 // Pantalla única por caja: Instalación Xstore + Software en una sola lista continua.
 // Cada parte tiene su título y un leve cambio de fondo para diferenciarlas.
@@ -11,6 +12,12 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
   const color = caja === 1 ? 'var(--acento)' : '#39c5cf';
   // Solo una sección resalta su último punto a la vez (la última donde se trabajó)
   const [seccionActiva, setSeccionActiva] = useState(seccionInicial);
+  // La caja recuerda en qué parte se trabajó, para retomar ahí al volver a ella
+  const memoriaSeccion = useRef(new UltimaSeccionCaja(caja));
+  const marcarSeccion = (seccion) => {
+    setSeccionActiva(seccion);
+    memoriaSeccion.current.guardar(seccion);
+  };
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   // Cambia al reiniciar para volver a armar las dos secciones ya vacías
   const [versionCaja, setVersionCaja] = useState(0);
@@ -57,7 +64,7 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
                 {[1, 2].map(n => (
                   <button
                     key={n}
-                    onClick={() => n !== caja && onCambiarCaja(n, seccionActiva)}
+                    onClick={() => n !== caja && onCambiarCaja(n)}
                     className="px-2.5 py-1 rounded-full text-xs font-medium transition-colors"
                     style={{
                       backgroundColor: n === caja ? 'var(--acento)' : 'var(--fondo-panel)',
@@ -77,13 +84,13 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
       {/* Sección Instalación Xstore */}
       <div style={{ backgroundColor: 'var(--fondo-base)' }}>
         <Titulo texto="Instalación Xstore" />
-        <PantallaInstalacion key={`instalacion-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => setSeccionActiva('xstore')} onIrASoftware={irASoftware} />
+        <PantallaInstalacion key={`instalacion-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => marcarSeccion('xstore')} onIrASoftware={irASoftware} />
       </div>
 
       {/* Sección Software (leve cambio de fondo + separador) */}
       <div ref={refSoftware} className="border-t" style={{ backgroundColor: 'color-mix(in srgb, var(--acento) 5%, var(--fondo-base))', borderColor: 'var(--borde)', scrollMarginTop: 64 }}>
         <Titulo texto="Software y aplicaciones" />
-        <PantallaSoftware key={`software-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => setSeccionActiva('software')} />
+        <PantallaSoftware key={`software-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => marcarSeccion('software')} />
       </div>
 
       {/* Un solo reinicio para toda la caja */}
