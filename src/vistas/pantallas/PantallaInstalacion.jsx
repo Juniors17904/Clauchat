@@ -429,7 +429,9 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                               <p className="text-sm font-semibold" style={{ color: 'var(--advertencia)' }}>⚠️ {paso.advertencia}</p>
                             </div>
                           )}
-                          <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(paso.detalle)}</p>
+                          {paso.detalle && (
+                            <p className="text-sm leading-relaxed whitespace-pre-line mb-3" style={{ color: 'var(--texto-secundario)' }}>{renderizarDetalle(paso.detalle)}</p>
+                          )}
 
                           {/* Ubicaciones (celeste), archivos (amarillo) y comandos (verde) — cada uno en su línea */}
                           {(paso.ubicaciones.length > 0 || paso.archivos.length > 0 || paso.comandos.length > 0) && (

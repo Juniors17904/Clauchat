@@ -4,6 +4,12 @@ export const PASOS_INSTALACION = [
   // ===== FASE 1: RESPALDO =====
   new PasoInstalacion({
     numero: 1,
+    titulo: 'Verificar la caja',
+    faseId: 'respaldo',
+    comandos: ['msinfo32 — procesador', 'diskmgmt.msc — espacio en disco'],
+  }),
+  new PasoInstalacion({
+    numero: 2,
     titulo: 'Datos del equipo',
     detalle: 'Anotar los datos de identidad del equipo antes de instalar la imagen nueva. Podés subir una foto de la pantalla por cada campo y la app intentará reconocer el dato — igual revisá y corregí.\n\nComandos útiles en cmd:',
     faseId: 'respaldo',
@@ -11,7 +17,7 @@ export const PASOS_INSTALACION = [
     comandos: ['hostname — nombre del equipo', 'whoami — usuario del dominio'],
   }),
   new PasoInstalacion({
-    numero: 2,
+    numero: 3,
     titulo: 'Obtener IP',
     detalle: 'Guardar la configuración de red actual del equipo (pantalla de Propiedades de TCP/IPv4). Se necesitará para restaurarla después de instalar la imagen.\n\nAbrir con Win + R y el comando de abajo; luego clic derecho en el adaptador → Propiedades → TCP/IPv4.\n\nCon una sola foto de esa pantalla la app puede reconocer varios campos a la vez.',
     faseId: 'respaldo',
@@ -20,13 +26,13 @@ export const PASOS_INSTALACION = [
     comandos: ['ncpa.cpl'],
   }),
   new PasoInstalacion({
-    numero: 3,
+    numero: 4,
     titulo: 'Copiar licencia (RMS Config)',
     detalle: 'Respaldar el archivo de licencia RMS Config del equipo en la carpeta de uso.',
     faseId: 'respaldo',
   }),
   new PasoInstalacion({
-    numero: 4,
+    numero: 5,
     titulo: 'Copia de seguridad (Backup BD)',
     detalle: 'Generar el respaldo de la base de datos del equipo y guardarlo en la carpeta de uso.',
     faseId: 'respaldo',
@@ -34,17 +40,17 @@ export const PASOS_INSTALACION = [
 
   // ===== FASE 2: CUENTA LOCAL LINDCORP =====
   new PasoInstalacion({
-    numero: 5,
+    numero: 6,
     titulo: 'Restaurar IP',
     detalle: 'Con la imagen nueva instalada, poner la IP de la tienda (si no se puede en tienda, realizarlo en el centro de capas), la máscara de red y el DNS del dominio de Lindcorp.\n\nAbrir con Win + R y el comando de abajo; luego clic derecho en el adaptador → Propiedades → TCP/IPv4.',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p05-a.png'],
-    referencias: [2],
+    referencias: [3],
     datoNecesario: 'Dirección IP',
     comandos: ['ncpa.cpl'],
   }),
   new PasoInstalacion({
-    numero: 6,
+    numero: 7,
     titulo: 'Servicios Oracle',
     detalle: 'Revisar los servicios de Oracle del equipo antes de continuar con el cambio de nombre.\n\nAbrir con Win + R y el comando de abajo.',
     faseId: 'cuenta-local',
@@ -52,34 +58,34 @@ export const PASOS_INSTALACION = [
     comandos: ['services.msc'],
   }),
   new PasoInstalacion({
-    numero: 7,
+    numero: 8,
     titulo: 'Cambiar nombre y unir a dominio',
     detalle: 'Colocar el hostname de la tienda según el formato:\nTL = Tambo Lima · TP = Tambo Provincia · AL = Aruma Lima · AP = Aruma Provincia\n\nFormato: [[XX-NNNN-C]]\n· [[NNNN = número de tienda de 4 dígitos]]\n· [[C = caja (1 o 2)]]\n\nEjemplo: [[TL-1046-1]]\nDominio: LindcorpTiendas.net\n\nAbrir con Win + R y el comando de abajo → botón Cambiar.\n\nDespués del cambio: !!REINICIAR EL EQUIPO!!',
     faseId: 'cuenta-local',
     imagenes: ['/instalacion/p07-a.png', '/instalacion/p07-b.png'],
-    referencias: [1],
+    referencias: [2],
     datoNecesario: 'Hostname',
     comandos: ['sysdm.cpl'],
   }),
   new PasoInstalacion({
-    numero: 8,
+    numero: 9,
     titulo: 'Desactivar Firewall',
     detalle: 'Después del reinicio: !!INICIAR SESIÓN COMO ADMINISTRATOR!!\n\nDesactivar el firewall de Windows para permitir la comunicación de los servicios de Xstore.\n\nAbrir con Win + R y el comando de abajo → Activar o desactivar Firewall de Windows Defender.\n\nAl terminar: !!CERRAR SESIÓN!!',
     faseId: 'cuenta-local',
     comandos: ['firewall.cpl'],
   }),
   new PasoInstalacion({
-    numero: 9,
+    numero: 10,
     titulo: 'Ver datos [INICIAR SESIÓN]',
     detalle: 'Verificar los datos configurados.\n\n!!INICIAR SESIÓN CON EL USUARIO DE TIENDA!! (cuenta de dominio Tambo o Aruma).',
     faseId: 'cuenta-local',
-    referencias: [1],
+    referencias: [2],
     datoNecesario: 'Username',
   }),
 
   // ===== FASE 3: CUENTA DOMINIO — CONFIGURACIÓN =====
   new PasoInstalacion({
-    numero: 10,
+    numero: 11,
     titulo: 'Permisos de las 3 carpetas',
     detalle: 'Compartir estas 3 carpetas con la entidad "Authentic User" (la última, 19c, está dentro de Oracle).\n\nSiempre marcar "Reemplazar todas las entradas de permisos de objetos secundarios", aplicar, aceptar, y al final quitar el check de "Solo lectura" y aplicar.',
     faseId: 'cuenta-dominio-config',
@@ -88,7 +94,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p10-a.png', '/instalacion/p10-b.png', '/instalacion/p10-c.png', '/instalacion/p10-d.png', '/instalacion/p10-e.png', '/instalacion/p10-f.png'],
   }),
   new PasoInstalacion({
-    numero: 11,
+    numero: 12,
     titulo: 'Configurar listener.ora y tnsnames.ora',
     detalle: 'Editar los dos archivos con el usuario de tienda.\n\nEn ambos, el HOST debe ser el hostname completo de la caja (ejemplo: TL-1014-1.LindcorpTiendas.net).\n\nPara sacar el nombre completo, abrir con Win + R el comando de abajo; ahí aparece "Nombre completo del equipo".',
     faseId: 'cuenta-dominio-config',
@@ -96,24 +102,24 @@ export const PASOS_INSTALACION = [
     archivos: ['listener.ora', 'tnsnames.ora'],
     comandos: ['sysdm.cpl'],
     imagenes: ['/instalacion/p11-a.png', '/instalacion/p11-b.png', '/instalacion/p11-c.png'],
-    referencias: [1],
+    referencias: [2],
     datoNecesario: 'Hostname',
   }),
   new PasoInstalacion({
-    numero: 12,
+    numero: 13,
     titulo: 'Configurar to_be_replaced.properties',
     detalle: 'Este es el archivo que se EDITA. Cambiar los datos según la tienda:\n· orgId = 1\n· rtlLocId = número de tienda (ej. 1014)\n· terminalId = 1 o 2 según la caja\n· storeprimary.host = hostname de la CAJA 1\n· storeName = nombre de la tienda\n· locate.XstoreSystemCode = 1 (Tambo) o 2 (Aruma)\n\nAl terminar: !!CONFIRMAR Y REINICIAR EL EQUIPO!!',
     faseId: 'cuenta-dominio-config',
     ubicaciones: ['C:\\staging\\environment-files\\PROD'],
     archivos: ['to_be_replaced.properties'],
     imagenes: ['/instalacion/p12-a.png'],
-    referencias: [1, 2],
+    referencias: [2, 3],
     datoNecesario: 'Nombre de tienda',
   }),
 
   // ===== FASE 4: CUENTA DOMINIO — INSTALACIÓN =====
   new PasoInstalacion({
-    numero: 13,
+    numero: 14,
     titulo: 'Agregar usuario a ORA_DBA',
     detalle: 'Después del reinicio: !!INICIAR SESIÓN COMO USUARIO LOCAL!!\n\nAbrir con Win + R el comando de abajo → Grupos.\n\nAgregar el usuario de tienda al grupo:\n[[ORA_DBA]]',
     faseId: 'cuenta-dominio-instalacion',
@@ -121,7 +127,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p13-a.png'],
   }),
   new PasoInstalacion({
-    numero: 14,
+    numero: 15,
     titulo: 'Validar servicios Oracle',
     detalle: 'Todos los servicios Oracle deben estar en "Automático" (NO "Automático - inicio retrasado") y con estado "Iniciado".\n\nAbrir con Win + R y el comando de abajo.',
     faseId: 'cuenta-dominio-instalacion',
@@ -129,14 +135,14 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p14-a.png'],
   }),
   new PasoInstalacion({
-    numero: 15,
+    numero: 16,
     titulo: 'Validar Firewall',
     detalle: 'Confirmar que el firewall sigue desactivado antes de ejecutar los instaladores.\n\nAbrir con Win + R y el comando de abajo.',
     faseId: 'cuenta-dominio-instalacion',
     comandos: ['firewall.cpl'],
   }),
   new PasoInstalacion({
-    numero: 16,
+    numero: 17,
     titulo: 'Ejecutar 00.LDC-PROD',
     detalle: 'Ejecutarlo. NO realizarlo como administrador.\n\nSale una pantalla negra y, al terminar, se genera automáticamente un SEGUNDO archivo to_be_replaced.properties en la carpeta staging (este es solo para validar en el paso siguiente, NO se edita).',
     faseId: 'cuenta-dominio-instalacion',
@@ -145,7 +151,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p16-a.png'],
   }),
   new PasoInstalacion({
-    numero: 17,
+    numero: 18,
     titulo: 'Validar to_be_replaced.properties (staging)',
     detalle: 'Este archivo solo se VALIDA (no se edita). Es el que generó el LDC-PROD.\n\nConfirmar que todos los valores del paso 12 quedaron correctos (orgId, rtlLocId, terminalId, storeprimary.host, storeName, locate.XstoreSystemCode).',
     faseId: 'cuenta-dominio-instalacion',
@@ -154,7 +160,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p16-b.png'],
   }),
   new PasoInstalacion({
-    numero: 18,
+    numero: 19,
     titulo: 'Ejecutar 02.installXstore',
     detalle: 'Ejecutarlo y confirmar cada dato con Y (sí) o N (no).\n\nDurante la instalación saldrán 2 solicitudes de credenciales: confirmarlas con el usuario administrator y la contraseña indicada por soporte.',
     faseId: 'cuenta-dominio-instalacion',
@@ -163,7 +169,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p18-a.png', '/instalacion/p18-b.png', '/instalacion/p18-c.png'],
   }),
   new PasoInstalacion({
-    numero: 19,
+    numero: 20,
     titulo: 'Ejecutar KillXStore',
     detalle: 'Ejecutarlo para detener los procesos de Xstore antes de configurar los permisos de las carpetas nuevas.',
     faseId: 'cuenta-dominio-instalacion',
@@ -171,7 +177,7 @@ export const PASOS_INSTALACION = [
     archivos: ['KillXStore'],
   }),
   new PasoInstalacion({
-    numero: 20,
+    numero: 21,
     titulo: 'Permisos de las 6 carpetas Xstore',
     detalle: 'Compartir las 6 carpetas nuevas que se crearon en C:\\ tras instalar Xstore, de la misma forma que las anteriores (entidad "Authentic User" y desmarcar siempre "Solo lectura").',
     faseId: 'cuenta-dominio-instalacion',
@@ -180,7 +186,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p20-a.png', '/instalacion/p20-b.png', '/instalacion/p20-c.png', '/instalacion/p20-d.png'],
   }),
   new PasoInstalacion({
-    numero: 21,
+    numero: 22,
     titulo: 'Copiar archivos TOTP Authentication',
     detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCopiar TODO el contenido de la primera ruta y pegarlo en la segunda.',
     faseId: 'cuenta-dominio-instalacion',
@@ -188,7 +194,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p21-a.png', '/instalacion/p21-b.png'],
   }),
   new PasoInstalacion({
-    numero: 22,
+    numero: 23,
     titulo: 'Ejecutar dataloader2.bat',
     detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutarlo.',
     faseId: 'cuenta-dominio-instalacion',
@@ -197,7 +203,7 @@ export const PASOS_INSTALACION = [
     imagenes: ['/instalacion/p22-a.png'],
   }),
   new PasoInstalacion({
-    numero: 23,
+    numero: 24,
     titulo: 'Configurar configPath.properties (aruma → tambo)',
     detalle: 'Este paso es en AMBAS CAJAS.\n\nAbrir el archivo y, en la línea 06, buscar esta línea:\n[[xstore.config.path.global.extensions=relatearuma]]\nCambiar "aruma" por "tambo", queda así:\n[[relatetambo]]\n\nGuardar y cerrar el documento.',
     faseId: 'cuenta-dominio-instalacion',

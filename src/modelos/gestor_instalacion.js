@@ -1,3 +1,5 @@
+import { MigradorPasosInstalacion } from './migrador_pasos_instalacion.js';
+
 export class GestorInstalacion {
   #completados;
   #datos;
@@ -11,6 +13,8 @@ export class GestorInstalacion {
     this.#clave = `sqlab_instalacion${sufijo}`;
     this.#claveDatos = `sqlab_instalacion_datos${sufijo}`;
     this.#claveUltimo = `sqlab_instalacion_ultimo${sufijo}`;
+    // Antes de leer, poner el avance guardado en la numeración vigente
+    new MigradorPasosInstalacion(caja).migrar();
     try {
       this.#completados = new Set(JSON.parse(localStorage.getItem(this.#clave) ?? '[]'));
     } catch {
