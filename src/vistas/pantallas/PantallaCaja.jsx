@@ -4,7 +4,7 @@ import PantallaSoftware from './PantallaSoftware';
 
 // Pantalla única por caja: Instalación Xstore + Software en una sola lista continua.
 // Cada parte tiene su título y un leve cambio de fondo para diferenciarlas.
-export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVolver }) {
+export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVolver, onCambiarCaja }) {
   const refSoftware = useRef(null);
   const color = caja === 1 ? 'var(--acento)' : '#39c5cf';
   // Solo una sección resalta su último punto a la vez (la última donde se trabajó)
@@ -34,7 +34,27 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
           <button onClick={onVolver} className="flex items-center gap-2 text-sm mb-2 transition-colors" style={{ color: 'var(--texto-secundario)' }}>
             ← Volver
           </button>
-          <h1 className="text-lg font-bold" style={{ color }}>Caja {caja}</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-bold" style={{ color }}>Caja {caja}</h1>
+            {onCambiarCaja && (
+              <div className="flex gap-1.5">
+                {[1, 2].map(n => (
+                  <button
+                    key={n}
+                    onClick={() => onCambiarCaja(n)}
+                    className="px-2.5 py-1 rounded-full text-xs font-medium transition-colors"
+                    style={{
+                      backgroundColor: n === caja ? 'var(--acento)' : 'var(--fondo-panel)',
+                      color: n === caja ? '#fff' : 'var(--texto-secundario)',
+                      border: `1px solid ${n === caja ? 'var(--acento)' : 'var(--borde)'}`
+                    }}
+                  >
+                    Caja {n}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

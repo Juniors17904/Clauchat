@@ -161,6 +161,12 @@ export default function App() {
     });
     window.history.pushState({ pantalla: 'caja', caja, seccion }, '');
   };
+  const cambiarCaja = (caja) => {
+    navegar('adelante', () => {
+      setCajaInstalacion(caja);
+    });
+    window.history.pushState({ pantalla: 'caja', caja, seccion: seccionCaja }, '');
+  };
   const irAInstalacion = (caja = 1) => irACaja(caja, 'xstore');
   const irASoftware = (caja = 1) => irACaja(caja, 'software');
 
@@ -217,7 +223,7 @@ export default function App() {
   }
 
   if (pantalla === 'caja') {
-    return <PantallaCaja caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} />;
+    return <PantallaCaja caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} onCambiarCaja={cambiarCaja} />;
   }
 
   if (pantalla === 'base-datos') {
