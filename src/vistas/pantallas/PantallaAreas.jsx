@@ -253,6 +253,16 @@ function TabFavoritos() {
   );
 }
 
+// Cada grupo de ajustes va bajo su propio título, separado por una línea
+function Seccion({ titulo, primera = false, children }) {
+  return (
+    <div className={primera ? '' : 'pt-5 border-t'} style={{ borderColor: 'var(--borde)' }}>
+      <p className="text-[11px] font-semibold uppercase tracking-wider mb-3 font-sans" style={{ color: 'var(--texto-tenue)' }}>{titulo}</p>
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
+}
+
 function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInstalar, onInstalar }) {
   const gestorTemas = useRef(new GestorTemas());
   const metaDiaria = useRef(new MetaDiaria());
@@ -315,11 +325,10 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto px-5 pt-6 pb-4 space-y-6">
+    <div className="w-full max-w-sm mx-auto px-5 pt-6 pb-4 space-y-5">
       <h2 className="text-lg font-semibold font-sans" style={{ color: 'var(--texto-primario)' }}>Ajustes</h2>
 
-      <div>
-        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Tu nombre</p>
+      <Seccion titulo="Perfil" primera>
         {editando ? (
           <input
             autoFocus
@@ -343,11 +352,9 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             <span className="text-xs" style={{ color: 'var(--texto-tenue)' }}>✎</span>
           </button>
         )}
-      </div>
+      </Seccion>
 
-      {/* Tema visual */}
-      <div>
-        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Tema visual</p>
+      <Seccion titulo="Apariencia">
         <div className="grid grid-cols-2 gap-2">
           {gestorTemas.current.temas.map(t => {
             const c = t.colores;
@@ -370,11 +377,8 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             );
           })}
         </div>
-        <div className="flex items-center justify-between mt-3">
-          <div>
-            <p className="text-xs font-sans" style={{ color: 'var(--texto-secundario)' }}>Aplicar a toda la app</p>
-            <p className="text-[10px] mt-0.5 font-sans" style={{ color: 'var(--texto-tenue)' }}>Cambia colores en todas las pantallas</p>
-          </div>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-sans" style={{ color: 'var(--texto-secundario)' }}>Aplicar a toda la app</p>
           <button
             onClick={() => { gestorTemas.current.alternarGlobal(); setTemaGlobal(gestorTemas.current.esGlobal); }}
             className="relative w-10 h-[22px] rounded-full transition-colors duration-200 flex-shrink-0"
@@ -386,11 +390,10 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             />
           </button>
         </div>
-      </div>
+      </Seccion>
 
-      {/* Meta diaria */}
-      <div>
-        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Meta diaria de ejercicios</p>
+      <Seccion titulo="Estudio">
+        <p className="text-xs font-sans" style={{ color: 'var(--texto-secundario)' }}>Meta diaria</p>
         <div className="flex gap-2">
           {[3, 5, 10].map(n => (
             <button
@@ -407,57 +410,54 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             </button>
           ))}
         </div>
-        <p className="text-[11px] mt-2 font-sans" style={{ color: metaDiaria.current.cumplida(ejerciciosHoy) ? 'var(--acento)' : 'var(--texto-tenue)' }}>
+        <p className="text-[11px] font-sans" style={{ color: metaDiaria.current.cumplida(ejerciciosHoy) ? 'var(--acento)' : 'var(--texto-tenue)' }}>
           {metaDiaria.current.cumplida(ejerciciosHoy)
-            ? `✓ Meta cumplida hoy: ${ejerciciosHoy}/${objetivo} ejercicios`
-            : `Hoy llevas ${ejerciciosHoy}/${objetivo} ejercicios`}
+            ? `✓ Meta cumplida hoy: ${ejerciciosHoy}/${objetivo}`
+            : `Hoy llevas ${ejerciciosHoy}/${objetivo}`}
         </p>
-      </div>
 
-      {onRecordatorios && (
+        {onRecordatorios && (
+          <button
+            onClick={onRecordatorios}
+            className="w-full py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors flex items-center justify-center gap-2"
+            style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            Recordatorios
+          </button>
+        )}
+
+        {onVerArbol && (
+          <button
+            onClick={onVerArbol}
+            className="w-full py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors"
+            style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+          >
+            📋 Ver currículo completo
+          </button>
+        )}
+      </Seccion>
+
+      <Seccion titulo="Datos">
         <button
-          onClick={onRecordatorios}
-          className="w-full py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors flex items-center justify-center gap-2"
-          style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+          onClick={descargarData}
+          disabled={descarga !== null && descarga !== 'listo'}
+          className="w-full py-3 border rounded-xl text-sm font-sans transition-colors"
+          style={{
+            borderColor: descarga === 'listo' ? 'var(--acento)' : 'var(--borde)',
+            color: descarga === 'listo' ? 'var(--acento)' : 'var(--texto-secundario)',
+          }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          Recordatorios
+          {descarga === 'listo'
+            ? '✓ Data descargada'
+            : descarga
+              ? `${descarga.hechas}/${descarga.total}`
+              : 'Descargar data'}
         </button>
-      )}
 
-      {onVerArbol && (
-        <button
-          onClick={onVerArbol}
-          className="w-full py-3 border rounded-xl hover:text-white text-sm font-sans transition-colors"
-          style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
-        >
-          📋 Ver currículo completo
-        </button>
-      )}
-
-      {/* Descargar data */}
-      <button
-        onClick={descargarData}
-        disabled={descarga !== null && descarga !== 'listo'}
-        className="w-full py-3 border rounded-xl text-sm font-sans transition-colors"
-        style={{
-          borderColor: descarga === 'listo' ? 'var(--acento)' : 'var(--borde)',
-          color: descarga === 'listo' ? 'var(--acento)' : 'var(--texto-secundario)',
-        }}
-      >
-        {descarga === 'listo'
-          ? '✓ Data descargada'
-          : descarga
-            ? `${descarga.hechas}/${descarga.total}`
-            : 'Descargar data'}
-      </button>
-
-      {/* Respaldo del progreso */}
-      <div>
-        <p className="text-xs mb-2 font-sans" style={{ color: 'var(--texto-secundario)' }}>Respaldo de tu avance</p>
         {textoImportar ? (
           <div className="space-y-3">
             <p className="text-xs font-sans" style={{ color: 'var(--advertencia)' }}>Esto reemplazará tu avance actual con el del archivo. ¿Continuar?</p>
@@ -506,12 +506,9 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
           </div>
         )}
         {avisoImportar && (
-          <p className="text-[11px] mt-2 font-sans" style={{ color: 'var(--error)' }}>{avisoImportar}</p>
+          <p className="text-[11px] font-sans" style={{ color: 'var(--error)' }}>{avisoImportar}</p>
         )}
-        <p className="text-[10px] mt-2 font-sans" style={{ color: 'var(--texto-tenue)' }}>Tu avance vive en este navegador. Exportalo para no perderlo o llevarlo a otro dispositivo.</p>
-      </div>
 
-      <div className="pt-2">
         {confirmando ? (
           <div className="space-y-3">
             <p className="text-xs font-sans" style={{ color: 'var(--error)' }}>¿Borrar todo el avance? No se puede deshacer.</p>
@@ -541,25 +538,22 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             🗑️ Borrar todo el avance
           </button>
         )}
-      </div>
+      </Seccion>
 
-      {/* Acerca de */}
-      <div className="pt-2 pb-2 border-t" style={{ borderColor: 'var(--borde)' }}>
-        <div className="flex items-center justify-between mt-3">
-          <div>
-            <p className="text-sm font-semibold font-sans" style={{ color: 'var(--texto-primario)' }}>DevLab</p>
-            <p className="text-[11px] font-sans mt-0.5" style={{ color: 'var(--texto-tenue)' }}>Versión {version} · Funciona sin conexión</p>
-          </div>
-          {promptInstalar && (
-            <button
-              onClick={onInstalar}
-              className="px-3 py-2 rounded-xl border text-xs font-sans transition-colors"
-              style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
-            >
-              Instalar app
-            </button>
-          )}
+      <div className="pt-5 border-t flex items-center justify-between" style={{ borderColor: 'var(--borde)' }}>
+        <div>
+          <p className="text-sm font-semibold font-sans" style={{ color: 'var(--texto-primario)' }}>DevLab</p>
+          <p className="text-[11px] font-sans mt-0.5" style={{ color: 'var(--texto-tenue)' }}>Versión {version} · Funciona sin conexión</p>
         </div>
+        {promptInstalar && (
+          <button
+            onClick={onInstalar}
+            className="px-3 py-2 rounded-xl border text-xs font-sans transition-colors"
+            style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
+          >
+            Instalar app
+          </button>
+        )}
       </div>
     </div>
   );
