@@ -508,17 +508,21 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
         {avisoImportar && (
           <p className="text-[11px] font-sans" style={{ color: 'var(--error)' }}>{avisoImportar}</p>
         )}
+      </Seccion>
 
+      {/* Aparte del resto: no se puede deshacer */}
+      <div className="pt-6">
         {confirmando ? (
-          <div className="space-y-3">
-            <p className="text-xs font-sans" style={{ color: 'var(--error)' }}>¿Borrar todo el avance? No se puede deshacer.</p>
+          <div className="space-y-3 rounded-xl border p-4" style={{ borderColor: 'var(--error)', backgroundColor: 'color-mix(in srgb, var(--error) 8%, transparent)' }}>
+            <p className="text-sm font-semibold font-sans" style={{ color: 'var(--error)' }}>¿Borrar todo el avance?</p>
+            <p className="text-xs font-sans" style={{ color: 'var(--texto-secundario)' }}>No se puede deshacer.</p>
             <div className="flex gap-2">
               <button
                 onClick={() => { controladorPerfil.borrarAvance(); setConfirmando(false); }}
-                className="flex-1 py-2.5 text-sm rounded-xl font-sans transition-colors"
+                className="flex-1 py-2.5 text-sm font-semibold rounded-xl font-sans transition-colors"
                 style={{ backgroundColor: 'var(--error)', color: '#fff' }}
               >
-                Confirmar
+                Sí, borrar
               </button>
               <button
                 onClick={() => setConfirmando(false)}
@@ -538,7 +542,7 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             🗑️ Borrar todo el avance
           </button>
         )}
-      </Seccion>
+      </div>
 
       <div className="pt-5 border-t flex items-center justify-between" style={{ borderColor: 'var(--borde)' }}>
         <div>
