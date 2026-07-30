@@ -161,11 +161,11 @@ export default function App() {
     });
     window.history.pushState({ pantalla: 'caja', caja, seccion }, '');
   };
-  const cambiarCaja = (caja) => {
-    navegar('adelante', () => {
-      setCajaInstalacion(caja);
-    });
-    window.history.pushState({ pantalla: 'caja', caja, seccion: seccionCaja }, '');
+  // Cambiar de caja reemplaza la entrada actual del historial: no apila, así "volver" sale de una vez
+  const cambiarCaja = (caja, seccion = seccionCaja) => {
+    setCajaInstalacion(caja);
+    setSeccionCaja(seccion);
+    window.history.replaceState({ pantalla: 'caja', caja, seccion }, '');
   };
   const irAInstalacion = (caja = 1) => irACaja(caja, 'xstore');
   const irASoftware = (caja = 1) => irACaja(caja, 'software');
@@ -223,7 +223,9 @@ export default function App() {
   }
 
   if (pantalla === 'caja') {
-    return <PantallaCaja caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} onCambiarCaja={cambiarCaja} />;
+    // key por caja: al cambiar de caja la pantalla se rearma desde cero, igual que al entrar,
+    // para que cargue el avance de esa caja y se enfoque su último punto
+    return <PantallaCaja key={cajaInstalacion} caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} onCambiarCaja={cambiarCaja} />;
   }
 
   if (pantalla === 'base-datos') {

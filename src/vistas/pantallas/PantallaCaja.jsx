@@ -12,10 +12,12 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
 
   const irASoftware = () => refSoftware.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Al entrar, si se tocó "Software", bajar directo a esa sección
+  // Al entrar, si se tocó "Software", bajar directo a esa sección; si no, arrancar desde arriba
   useEffect(() => {
     if (seccionInicial === 'software') {
       setTimeout(() => refSoftware.current?.scrollIntoView({ behavior: 'auto', block: 'start' }), 220);
+    } else {
+      window.scrollTo(0, 0);
     }
   }, [seccionInicial]);
 
@@ -41,7 +43,7 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
                 {[1, 2].map(n => (
                   <button
                     key={n}
-                    onClick={() => onCambiarCaja(n)}
+                    onClick={() => n !== caja && onCambiarCaja(n, seccionActiva)}
                     className="px-2.5 py-1 rounded-full text-xs font-medium transition-colors"
                     style={{
                       backgroundColor: n === caja ? 'var(--acento)' : 'var(--fondo-panel)',
