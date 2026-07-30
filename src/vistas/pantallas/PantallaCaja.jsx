@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
 import PantallaInstalacion from './PantallaInstalacion';
 import PantallaSoftware from './PantallaSoftware';
+import { GestorInstalacion } from '../../modelos/gestor_instalacion';
+import { GestorSoftware } from '../../modelos/gestor_software';
 
 // Pantalla única por caja: Instalación Xstore + Software en una sola lista continua.
 // Cada parte tiene su título y un leve cambio de fondo para diferenciarlas.
@@ -9,6 +11,18 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
   const color = caja === 1 ? 'var(--acento)' : '#39c5cf';
   // Solo una sección resalta su último punto a la vez (la última donde se trabajó)
   const [seccionActiva, setSeccionActiva] = useState(seccionInicial);
+  const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
+  // Cambia al reiniciar para volver a armar las dos secciones ya vacías
+  const [versionCaja, setVersionCaja] = useState(0);
+
+  // Un solo reinicio por caja: borra los pasos de Xstore (con sus datos y fotos) y los programas
+  const reiniciarCaja = () => {
+    new GestorInstalacion(caja).reiniciar();
+    new GestorSoftware(caja).reiniciar();
+    setConfirmandoReinicio(false);
+    setVersionCaja(v => v + 1);
+    window.scrollTo(0, 0);
+  };
 
   const irASoftware = () => refSoftware.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -63,13 +77,47 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
       {/* Sección Instalación Xstore */}
       <div style={{ backgroundColor: 'var(--fondo-base)' }}>
         <Titulo texto="Instalación Xstore" />
-        <PantallaInstalacion caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => setSeccionActiva('xstore')} onIrASoftware={irASoftware} />
+        <PantallaInstalacion key={`instalacion-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => setSeccionActiva('xstore')} onIrASoftware={irASoftware} />
       </div>
 
       {/* Sección Software (leve cambio de fondo + separador) */}
       <div ref={refSoftware} className="border-t" style={{ backgroundColor: 'color-mix(in srgb, var(--acento) 5%, var(--fondo-base))', borderColor: 'var(--borde)', scrollMarginTop: 64 }}>
         <Titulo texto="Software y aplicaciones" />
-        <PantallaSoftware caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => setSeccionActiva('software')} />
+        <PantallaSoftware key={`software-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => setSeccionActiva('software')} />
+      </div>
+
+      {/* Un solo reinicio para toda la caja */}
+      <div className="w-full max-w-sm mx-auto px-5 pt-2 pb-8">
+        {confirmandoReinicio ? (
+          <div className="space-y-3 rounded-xl border p-4" style={{ borderColor: 'var(--error)', backgroundColor: 'color-mix(in srgb, var(--error) 8%, transparent)' }}>
+            <p className="text-sm font-semibold" style={{ color: 'var(--error)' }}>¿Reiniciar la caja {caja}?</p>
+            <p className="text-xs" style={{ color: 'var(--texto-secundario)' }}>Se desmarcarán los pasos de Xstore y los programas de esta caja, y se borrarán sus datos y fotos. La otra caja no se toca.</p>
+            <div className="flex gap-2">
+              <button
+                onClick={reiniciarCaja}
+                className="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-colors"
+                style={{ backgroundColor: 'var(--error)', color: '#fff' }}
+              >
+                Sí, reiniciar
+              </button>
+              <button
+                onClick={() => setConfirmandoReinicio(false)}
+                className="flex-1 py-2.5 border text-sm rounded-xl transition-colors"
+                style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmandoReinicio(true)}
+            className="w-full py-3 border text-sm rounded-xl transition-colors"
+            style={{ borderColor: 'color-mix(in srgb, var(--error) 40%, transparent)', color: 'var(--error)' }}
+          >
+            Reiniciar caja {caja}
+          </button>
+        )}
       </div>
     </div>
   );

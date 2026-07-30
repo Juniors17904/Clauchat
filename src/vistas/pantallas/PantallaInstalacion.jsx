@@ -79,7 +79,6 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
     abrirFotosGuardadas(lista, Math.max(0, lista.findIndex(g => g.src === src)));
   };
   const cerrarGaleria = () => { setUltimaImagen(galeriaRef.current?.[indiceGalRef.current]?.src ?? null); setGaleria(null); };
-  const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
   const [reconociendo, setReconociendo] = useState(null);
   const [avisoCampo, setAvisoCampo] = useState(null);
   const [camposAbiertos, setCamposAbiertos] = useState(new Set());
@@ -817,38 +816,6 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
           );
         })}
 
-        {/* Reiniciar */}
-        {completados > 0 && (
-          confirmandoReinicio ? (
-            <div className="space-y-3 mt-6">
-              <p className="text-xs" style={{ color: 'var(--error)' }}>¿Reiniciar el checklist? Se desmarcarán los {completados} pasos.</p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => { gestor.current.reiniciar(); setConfirmandoReinicio(false); setVersion(v => v + 1); }}
-                  className="flex-1 py-2.5 text-sm rounded-xl transition-colors"
-                  style={{ backgroundColor: 'var(--error)', color: '#fff' }}
-                >
-                  Confirmar
-                </button>
-                <button
-                  onClick={() => setConfirmandoReinicio(false)}
-                  className="flex-1 py-2.5 border text-sm rounded-xl transition-colors"
-                  style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setConfirmandoReinicio(true)}
-              className="w-full mt-6 py-3 border text-sm rounded-xl transition-colors"
-              style={{ borderColor: 'color-mix(in srgb, var(--error) 40%, transparent)', color: 'var(--error)' }}
-            >
-              Reiniciar checklist
-            </button>
-          )
-        )}
       </div>
 
       {/* Galería con zoom y deslizar entre imágenes */}
