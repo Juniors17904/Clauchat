@@ -31,6 +31,10 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false,
   const pasosRef = useRef({});
   const indiceGaleriaRef = useRef(0);
   const [, setVersion] = useState(0);
+
+  useEffect(() => {
+    gestor.current = new GestorSoftware(caja);
+  }, [caja]);
   const [abierto, setAbierto] = useState(null);
   const [indiceGaleria, setIndiceGaleria] = useState(null);
   const [ultimaImagen, setUltimaImagen] = useState(null);

@@ -35,6 +35,12 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
   // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
   const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
   const gestorDeCaja = (nc) => (nc === caja ? gestor.current : otroGestor.current);
+
+  useEffect(() => {
+    gestor.current = new GestorInstalacion(caja);
+    otroGestor.current = new GestorInstalacion(caja === 2 ? 1 : 2);
+  }, [caja]);
+
   const compresor = useRef(new CompresorImagen());
   const mejorador = useRef(new MejoradorImagen());
   const reconocedor = useRef(new ReconocedorTexto());
