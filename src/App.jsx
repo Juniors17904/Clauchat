@@ -179,15 +179,18 @@ export default function App() {
     const deTema = EJERCICIOS.filter(e => e.temaId === pos.tema.id);
     const nivel = NIVELES.find(n => n.id === pos.tema.nivelId) ?? null;
     const area = nivel ? ([...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === nivel.areaId) ?? null) : null;
+    // Si el tema recién empieza, primero la sintaxis y el ejemplo; si viene a medias, al ejercicio
+    const temaNuevo = pos.completados === 0;
+    const destino = temaNuevo ? 'concepto' : 'editor';
     navegar('adelante', () => {
       setAreaActual(area);
       setNivelActual(nivel);
       setTemaActual(pos.tema);
-      setEjerciciosOrdenados(deTema);
-      setEjercicioActual(pos.ejercicio);
-      setPantalla('editor');
+      setEjerciciosOrdenados(temaNuevo ? [...deTema].sort(() => Math.random() - 0.5) : deTema);
+      setEjercicioActual(temaNuevo ? null : pos.ejercicio);
+      setPantalla(destino);
     });
-    window.history.pushState({ pantalla: 'editor', areaId: area?.id, nivelId: nivel?.id, temaId: pos.tema.id }, '');
+    window.history.pushState({ pantalla: destino, areaId: area?.id, nivelId: nivel?.id, temaId: pos.tema.id }, '');
   };
 
   const irAEmpezar = () => {
