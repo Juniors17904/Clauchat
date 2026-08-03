@@ -6,6 +6,7 @@ import { CompresorImagen } from '../../modelos/compresor_imagen';
 import { MejoradorImagen } from '../../modelos/mejorador_imagen';
 import { ReconocedorTexto } from '../../modelos/reconocedor_texto';
 import VisorGaleria from '../VisorGaleria';
+import CapturaEncuadrada from '../CapturaEncuadrada';
 
 // Lista plana de las imágenes del manual, para navegar en galería
 const GALERIA_MANUAL = PASOS_INSTALACION.flatMap(p =>
@@ -137,6 +138,18 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
   };
   const campoActivo = useRef(null);
   const vieneDeCamara = useRef(false);
+  const [captura, setCaptura] = useState(null);
+
+  // Abre la cámara con encuadre; si el equipo no la deja usar, cae en la cámara del sistema
+  const abrirCamara = (campo, paso) => {
+    campoActivo.current = campo;
+    vieneDeCamara.current = true;
+    if (navigator.mediaDevices?.getUserMedia) {
+      setCaptura({ campo, paso });
+    } else {
+      archivoCamaraRef.current?.click();
+    }
+  };
   const archivoCamaraRef = useRef(null);
   const pasosRef = useRef({});
   const encabezadoRef = useRef(null);
@@ -188,8 +201,12 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
 
   const subirFoto = async (e, paso) => {
     const archivo = e.target.files?.[0];
-    const campo = campoActivo.current;
     e.target.value = '';
+    if (!archivo) return;
+    await procesarFoto(archivo, campoActivo.current, paso);
+  };
+
+  const procesarFoto = async (archivo, campo, paso) => {
     if (!archivo || !campo) return;
     setAvisoCampo(null);
     try {
@@ -588,7 +605,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                                         )}
                                         <div className="absolute bottom-1.5 right-1.5 flex gap-1.5">
                                           <button
-                                            onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => abrirCamara('__paso', paso)}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Tomar otra foto"
                                           >
@@ -613,7 +630,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                                     ) : (
                                       <div className="flex gap-2">
                                         <button
-                                          onClick={() => { campoActivo.current = '__paso'; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
+                                          onClick={() => abrirCamara('__paso', paso)}                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
                                         >
                                           📷 Tomar foto de la pantalla de red
@@ -673,7 +690,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                                         )}
                                         <div className="absolute bottom-1.5 right-1.5 flex gap-1.5">
                                           <button
-                                            onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
+                                            onClick={() => abrirCamara(campo, paso)}                                            className="w-8 h-8 rounded-lg text-xs flex items-center justify-center backdrop-blur-sm disabled:opacity-40"
                                             style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
                                             title="Tomar otra foto"
                                           >
@@ -698,7 +715,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                                     ) : (
                                       <div className="flex gap-2 mb-2">
                                         <button
-                                          onClick={() => { campoActivo.current = campo; vieneDeCamara.current = true; archivoCamaraRef.current?.click(); }}                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
+                                          onClick={() => abrirCamara(campo, paso)}                                          className="flex-1 py-2.5 border border-dashed rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
                                           style={{ borderColor: 'var(--acento)', color: 'var(--acento)' }}
                                         >
                                           📷 Tomar foto
@@ -827,6 +844,19 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
           indiceInicial={galeria.indice}
           onCambioIndice={(i) => { indiceGalRef.current = i; }}
           onCerrar={cerrarGaleria}
+        />
+      )}
+
+      {/* Cámara con encuadre: se guarda solo lo que quedó dentro del marco */}
+      {captura && (
+        <CapturaEncuadrada
+          titulo={captura.campo === '__paso' ? `Paso ${captura.paso.numero}` : captura.campo}
+          onCerrar={() => setCaptura(null)}
+          onTomar={async (archivo) => {
+            const { campo, paso } = captura;
+            setCaptura(null);
+            await procesarFoto(archivo, campo, paso);
+          }}
         />
       )}
     </div>
