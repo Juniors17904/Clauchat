@@ -1,12 +1,14 @@
+import { ClaveCaja } from './clave_caja.js';
+
 export class GestorSoftware {
   #completados;
   #clave;
   #claveUltimo;
 
   constructor(caja = 1) {
-    const sufijo = caja === 2 ? '_caja2' : '';
-    this.#clave = `sqlab_software${sufijo}`;
-    this.#claveUltimo = `sqlab_software_ultimo${sufijo}`;
+    const clave = new ClaveCaja(caja);
+    this.#clave = clave.para('sqlab_software');
+    this.#claveUltimo = clave.para('sqlab_software_ultimo');
     try {
       this.#completados = new Set(JSON.parse(localStorage.getItem(this.#clave) ?? '[]'));
     } catch {

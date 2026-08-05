@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { GestorSoftware } from '../../modelos/gestor_software';
+import { RegistroCajas } from '../../modelos/registro_cajas';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 
@@ -9,10 +10,24 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
   const totalSoftware = PROGRAMAS_SOFTWARE.length;
   const [confirmandoBorrado, setConfirmandoBorrado] = useState(false);
   const [, setVersion] = useState(0);
+  const registro = useRef(new RegistroCajas());
+  const [cajas, setCajas] = useState(registro.current.lista);
+  const [confirmandoQuitar, setConfirmandoQuitar] = useState(false);
 
-  // Borra TODO el avance: Xstore y Software, ambas cajas, con sus datos y fotos
+  const agregarCaja = () => {
+    registro.current.agregar();
+    setCajas(registro.current.lista);
+  };
+
+  const quitarUltimaCaja = () => {
+    registro.current.quitarUltima();
+    setCajas(registro.current.lista);
+    setConfirmandoQuitar(false);
+  };
+
+  // Borra TODO el avance: Xstore y Software, de todas las cajas, con sus datos y fotos
   const borrarTodo = () => {
-    for (const caja of [1, 2]) {
+    for (const caja of registro.current.lista) {
       new GestorInstalacion(caja).reiniciar();
       new GestorSoftware(caja).reiniciar();
     }
@@ -41,7 +56,8 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
     },
   ];
 
-  const colorCaja = (caja) => (caja === 1 ? 'var(--acento)' : '#39c5cf');
+  const COLORES_CAJA = ['var(--acento)', '#39c5cf', '#d29922', '#8250df', '#f78166', '#3fb950'];
+  const colorCaja = (caja) => COLORES_CAJA[(caja - 1) % COLORES_CAJA.length];
 
   return (
     <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
@@ -53,9 +69,9 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
         <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--texto-primario)' }}>Herramientas técnicas</h1>
         <p className="text-sm mb-6" style={{ color: 'var(--texto-secundario)' }}>Elegí primero la caja y después qué instalar</p>
 
-        {/* Dos tarjetas: una por caja (Caja 2 y Caja 1). Dentro, las dos herramientas */}
+        {/* Una tarjeta por caja. Dentro, las dos herramientas */}
         <div className="grid grid-cols-2 gap-3">
-          {[2, 1].map(caja => {
+          {[...cajas].reverse().map(caja => {
             const color = colorCaja(caja);
             return (
               <div key={caja} className="rounded-2xl border p-4 flex flex-col" style={{ backgroundColor: 'var(--fondo-panel)', borderColor: color }}>
@@ -95,11 +111,48 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
           })}
         </div>
 
+        {/* Agregar o quitar cajas: hay tiendas con tres o más */}
+        <div className="flex gap-2 mt-3">
+          {registro.current.puedeAgregar && (
+            <button
+              onClick={agregarCaja}
+              className="flex-1 py-3 border border-dashed rounded-xl text-sm font-medium transition-colors"
+              style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+            >
+              + Agregar caja
+            </button>
+          )}
+          {registro.current.puedeQuitar && (
+            <button
+              onClick={() => setConfirmandoQuitar(true)}
+              className="px-4 py-3 border rounded-xl text-sm transition-colors"
+              style={{ borderColor: 'var(--borde)', color: 'var(--texto-tenue)' }}
+            >
+              Quitar caja {cajas.length}
+            </button>
+          )}
+        </div>
+
+        {confirmandoQuitar && (
+          <div className="space-y-3 mt-2 rounded-xl border p-4" style={{ borderColor: 'var(--error)', backgroundColor: 'color-mix(in srgb, var(--error) 8%, transparent)' }}>
+            <p className="text-sm font-semibold" style={{ color: 'var(--error)' }}>¿Quitar la caja {cajas.length}?</p>
+            <p className="text-xs" style={{ color: 'var(--texto-secundario)' }}>Se borra su avance con sus datos y fotos. Las demás cajas no se tocan.</p>
+            <div className="flex gap-2">
+              <button onClick={quitarUltimaCaja} className="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-colors" style={{ backgroundColor: 'var(--error)', color: '#fff' }}>
+                Sí, quitar
+              </button>
+              <button onClick={() => setConfirmandoQuitar(false)} className="flex-1 py-2.5 border text-sm rounded-xl transition-colors" style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Borrar todo el avance */}
         {confirmandoBorrado ? (
           <div className="space-y-3 mt-2 rounded-xl border p-4" style={{ borderColor: 'var(--error)', backgroundColor: 'color-mix(in srgb, var(--error) 8%, transparent)' }}>
             <p className="text-sm font-semibold" style={{ color: 'var(--error)' }}>¿Borrar TODO el avance?</p>
-            <p className="text-xs" style={{ color: 'var(--texto-secundario)' }}>Se desmarcarán todos los pasos y programas de las dos cajas, y se borrarán los datos y fotos guardados. No se puede deshacer.</p>
+            <p className="text-xs" style={{ color: 'var(--texto-secundario)' }}>Se desmarcarán todos los pasos y programas de todas las cajas, y se borrarán los datos y fotos guardados. No se puede deshacer.</p>
             <div className="flex gap-2">
               <button onClick={borrarTodo} className="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-colors" style={{ backgroundColor: 'var(--error)', color: '#fff' }}>
                 Sí, borrar todo

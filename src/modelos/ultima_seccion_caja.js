@@ -1,11 +1,12 @@
 // Recuerda en cuál de las dos partes de la caja se trabajó por última vez: la instalación
 // de Xstore o la de software y aplicaciones. Así, al volver a esa caja, se retoma ahí mismo.
+import { ClaveCaja } from './clave_caja.js';
+
 export class UltimaSeccionCaja {
   #clave;
 
   constructor(caja = 1) {
-    const sufijo = caja === 2 ? '_caja2' : '';
-    this.#clave = `sqlab_caja_seccion${sufijo}`;
+    this.#clave = new ClaveCaja(caja).para('sqlab_caja_seccion');
   }
 
   get seccion() {

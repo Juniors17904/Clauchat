@@ -1,4 +1,5 @@
 import { MigradorPasosInstalacion } from './migrador_pasos_instalacion.js';
+import { ClaveCaja } from './clave_caja.js';
 
 export class GestorInstalacion {
   #completados;
@@ -8,11 +9,11 @@ export class GestorInstalacion {
   #claveUltimo;
 
   constructor(caja = 1) {
-    // Caja 1 usa las claves originales; caja 2 las suyas propias
-    const sufijo = caja === 2 ? '_caja2' : '';
-    this.#clave = `sqlab_instalacion${sufijo}`;
-    this.#claveDatos = `sqlab_instalacion_datos${sufijo}`;
-    this.#claveUltimo = `sqlab_instalacion_ultimo${sufijo}`;
+    // Cada caja guarda lo suyo; la caja 1 mantiene los nombres originales
+    const clave = new ClaveCaja(caja);
+    this.#clave = clave.para('sqlab_instalacion');
+    this.#claveDatos = clave.para('sqlab_instalacion_datos');
+    this.#claveUltimo = clave.para('sqlab_instalacion_ultimo');
     // Antes de leer, poner el avance guardado en la numeración vigente
     new MigradorPasosInstalacion(caja).migrar();
     try {

@@ -1,6 +1,8 @@
 // Cuando se inserta un paso nuevo al inicio de la guía, los pasos siguientes cambian de número.
 // El avance guardado (pasos hechos, datos, fotos y último paso visto) está identificado por ese
 // número, así que hay que correrlo igual. Se hace una sola vez por caja, marcando la versión.
+import { ClaveCaja } from './clave_caja.js';
+
 export class MigradorPasosInstalacion {
   #claveCompletados;
   #claveDatos;
@@ -10,11 +12,11 @@ export class MigradorPasosInstalacion {
   #desplazamiento;
 
   constructor(caja = 1, version = 2, desplazamiento = 1) {
-    const sufijo = caja === 2 ? '_caja2' : '';
-    this.#claveCompletados = `sqlab_instalacion${sufijo}`;
-    this.#claveDatos = `sqlab_instalacion_datos${sufijo}`;
-    this.#claveUltimo = `sqlab_instalacion_ultimo${sufijo}`;
-    this.#claveVersion = `sqlab_instalacion_version${sufijo}`;
+    const clave = new ClaveCaja(caja);
+    this.#claveCompletados = clave.para('sqlab_instalacion');
+    this.#claveDatos = clave.para('sqlab_instalacion_datos');
+    this.#claveUltimo = clave.para('sqlab_instalacion_ultimo');
+    this.#claveVersion = clave.para('sqlab_instalacion_version');
     this.#version = version;
     this.#desplazamiento = desplazamiento;
   }

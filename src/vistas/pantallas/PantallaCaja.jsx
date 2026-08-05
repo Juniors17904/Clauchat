@@ -4,12 +4,23 @@ import PantallaSoftware from './PantallaSoftware';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { GestorSoftware } from '../../modelos/gestor_software';
 import { UltimaSeccionCaja } from '../../modelos/ultima_seccion_caja';
+import { RegistroCajas } from '../../modelos/registro_cajas';
 
 // Pantalla única por caja: Instalación Xstore + Software en una sola lista continua.
 // Cada parte tiene su título y un leve cambio de fondo para diferenciarlas.
+const COLORES_CAJA = ['var(--acento)', '#39c5cf', '#d29922', '#8250df', '#f78166', '#3fb950'];
+
 export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVolver, onCambiarCaja }) {
   const refSoftware = useRef(null);
-  const color = caja === 1 ? 'var(--acento)' : '#39c5cf';
+  const color = COLORES_CAJA[(caja - 1) % COLORES_CAJA.length];
+  const registro = useRef(new RegistroCajas());
+  const [cajas, setCajas] = useState(registro.current.lista);
+
+  const agregarCaja = () => {
+    const nueva = registro.current.agregar();
+    setCajas(registro.current.lista);
+    onCambiarCaja?.(nueva);
+  };
   // Solo una sección resalta su último punto a la vez (la última donde se trabajó)
   const [seccionActiva, setSeccionActiva] = useState(seccionInicial);
   // La caja recuerda en qué parte se trabajó, para retomar ahí al volver a ella
@@ -60,8 +71,8 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-bold" style={{ color }}>Caja {caja}</h1>
             {onCambiarCaja && (
-              <div className="flex gap-1.5">
-                {[1, 2].map(n => (
+              <div className="flex gap-1.5 flex-wrap justify-end">
+                {cajas.map(n => (
                   <button
                     key={n}
                     onClick={() => n !== caja && onCambiarCaja(n)}
@@ -75,6 +86,15 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
                     Caja {n}
                   </button>
                 ))}
+                {registro.current.puedeAgregar && (
+                  <button
+                    onClick={agregarCaja}
+                    className="w-7 h-7 rounded-full text-sm font-medium flex items-center justify-center transition-colors"
+                    style={{ backgroundColor: 'var(--fondo-panel)', color: 'var(--texto-secundario)', border: '1px dashed var(--borde)' }}
+                  >
+                    +
+                  </button>
+                )}
               </div>
             )}
           </div>
