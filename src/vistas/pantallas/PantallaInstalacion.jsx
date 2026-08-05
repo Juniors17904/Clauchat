@@ -7,6 +7,7 @@ import { MejoradorImagen } from '../../modelos/mejorador_imagen';
 import { ReconocedorTexto } from '../../modelos/reconocedor_texto';
 import VisorGaleria from '../VisorGaleria';
 import CapturaEncuadrada from '../CapturaEncuadrada';
+import EtiquetaCaja from '../EtiquetaCaja';
 
 // Lista plana de las imágenes del manual, para navegar en galería
 const GALERIA_MANUAL = PASOS_INSTALACION.flatMap(p =>
@@ -392,6 +393,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                             <span className="font-mono text-sm mr-1.5" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--acento)' }}>{paso.numero}.</span>
                             {paso.titulo}
                           </p>
+                          {paso.avisoCaja && <EtiquetaCaja texto={paso.avisoCaja} />}
                         </button>
 
                         {/* Indicadores */}
@@ -424,6 +426,7 @@ export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware,
                                   <p className="text-base font-bold leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
                                     <span className="font-mono text-sm mr-1.5" style={{ color: 'var(--acento)' }}>{paso.numero}.</span>{paso.titulo}
                                   </p>
+                                  {paso.avisoCaja && <EtiquetaCaja texto={paso.avisoCaja} />}
                                 </div>
                                 <button
                                   onClick={() => marcarConCheck(paso.numero)}

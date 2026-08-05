@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 import { GestorSoftware } from '../../modelos/gestor_software';
 import VisorGaleria from '../VisorGaleria';
+import EtiquetaCaja from '../EtiquetaCaja';
 
 // Lista plana de todas las imágenes con su punto, para navegar en galería
 const GALERIA = PROGRAMAS_SOFTWARE.flatMap(p =>
@@ -249,6 +250,7 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false,
                       {programa.nombre}
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: 'var(--texto-tenue)' }}>{programa.descripcion}</p>
+                    {programa.avisoCaja && <EtiquetaCaja texto={programa.avisoCaja} />}
                   </button>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     {programa.imagenes.length > 0 && (
@@ -277,6 +279,7 @@ export default function PantallaSoftware({ onVolver, caja = 1, embebido = false,
                             <p className="text-base font-bold leading-snug" style={{ color: completado ? 'var(--texto-tenue)' : 'var(--texto-primario)', textDecoration: completado ? 'line-through' : 'none' }}>
                               <span className="font-mono text-sm mr-1.5" style={{ color: 'var(--acento)' }}>{programa.numero}.</span>{programa.nombre}
                             </p>
+                            {programa.avisoCaja && <EtiquetaCaja texto={programa.avisoCaja} />}
                           </div>
                           <button
                             onClick={() => marcarConCheck(programa)}

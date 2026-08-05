@@ -188,6 +188,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 22,
     titulo: 'Copiar archivos TOTP Authentication',
+    avisoCaja: 'SOLO CAJA 1',
     detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCopiar TODO el contenido de la primera ruta y pegarlo en la segunda.',
     faseId: 'cuenta-dominio-instalacion',
     ubicaciones: ['C:\\staging\\environment-files\\PROD\\security\\Xenvironment TOTP Authentication', 'C:\\xstoredata\\xstore\\download'],
@@ -196,6 +197,7 @@ export const PASOS_INSTALACION = [
   new PasoInstalacion({
     numero: 23,
     titulo: 'Ejecutar dataloader2.bat',
+    avisoCaja: 'SOLO CAJA 1',
     detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nCuando den la CONFIRMACIÓN DEL DESPLIEGUE DEL XADMIN, ejecutarlo.',
     faseId: 'cuenta-dominio-instalacion',
     ubicaciones: ['C:\\xstore'],

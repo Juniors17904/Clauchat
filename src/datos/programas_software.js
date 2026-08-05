@@ -73,6 +73,7 @@ export const PROGRAMAS_SOFTWARE = [
   new ProgramaSoftware({
     numero: 8,
     id: 'geovictoria',
+    avisoCaja: 'SOLO EN 1 CAJA',
     nombre: 'Instalación de GeoVictoria',
     descripcion: 'Biométrico',
     detalle: 'Primero instalar el controlador del biométrico (huellero). Ruta de instaladores:\n[[D:\\Instaladores\\HUELLERO]]\n\nLuego instalar GeoVictoria.',
@@ -99,7 +100,15 @@ export const PROGRAMAS_SOFTWARE = [
   }),
   new ProgramaSoftware({
     numero: 11,
+    id: 'limapass',
+    nombre: 'Instalación de Limapass',
+    descripcion: 'Solo en 1 caja',
+    avisoCaja: 'SOLO EN 1 CAJA',
+  }),
+  new ProgramaSoftware({
+    numero: 12,
     id: 'abrir-xstore-enroll',
+    avisoCaja: 'SOLO CAJA 1',
     nombre: 'Abrir Xstore y dejar Chrome en enroll',
     descripcion: 'Paso final — solo en caja 1',
     detalle: 'Solo en la caja 1 (en caja 2 omitir este paso).\n\nAbrir Xstore y dejar Google Chrome con la página de enroll:\n[[https://localhost:9096/cloudenroll]]',

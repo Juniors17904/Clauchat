@@ -7,8 +7,9 @@ export class ProgramaSoftware {
   #imagenes;
 
   #notas;
+  #avisoCaja;
 
-  constructor({ numero, id, nombre, descripcion, detalle = '', imagenes = [], notas = {} }) {
+  constructor({ numero, id, nombre, descripcion, detalle = '', imagenes = [], notas = {}, avisoCaja = null }) {
     this.#numero = numero;
     this.#id = id;
     this.#nombre = nombre;
@@ -16,6 +17,7 @@ export class ProgramaSoftware {
     this.#detalle = detalle;
     this.#imagenes = imagenes;
     this.#notas = notas;
+    this.#avisoCaja = avisoCaja;
   }
 
   get numero() { return this.#numero; }
@@ -24,5 +26,7 @@ export class ProgramaSoftware {
   get descripcion() { return this.#descripcion; }
   get detalle() { return this.#detalle; }
   get imagenes() { return [...this.#imagenes]; }
+  // Aviso de en qué caja va, para no instalarlo dos veces
+  get avisoCaja() { return this.#avisoCaja; }
   notaDe(src) { return this.#notas[src] ?? null; }
 }
