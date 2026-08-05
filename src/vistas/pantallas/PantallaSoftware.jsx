@@ -27,8 +27,8 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaSoftware({ onVolver, caja = 1, embebido = false, activarRetomar = false, resaltarUltimo = true, onTrabajo }) {
-  const gestor = useRef(new GestorSoftware(caja));
+export default function PantallaSoftware({ onVolver, tienda, caja = 1, embebido = false, activarRetomar = false, resaltarUltimo = true, onTrabajo }) {
+  const gestor = useRef(new GestorSoftware(caja, tienda.id));
   const pasosRef = useRef({});
   const indiceGaleriaRef = useRef(0);
   const [, setVersion] = useState(0);

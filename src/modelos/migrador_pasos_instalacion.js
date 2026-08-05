@@ -11,8 +11,8 @@ export class MigradorPasosInstalacion {
   #version;
   #desplazamiento;
 
-  constructor(caja = 1, version = 2, desplazamiento = 1) {
-    const clave = new ClaveCaja(caja);
+  constructor(caja = 1, tiendaId = 'tambo', version = 2, desplazamiento = 1) {
+    const clave = new ClaveCaja(caja, tiendaId);
     this.#claveCompletados = clave.para('sqlab_instalacion');
     this.#claveDatos = clave.para('sqlab_instalacion_datos');
     this.#claveUltimo = clave.para('sqlab_instalacion_ultimo');

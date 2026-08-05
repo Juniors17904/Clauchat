@@ -10,6 +10,7 @@ import PantallaEditor from './vistas/pantallas/PantallaEditor';
 import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import PantallaRecordatorios from './vistas/pantallas/PantallaRecordatorios';
 import PantallaHerramientas from './vistas/pantallas/PantallaHerramientas';
+import PantallaTiendas from './vistas/pantallas/PantallaTiendas';
 import PantallaCaja from './vistas/pantallas/PantallaCaja';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
@@ -20,6 +21,7 @@ import { ControladorRecordatorios } from './controladores/controlador_recordator
 import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
 import { UltimaSeccionCaja } from './modelos/ultima_seccion_caja';
+import { TIENDAS } from './datos/tiendas';
 
 export default function App() {
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
@@ -31,6 +33,7 @@ export default function App() {
   const [ejerciciosOrdenados, setEjerciciosOrdenados] = useState([]);
   const [cajaInstalacion, setCajaInstalacion] = useState(1);
   const [seccionCaja, setSeccionCaja] = useState('xstore');
+  const [tiendaActual, setTiendaActual] = useState(TIENDAS[0]);
   const ctrlPerfil = useRef(new ControladorPerfil());
   const ctrlRecordatorios = useRef(new ControladorRecordatorios());
   useRef(new GestorTemas());
@@ -56,6 +59,7 @@ export default function App() {
       navegar('atras', () => {
         if (estado.caja) setCajaInstalacion(estado.caja);
         if (estado.seccion) setSeccionCaja(estado.seccion);
+        if (estado.tiendaId) setTiendaActual(TIENDAS.find(t => t.id === estado.tiendaId) ?? TIENDAS[0]);
 
         if (estado.areaId) {
           const area = [...AREAS, ...AREAS_ESPECIALIZACION].find(a => a.id === estado.areaId);
@@ -147,11 +151,19 @@ export default function App() {
     window.history.pushState({ pantalla: 'recordatorios' }, '');
   };
 
-  const irAHerramientas = () => {
+  const irATiendas = () => {
     navegar('adelante', () => {
+      setPantalla('tiendas');
+    });
+    window.history.pushState({ pantalla: 'tiendas' }, '');
+  };
+
+  const irAHerramientas = (tienda) => {
+    navegar('adelante', () => {
+      setTiendaActual(tienda);
       setPantalla('herramientas');
     });
-    window.history.pushState({ pantalla: 'herramientas' }, '');
+    window.history.pushState({ pantalla: 'herramientas', tiendaId: tienda.id }, '');
   };
 
   const irACaja = (caja, seccion) => {
@@ -160,15 +172,15 @@ export default function App() {
       setSeccionCaja(seccion);
       setPantalla('caja');
     });
-    window.history.pushState({ pantalla: 'caja', caja, seccion }, '');
+    window.history.pushState({ pantalla: 'caja', caja, seccion, tiendaId: tiendaActual.id }, '');
   };
   // Cambiar de caja lleva a la parte donde se trabajó por última vez en ESA caja.
   // Reemplaza la entrada actual del historial: no apila, así "volver" sale de una vez.
   const cambiarCaja = (caja) => {
-    const seccion = new UltimaSeccionCaja(caja).seccion;
+    const seccion = new UltimaSeccionCaja(caja, tiendaActual.id).seccion;
     setCajaInstalacion(caja);
     setSeccionCaja(seccion);
-    window.history.replaceState({ pantalla: 'caja', caja, seccion }, '');
+    window.history.replaceState({ pantalla: 'caja', caja, seccion, tiendaId: tiendaActual.id }, '');
   };
   const irAInstalacion = (caja = 1) => irACaja(caja, 'xstore');
   const irASoftware = (caja = 1) => irACaja(caja, 'software');
@@ -218,9 +230,14 @@ export default function App() {
     return <PantallaArbol onVolver={() => window.history.back()} />;
   }
 
+  if (pantalla === 'tiendas') {
+    return <PantallaTiendas onElegir={irAHerramientas} onVolver={() => window.history.back()} />;
+  }
+
   if (pantalla === 'herramientas') {
     return (
       <PantallaHerramientas
+        tienda={tiendaActual}
         onVolver={() => window.history.back()}
         onXstore={irAInstalacion}
         onSoftware={irASoftware}
@@ -231,7 +248,7 @@ export default function App() {
   if (pantalla === 'caja') {
     // key por caja: al cambiar de caja la pantalla se rearma desde cero, igual que al entrar,
     // para que cargue el avance de esa caja y se enfoque su último punto
-    return <PantallaCaja key={cajaInstalacion} caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} onCambiarCaja={cambiarCaja} />;
+    return <PantallaCaja key={`${tiendaActual.id}-${cajaInstalacion}`} tienda={tiendaActual} caja={cajaInstalacion} seccionInicial={seccionCaja} onVolver={() => window.history.back()} onCambiarCaja={cambiarCaja} />;
   }
 
   if (pantalla === 'base-datos') {
@@ -317,7 +334,7 @@ export default function App() {
       controladorPerfil={ctrlPerfil.current}
       onVerArbol={irAArbol}
       onRecordatorios={irARecordatorios}
-      onInstalacion={irAHerramientas}
+      onInstalacion={irATiendas}
       needRefresh={needRefresh}
       onActualizar={() => updateServiceWorker(true)}
       ultimaPosicion={ultimaPosicion}

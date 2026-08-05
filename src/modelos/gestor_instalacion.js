@@ -8,14 +8,14 @@ export class GestorInstalacion {
   #claveDatos;
   #claveUltimo;
 
-  constructor(caja = 1) {
-    // Cada caja guarda lo suyo; la caja 1 mantiene los nombres originales
-    const clave = new ClaveCaja(caja);
+  constructor(caja = 1, tiendaId = 'tambo') {
+    // Cada tienda y caja guarda lo suyo; Tambo caja 1 mantiene los nombres originales
+    const clave = new ClaveCaja(caja, tiendaId);
     this.#clave = clave.para('sqlab_instalacion');
     this.#claveDatos = clave.para('sqlab_instalacion_datos');
     this.#claveUltimo = clave.para('sqlab_instalacion_ultimo');
     // Antes de leer, poner el avance guardado en la numeración vigente
-    new MigradorPasosInstalacion(caja).migrar();
+    new MigradorPasosInstalacion(caja, tiendaId).migrar();
     try {
       this.#completados = new Set(JSON.parse(localStorage.getItem(this.#clave) ?? '[]'));
     } catch {

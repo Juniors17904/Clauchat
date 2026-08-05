@@ -5,12 +5,12 @@ import { RegistroCajas } from '../../modelos/registro_cajas';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 
-export default function PantallaHerramientas({ onVolver, onXstore, onSoftware }) {
+export default function PantallaHerramientas({ tienda, onVolver, onXstore, onSoftware }) {
   const totalXstore = PASOS_INSTALACION.length;
   const totalSoftware = PROGRAMAS_SOFTWARE.length;
   const [confirmandoBorrado, setConfirmandoBorrado] = useState(false);
   const [, setVersion] = useState(0);
-  const registro = useRef(new RegistroCajas());
+  const registro = useRef(new RegistroCajas(tienda.id));
   const [cajas, setCajas] = useState(registro.current.lista);
   const [confirmandoQuitar, setConfirmandoQuitar] = useState(false);
 
@@ -28,8 +28,8 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
   // Borra TODO el avance: Xstore y Software, de todas las cajas, con sus datos y fotos
   const borrarTodo = () => {
     for (const caja of registro.current.lista) {
-      new GestorInstalacion(caja).reiniciar();
-      new GestorSoftware(caja).reiniciar();
+      new GestorInstalacion(caja, tienda.id).reiniciar();
+      new GestorSoftware(caja, tienda.id).reiniciar();
     }
     setConfirmandoBorrado(false);
     setVersion(v => v + 1);
@@ -42,7 +42,7 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
       descripcion: 'Guía paso a paso para instalar la imagen y configurar Xstore.',
       icono: '🖥️',
       total: totalXstore,
-      hechos: (caja) => new GestorInstalacion(caja).totalCompletados,
+      hechos: (caja) => new GestorInstalacion(caja, tienda.id).totalCompletados,
       abrir: onXstore,
     },
     {
@@ -51,7 +51,7 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
       descripcion: 'Programas que se instalan después de configurar Xstore.',
       icono: '📦',
       total: totalSoftware,
-      hechos: (caja) => new GestorSoftware(caja).totalCompletados,
+      hechos: (caja) => new GestorSoftware(caja, tienda.id).totalCompletados,
       abrir: onSoftware,
     },
   ];
@@ -66,8 +66,8 @@ export default function PantallaHerramientas({ onVolver, onXstore, onSoftware })
           ← Volver
         </button>
 
-        <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--texto-primario)' }}>Herramientas técnicas</h1>
-        <p className="text-sm mb-6" style={{ color: 'var(--texto-secundario)' }}>Elegí primero la caja y después qué instalar</p>
+        <h1 className="text-2xl font-bold mb-1" style={{ color: tienda.color }}>{tienda.nombre}</h1>
+        <p className="text-sm mb-6" style={{ color: 'var(--texto-secundario)' }}>Elegí la caja y después qué instalar</p>
 
         {/* Una tarjeta por caja. Dentro, las dos herramientas */}
         <div className="grid grid-cols-2 gap-3">

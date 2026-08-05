@@ -5,8 +5,8 @@ export class GestorSoftware {
   #clave;
   #claveUltimo;
 
-  constructor(caja = 1) {
-    const clave = new ClaveCaja(caja);
+  constructor(caja = 1, tiendaId = 'tambo') {
+    const clave = new ClaveCaja(caja, tiendaId);
     this.#clave = clave.para('sqlab_software');
     this.#claveUltimo = clave.para('sqlab_software_ultimo');
     try {

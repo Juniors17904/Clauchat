@@ -5,8 +5,8 @@ import { ClaveCaja } from './clave_caja.js';
 export class UltimaSeccionCaja {
   #clave;
 
-  constructor(caja = 1) {
-    this.#clave = new ClaveCaja(caja).para('sqlab_caja_seccion');
+  constructor(caja = 1, tiendaId = 'tambo') {
+    this.#clave = new ClaveCaja(caja, tiendaId).para('sqlab_caja_seccion');
   }
 
   get seccion() {

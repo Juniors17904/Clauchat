@@ -10,10 +10,10 @@ import { RegistroCajas } from '../../modelos/registro_cajas';
 // Cada parte tiene su título y un leve cambio de fondo para diferenciarlas.
 const COLORES_CAJA = ['var(--acento)', '#39c5cf', '#d29922', '#8250df', '#f78166', '#3fb950'];
 
-export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVolver, onCambiarCaja }) {
+export default function PantallaCaja({ tienda, caja = 1, seccionInicial = 'xstore', onVolver, onCambiarCaja }) {
   const refSoftware = useRef(null);
   const color = COLORES_CAJA[(caja - 1) % COLORES_CAJA.length];
-  const registro = useRef(new RegistroCajas());
+  const registro = useRef(new RegistroCajas(tienda.id));
   const [cajas, setCajas] = useState(registro.current.lista);
 
   const agregarCaja = () => {
@@ -24,7 +24,7 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
   // Solo una sección resalta su último punto a la vez (la última donde se trabajó)
   const [seccionActiva, setSeccionActiva] = useState(seccionInicial);
   // La caja recuerda en qué parte se trabajó, para retomar ahí al volver a ella
-  const memoriaSeccion = useRef(new UltimaSeccionCaja(caja));
+  const memoriaSeccion = useRef(new UltimaSeccionCaja(caja, tienda.id));
   const marcarSeccion = (seccion) => {
     setSeccionActiva(seccion);
     memoriaSeccion.current.guardar(seccion);
@@ -35,8 +35,8 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
 
   // Un solo reinicio por caja: borra los pasos de Xstore (con sus datos y fotos) y los programas
   const reiniciarCaja = () => {
-    new GestorInstalacion(caja).reiniciar();
-    new GestorSoftware(caja).reiniciar();
+    new GestorInstalacion(caja, tienda.id).reiniciar();
+    new GestorSoftware(caja, tienda.id).reiniciar();
     setConfirmandoReinicio(false);
     setVersionCaja(v => v + 1);
     window.scrollTo(0, 0);
@@ -69,7 +69,7 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
             ← Volver
           </button>
           <div className="flex items-center justify-between">
-            <h1 className="text-lg font-bold" style={{ color }}>Caja {caja}</h1>
+            <h1 className="text-lg font-bold" style={{ color }}>{tienda.nombre} · Caja {caja}</h1>
             {onCambiarCaja && (
               <div className="flex gap-1.5 flex-wrap justify-end">
                 {cajas.map(n => (
@@ -104,13 +104,13 @@ export default function PantallaCaja({ caja = 1, seccionInicial = 'xstore', onVo
       {/* Sección Instalación Xstore */}
       <div style={{ backgroundColor: 'var(--fondo-base)' }}>
         <Titulo texto="Instalación Xstore" />
-        <PantallaInstalacion key={`instalacion-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => marcarSeccion('xstore')} onIrASoftware={irASoftware} />
+        <PantallaInstalacion key={`instalacion-${versionCaja}`} tienda={tienda} caja={caja} embebido activarRetomar={seccionInicial === 'xstore'} resaltarUltimo={seccionActiva === 'xstore'} onTrabajo={() => marcarSeccion('xstore')} onIrASoftware={irASoftware} />
       </div>
 
       {/* Sección Software (leve cambio de fondo + separador) */}
       <div ref={refSoftware} className="border-t" style={{ backgroundColor: 'color-mix(in srgb, var(--acento) 5%, var(--fondo-base))', borderColor: 'var(--borde)', scrollMarginTop: 64 }}>
         <Titulo texto="Software y aplicaciones" />
-        <PantallaSoftware key={`software-${versionCaja}`} caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => marcarSeccion('software')} />
+        <PantallaSoftware key={`software-${versionCaja}`} tienda={tienda} caja={caja} embebido activarRetomar={seccionInicial === 'software'} resaltarUltimo={seccionActiva === 'software'} onTrabajo={() => marcarSeccion('software')} />
       </div>
 
       {/* Un solo reinicio para toda la caja */}

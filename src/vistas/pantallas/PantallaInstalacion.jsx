@@ -32,10 +32,10 @@ function renderizarDetalle(texto) {
   });
 }
 
-export default function PantallaInstalacion({ onVolver, caja = 1, onIrASoftware, embebido = false, activarRetomar = false, resaltarUltimo = true, onTrabajo }) {
-  const gestor = useRef(new GestorInstalacion(caja));
+export default function PantallaInstalacion({ onVolver, tienda, caja = 1, onIrASoftware, embebido = false, activarRetomar = false, resaltarUltimo = true, onTrabajo }) {
+  const gestor = useRef(new GestorInstalacion(caja, tienda.id));
   // Gestor de la OTRA caja, para poder ver/jalar sus datos guardados
-  const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2));
+  const otroGestor = useRef(new GestorInstalacion(caja === 2 ? 1 : 2, tienda.id));
   const gestorDeCaja = (nc) => (nc === caja ? gestor.current : otroGestor.current);
   const compresor = useRef(new CompresorImagen());
   const mejorador = useRef(new MejoradorImagen());
