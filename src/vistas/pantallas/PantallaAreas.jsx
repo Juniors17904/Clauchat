@@ -7,6 +7,7 @@ import { GestorTemas } from '../../modelos/gestor_temas';
 import { MetaDiaria } from '../../modelos/meta_diaria';
 import { GestorRespaldo } from '../../modelos/gestor_respaldo';
 import { DescargadorData } from '../../modelos/descargador_data';
+import { SesionGoogle } from '../../modelos/sesion_google';
 import { version } from '../../../package.json';
 
 const UMBRAL_PULL = 65;
@@ -279,6 +280,7 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
   const [textoImportar, setTextoImportar] = useState(null);
   const [avisoImportar, setAvisoImportar] = useState(null);
   const descargador = useRef(new DescargadorData());
+  const sesion = useRef(new SesionGoogle());
   const [descarga, setDescarga] = useState(descargador.current.listo ? 'listo' : null);
 
   const ejerciciosHoy = gestorEstadisticas.current.ejerciciosHoy;
@@ -351,6 +353,19 @@ function TabAjustes({ controladorPerfil, onVerArbol, onRecordatorios, promptInst
             </span>
             <span className="text-xs" style={{ color: 'var(--texto-tenue)' }}>✎</span>
           </button>
+        )}
+
+        {sesion.current.iniciada && (
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-sans truncate" style={{ color: 'var(--texto-tenue)' }}>{sesion.current.correo}</p>
+            <button
+              onClick={() => { sesion.current.cerrar(); window.location.reload(); }}
+              className="text-xs font-sans flex-shrink-0 px-3 py-1.5 border rounded-lg transition-colors"
+              style={{ borderColor: 'var(--borde)', color: 'var(--texto-secundario)' }}
+            >
+              Salir
+            </button>
+          </div>
         )}
       </Seccion>
 

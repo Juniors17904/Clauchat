@@ -11,6 +11,7 @@ import PantallaArbol from './vistas/pantallas/PantallaArbol';
 import PantallaRecordatorios from './vistas/pantallas/PantallaRecordatorios';
 import PantallaHerramientas from './vistas/pantallas/PantallaHerramientas';
 import PantallaTiendas from './vistas/pantallas/PantallaTiendas';
+import PantallaAcceso from './vistas/pantallas/PantallaAcceso';
 import PantallaCaja from './vistas/pantallas/PantallaCaja';
 import { EJERCICIOS } from './datos/ejercicios';
 import { TEMAS } from './datos/temas';
@@ -22,6 +23,7 @@ import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
 import { UltimaSeccionCaja } from './modelos/ultima_seccion_caja';
 import { TIENDAS } from './datos/tiendas';
+import { ControlAcceso } from './modelos/control_acceso';
 
 export default function App() {
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
@@ -39,6 +41,14 @@ export default function App() {
   useRef(new GestorTemas());
   const gestorTransiciones = useRef(new GestorTransiciones());
   const pantallaRef = useRef('areas');
+  const control = useRef(new ControlAcceso());
+  const [pideSesion, setPideSesion] = useState(false);
+
+  // Cada apertura suma un uso; pasadas las libres, hay que entrar con la cuenta
+  useEffect(() => {
+    control.current.registrarUso();
+    setPideSesion(control.current.pideSesion);
+  }, []);
 
   useEffect(() => {
     pantallaRef.current = pantalla;
@@ -214,6 +224,10 @@ export default function App() {
     });
     window.history.pushState({ pantalla: 'niveles', areaId: area.id }, '');
   };
+
+  if (pideSesion) {
+    return <PantallaAcceso onEntrar={() => setPideSesion(false)} />;
+  }
 
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
 
