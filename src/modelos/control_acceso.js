@@ -1,10 +1,7 @@
 import { SesionGoogle } from './sesion_google';
-import { USOS_LIBRES } from '../datos/acceso';
 
-const CLAVE_USOS = 'sqlab_usos';
-
-// Decide si hay que pedir la sesión. Las primeras veces la app se usa sin nada;
-// después pide entrar con la cuenta de Google.
+// Decide si hace falta iniciar sesión. La pantalla de inicio se ve siempre; el pedido
+// aparece recién cuando se quiere entrar a algún contenido.
 export class ControlAcceso {
   #sesion;
 
@@ -14,14 +11,7 @@ export class ControlAcceso {
 
   get sesion() { return this.#sesion; }
 
-  get usos() { return Number(localStorage.getItem(CLAVE_USOS) ?? 0); }
+  get iniciada() { return this.#sesion.iniciada; }
 
-  registrarUso() {
-    localStorage.setItem(CLAVE_USOS, String(this.usos + 1));
-  }
-
-  get pideSesion() {
-    if (this.#sesion.iniciada) return false;
-    return this.usos > USOS_LIBRES;
-  }
+  get correo() { return this.#sesion.correo; }
 }

@@ -3,7 +3,7 @@ import { SesionGoogle } from '../../modelos/sesion_google';
 import { version } from '../../../package.json';
 
 // Pide entrar con la cuenta de Google. Solo pasan los correos autorizados.
-export default function PantallaAcceso({ onEntrar }) {
+export default function PantallaAcceso({ onEntrar, onVolver }) {
   const sesion = useRef(new SesionGoogle());
   const contenedorBoton = useRef(null);
   const [aviso, setAviso] = useState(null);
@@ -35,7 +35,13 @@ export default function PantallaAcceso({ onEntrar }) {
         </div>
       )}
 
-      <p className="text-[10px] mt-10" style={{ color: 'var(--texto-tenue)' }}>Versión {version}</p>
+      {onVolver && (
+        <button onClick={onVolver} className="mt-8 text-xs font-sans" style={{ color: 'var(--texto-tenue)' }}>
+          Volver
+        </button>
+      )}
+
+      <p className="text-[10px] mt-8" style={{ color: 'var(--texto-tenue)' }}>Versión {version}</p>
     </div>
   );
 }

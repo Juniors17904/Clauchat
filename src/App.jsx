@@ -42,13 +42,10 @@ export default function App() {
   const gestorTransiciones = useRef(new GestorTransiciones());
   const pantallaRef = useRef('areas');
   const control = useRef(new ControlAcceso());
-  const [pideSesion, setPideSesion] = useState(false);
-
-  // Cada apertura suma un uso; pasadas las libres, hay que entrar con la cuenta
-  useEffect(() => {
-    control.current.registrarUso();
-    setPideSesion(control.current.pideSesion);
-  }, []);
+  // La pantalla de inicio se ve siempre; al tocar cualquier cosa, si no hay sesión, se pide
+  const [conSesion, setConSesion] = useState(control.current.iniciada);
+  const [mostrandoAcceso, setMostrandoAcceso] = useState(false);
+  const pedirAcceso = () => setMostrandoAcceso(true);
 
   useEffect(() => {
     pantallaRef.current = pantalla;
@@ -225,8 +222,13 @@ export default function App() {
     window.history.pushState({ pantalla: 'niveles', areaId: area.id }, '');
   };
 
-  if (pideSesion) {
-    return <PantallaAcceso onEntrar={() => setPideSesion(false)} />;
+  if (mostrandoAcceso) {
+    return (
+      <PantallaAcceso
+        onEntrar={() => { setConSesion(true); setMostrandoAcceso(false); }}
+        onVolver={() => setMostrandoAcceso(false)}
+      />
+    );
   }
 
   const ultimaPosicion = ctrlPerfil.current.obtenerUltimaPosicion(EJERCICIOS, TEMAS);
@@ -338,6 +340,24 @@ export default function App() {
         onSeleccionar={irATemas}
         onVolver={() => window.history.back()}
         controladorPerfil={ctrlPerfil.current}
+      />
+    );
+  }
+
+  if (!conSesion) {
+    return (
+      <PantallaAreas
+        bloqueada
+        alBloquear={pedirAcceso}
+        onSeleccionar={pedirAcceso}
+        controladorPerfil={ctrlPerfil.current}
+        onVerArbol={pedirAcceso}
+        onRecordatorios={pedirAcceso}
+        onInstalacion={pedirAcceso}
+        needRefresh={needRefresh}
+        onActualizar={() => updateServiceWorker(true)}
+        ultimaPosicion={ultimaPosicion}
+        onContinuar={pedirAcceso}
       />
     );
   }

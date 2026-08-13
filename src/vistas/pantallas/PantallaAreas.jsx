@@ -617,7 +617,7 @@ const TABS_NAV = [
   },
 ];
 
-export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, onInstalacion, needRefresh, onActualizar, ultimaPosicion, onContinuar }) {
+export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerArbol, onRecordatorios, onInstalacion, needRefresh, onActualizar, ultimaPosicion, onContinuar, bloqueada = false, alBloquear }) {
   const [tabActual, setTabActual] = useState('inicio');
   const [distanciaTiro, setDistanciaTiro] = useState(0);
   const [actualizando, setActualizando] = useState(false);
@@ -685,7 +685,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           ? 'linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2), var(--fondo-base))'
           : 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2), var(--fondo-base))' }} />
         <button
-          onClick={() => setTabActual('ajustes')}
+          onClick={() => (bloqueada ? alBloquear?.() : setTabActual('ajustes'))}
           className={`absolute top-4 right-4 w-10 h-10 rounded-full border flex items-center justify-center transition-colors backdrop-blur-sm ${esClasico ? 'bg-white/40 border-black/10 text-black/50 hover:text-black hover:border-black/30' : 'bg-black/40 border-white/20 text-white/70 hover:text-white hover:border-white/50'}`}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -744,7 +744,7 @@ export default function PantallaAreas({ onSeleccionar, controladorPerfil, onVerA
           return (
             <button
               key={id}
-              onClick={() => setTabActual(id)}
+              onClick={() => (bloqueada ? alBloquear?.() : setTabActual(id))}
               className="flex flex-col items-center gap-1 py-3 px-5 transition-colors"
               style={{ color: activo ? 'var(--acento)' : 'var(--texto-tenue)' }}
             >
