@@ -13,10 +13,9 @@ export default function PantallaAcceso({ onEntrar }) {
     sesion.current.dibujarBoton(
       contenedorBoton.current,
       (correo) => onEntrar(correo),
-      (motivo, correo) => {
-        if (motivo === 'sin-permiso') setAviso(`${correo} no tiene acceso a esta app.`);
-        else if (motivo === 'sin-conexion') setAviso('Necesitás conexión para iniciar sesión.');
-        else setAviso('No se pudo iniciar sesión. Probá de nuevo.');
+      (motivo) => {
+        if (motivo === 'sin-conexion') setAviso('Necesitás conexión para iniciar sesión.');
+        else setAviso('Esta cuenta no tiene acceso.');
       },
     );
   }, [onEntrar]);

@@ -1,4 +1,4 @@
-import { ID_CLIENTE_GOOGLE, CORREOS_AUTORIZADOS } from '../datos/acceso';
+import { ID_CLIENTE_GOOGLE } from '../datos/acceso';
 
 const CLAVE = 'sqlab_sesion';
 const URL_GOOGLE = 'https://accounts.google.com/gsi/client';
@@ -26,10 +26,6 @@ export class SesionGoogle {
 
   cerrar() { localStorage.removeItem(CLAVE); }
 
-  autorizado(correo) {
-    return CORREOS_AUTORIZADOS.some(c => c.toLowerCase() === String(correo).toLowerCase());
-  }
-
   // Carga el botón de Google una sola vez y lo dibuja dentro del elemento indicado
   async dibujarBoton(elemento, alEntrar, alFallar) {
     try {
@@ -50,10 +46,11 @@ export class SesionGoogle {
     }
   }
 
+  // Si Google devolvió la credencial es porque la cuenta tiene permiso: el filtro
+  // vive en los usuarios de prueba de Google, no acá.
   #recibir(respuesta, alEntrar, alFallar) {
     const datos = this.#leerCredencial(respuesta?.credential);
     if (!datos?.email) return alFallar?.('sin-datos');
-    if (!this.autorizado(datos.email)) return alFallar?.('sin-permiso', datos.email);
     localStorage.setItem(CLAVE, JSON.stringify({ correo: datos.email, nombre: datos.name ?? '' }));
     alEntrar?.(datos.email);
   }
