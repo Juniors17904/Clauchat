@@ -27,8 +27,8 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'Maestro Dev',
-        short_name: 'Maestro Dev',
+        name: 'DevLab',
+        short_name: 'DevLab',
         description: 'Aprende programación desde básico hasta nivel senior',
         version: '0.3.0',
         id: '/',
