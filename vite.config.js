@@ -27,9 +27,9 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'DevLab',
-        short_name: 'DevLab',
-        description: 'Aprende programación desde básico hasta nivel senior',
+        name: 'Migración Xstore',
+        short_name: 'Migración',
+        description: 'Guía de instalación de Xstore y software para las cajas de tienda',
         version: '0.3.0',
         id: '/',
         start_url: '/',

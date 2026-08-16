@@ -1,23 +1,48 @@
-const CLAVES = [
-  'sqlab_progreso',
-  'sqlab_actividad',
-  'sqlab_sesion_ejercicio',
-  'sqlab_nombre',
+import { TIENDAS } from '../datos/tiendas';
+import { ClaveCaja } from './clave_caja';
+
+const MAXIMO_CAJAS = 6;
+
+// Preferencias que no dependen de la caja
+const CLAVES_FIJAS = [
   'sqlab_recordatorio',
-  'sqlab_meta_diaria',
-  'sqlab_preferencias_editor',
   'tema-visual',
   'tema-global',
 ];
 
+// Todo lo que guarda una caja: pasos hechos, datos y fotos, último punto visto y demás
+const BASES_POR_CAJA = [
+  'sqlab_instalacion',
+  'sqlab_instalacion_datos',
+  'sqlab_instalacion_ultimo',
+  'sqlab_instalacion_version',
+  'sqlab_software',
+  'sqlab_software_ultimo',
+  'sqlab_caja_seccion',
+  'sqlab_cantidad_cajas',
+];
+
+// Guarda y restaura el avance completo: el de todas las cajas de todas las tiendas,
+// con sus datos y fotos, para poder pasarlo a otro equipo.
 export class GestorRespaldo {
+  get claves() {
+    const lista = [...CLAVES_FIJAS];
+    for (const tienda of TIENDAS) {
+      for (let caja = 1; caja <= MAXIMO_CAJAS; caja++) {
+        const clave = new ClaveCaja(caja, tienda.id);
+        for (const base of BASES_POR_CAJA) lista.push(clave.para(base));
+      }
+    }
+    return [...new Set(lista)];
+  }
+
   exportar() {
     const datos = {};
-    for (const clave of CLAVES) {
+    for (const clave of this.claves) {
       const valor = localStorage.getItem(clave);
       if (valor !== null) datos[clave] = valor;
     }
-    return JSON.stringify({ app: 'devlab', version: 1, datos }, null, 2);
+    return JSON.stringify({ app: 'migracion-xstore', version: 2, datos }, null, 2);
   }
 
   descargar() {
@@ -26,7 +51,7 @@ export class GestorRespaldo {
     const url = URL.createObjectURL(blob);
     const enlace = document.createElement('a');
     enlace.href = url;
-    enlace.download = `devlab-respaldo-${new Date().toISOString().slice(0, 10)}.json`;
+    enlace.download = `migracion-xstore-${new Date().toISOString().slice(0, 10)}.json`;
     enlace.click();
     URL.revokeObjectURL(url);
   }
@@ -34,8 +59,9 @@ export class GestorRespaldo {
   importar(texto) {
     try {
       const respaldo = JSON.parse(texto);
-      if (respaldo?.app !== 'devlab' || typeof respaldo?.datos !== 'object') return false;
-      for (const clave of CLAVES) {
+      const conocida = respaldo?.app === 'migracion-xstore' || respaldo?.app === 'devlab';
+      if (!conocida || typeof respaldo?.datos !== 'object') return false;
+      for (const clave of this.claves) {
         if (typeof respaldo.datos[clave] === 'string') {
           localStorage.setItem(clave, respaldo.datos[clave]);
         }
