@@ -12,9 +12,16 @@ import { GestorTemas } from './modelos/gestor_temas';
 import { GestorTransiciones } from './modelos/gestor_transiciones';
 import { UltimaSeccionCaja } from './modelos/ultima_seccion_caja';
 import { ControlAcceso } from './modelos/control_acceso';
+import { BuscadorVersion } from './modelos/buscador_version';
 
 export default function App() {
-  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
+  const buscador = useRef(new BuscadorVersion());
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW({
+    onRegisteredSW: (_url, registro) => buscador.current.guardarRegistro(registro),
+  });
+
+  // Al abrir y al volver a la app, revisar si hay una versión nueva publicada
+  useEffect(() => buscador.current.vigilarRegreso(), []);
   const [pantalla, setPantalla] = useState('tiendas');
   const [tiendaActual, setTiendaActual] = useState(TIENDAS[0]);
   const [cajaInstalacion, setCajaInstalacion] = useState(1);
