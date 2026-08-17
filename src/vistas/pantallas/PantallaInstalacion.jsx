@@ -503,13 +503,19 @@ export default function PantallaInstalacion({ onVolver, tienda, caja = 1, onIrAS
                                   {!elegido ? (
                                     <p className="text-xs" style={{ color: 'var(--texto-tenue)' }}>Todavía no cargaste el {campo.toLowerCase()} en ninguna caja.</p>
                                   ) : (
-                                    <div className="flex items-center gap-2.5 rounded-lg border p-2" style={{ borderColor: 'var(--acento)', backgroundColor: 'var(--fondo-panel)' }}>
+                                    // Toda la tarjeta abre la foto, no solo la miniatura
+                                    <button
+                                      type="button"
+                                      onClick={() => elegido.foto && abrirTodasLasFotos(elegido.foto)}
+                                      disabled={!elegido.foto}
+                                      className="w-full flex items-center gap-2.5 rounded-lg border p-2 text-left disabled:cursor-default"
+                                      style={{ borderColor: 'var(--acento)', backgroundColor: 'var(--fondo-panel)', cursor: elegido.foto ? 'zoom-in' : 'default' }}
+                                    >
                                       {elegido.foto && (
                                         <img
                                           src={elegido.foto}
                                           alt={campo}
-                                          onClick={() => abrirTodasLasFotos(elegido.foto)}
-                                          className="h-16 w-auto rounded-md border cursor-zoom-in flex-shrink-0"
+                                          className="h-16 w-auto rounded-md border flex-shrink-0"
                                           style={{ borderColor: 'var(--borde)' }}
                                         />
                                       )}
@@ -517,7 +523,7 @@ export default function PantallaInstalacion({ onVolver, tienda, caja = 1, onIrAS
                                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ color: '#fff', backgroundColor: elegido.nc === 1 ? '#3fb950' : '#39c5cf' }}>CAJA {elegido.nc}</span>
                                         <p className="text-sm font-mono font-bold break-all mt-1" style={{ color: 'var(--acento)' }}>{elegido.valor || '(ver foto)'}</p>
                                       </div>
-                                    </div>
+                                    </button>
                                   )}
                                 </div>
                               );

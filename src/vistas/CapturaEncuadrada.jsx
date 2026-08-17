@@ -23,7 +23,7 @@ export default function CapturaEncuadrada({ titulo, forma = 'linea', onTomar, on
         const caja = cajaRef.current?.getBoundingClientRect();
         if (caja) {
           // Un bloque de varios datos necesita casi toda la pantalla; un dato suelto, una franja
-          const ancho = caja.width * (forma === 'bloque' ? 0.94 : 0.9);
+          const ancho = caja.width * (forma === 'bloque' ? 0.84 : 0.9);
           const alto = forma === 'bloque'
             ? caja.height * 0.62
             : Math.min(caja.height * 0.22, 220);
