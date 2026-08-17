@@ -854,6 +854,7 @@ export default function PantallaInstalacion({ onVolver, tienda, caja = 1, onIrAS
       {captura && (
         <CapturaEncuadrada
           titulo={captura.campo === '__paso' ? `Paso ${captura.paso.numero}` : captura.campo}
+          forma={captura.paso.fotoUnica ? 'bloque' : 'linea'}
           onCerrar={() => setCaptura(null)}
           onTomar={async (archivo) => {
             const { campo, paso } = captura;

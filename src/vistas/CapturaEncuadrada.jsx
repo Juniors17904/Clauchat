@@ -5,7 +5,7 @@ const MINIMO = 60;
 
 // Cámara con un encuadre movible: se toma solo lo que quedó adentro, para que el
 // lector reciba nada más que el dato y no toda la pantalla.
-export default function CapturaEncuadrada({ titulo, onTomar, onCerrar }) {
+export default function CapturaEncuadrada({ titulo, forma = 'linea', onTomar, onCerrar }) {
   const videoRef = useRef(null);
   const cajaRef = useRef(null);
   const camara = useRef(new CamaraEquipo());
@@ -22,8 +22,11 @@ export default function CapturaEncuadrada({ titulo, onTomar, onCerrar }) {
         if (cancelado) return camara.current.apagar(videoRef.current);
         const caja = cajaRef.current?.getBoundingClientRect();
         if (caja) {
-          const ancho = caja.width * 0.9;
-          const alto = Math.min(caja.height * 0.22, 220);
+          // Un bloque de varios datos necesita casi toda la pantalla; un dato suelto, una franja
+          const ancho = caja.width * (forma === 'bloque' ? 0.94 : 0.9);
+          const alto = forma === 'bloque'
+            ? caja.height * 0.62
+            : Math.min(caja.height * 0.22, 220);
           setMarco({ x: (caja.width - ancho) / 2, y: (caja.height - alto) / 2, ancho, alto });
         }
       } catch {
@@ -33,7 +36,7 @@ export default function CapturaEncuadrada({ titulo, onTomar, onCerrar }) {
     encender();
     const video = videoRef.current;
     return () => { cancelado = true; camara.current.apagar(video); };
-  }, []);
+  }, [forma]);
 
   const limitarMarco = (m) => {
     const caja = cajaRef.current.getBoundingClientRect();
