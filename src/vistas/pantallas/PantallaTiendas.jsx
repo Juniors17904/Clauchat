@@ -101,11 +101,12 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
       {/* Portada: la imagen y el degradado acompañan al tema elegido */}
       <div className="relative overflow-hidden flex-shrink-0 h-52">
         <img src={temaClaro ? '/portada-clara.png' : '/portada-oscura.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
-        <div className="absolute inset-0" style={{ background: temaClaro
-          ? 'linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2), var(--fondo-base))'
-          : 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.25), var(--fondo-base))' }} />
-        <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-          <h1 className="text-3xl font-bold tracking-tight drop-shadow-lg" style={{ color: temaClaro ? '#1f2328' : '#fff' }}>Migración Xstore</h1>
+        {/* Solo se oscurece el pie, donde va el título: el resto de la imagen queda limpio */}
+        <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: temaClaro
+          ? 'linear-gradient(to bottom, rgba(255,255,255,0), var(--fondo-base))'
+          : 'linear-gradient(to bottom, rgba(0,0,0,0), var(--fondo-base))' }} />
+        <div className="absolute bottom-1 left-0 right-0 text-center px-6">
+          <h1 className="text-2xl font-bold tracking-tight drop-shadow-lg" style={{ color: temaClaro ? '#1f2328' : '#fff' }}>Migración Xstore</h1>
         </div>
       </div>
 
