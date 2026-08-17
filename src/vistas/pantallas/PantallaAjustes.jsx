@@ -10,7 +10,7 @@ import { TIENDAS } from '../../datos/tiendas';
 import Seccion from '../Seccion';
 import { version } from '../../../package.json';
 
-export default function PantallaAjustes({ onRecordatorios, promptInstalar, onInstalar }) {
+export default function PantallaAjustes({ onRecordatorios, promptInstalar, onInstalar, onCambioTema }) {
   const gestorTemas = useRef(new GestorTemas());
   const gestorRespaldo = useRef(new GestorRespaldo());
   const descargador = useRef(new DescargadorData());
@@ -27,6 +27,7 @@ export default function PantallaAjustes({ onRecordatorios, promptInstalar, onIns
   const cambiarTema = (id) => {
     gestorTemas.current.cambiar(id);
     setTemaId(id);
+    onCambioTema?.();
   };
 
   const descargarData = async () => {

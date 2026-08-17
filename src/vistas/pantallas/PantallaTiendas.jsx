@@ -33,6 +33,8 @@ const TABS = [
 export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, bloqueada = false, needRefresh, onActualizar }) {
   const [tabActual, setTabActual] = useState('inicio');
   const [promptInstalar, setPromptInstalar] = useState(null);
+  // La portada tiene una imagen para el tema claro y otra para los oscuros
+  const [temaClaro, setTemaClaro] = useState(localStorage.getItem('tema-visual') === 'clasico');
 
   useEffect(() => {
     const manejar = (e) => { e.preventDefault(); setPromptInstalar(e); };
@@ -68,13 +70,15 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
         </div>
       )}
 
-      {/* Portada */}
+      {/* Portada: la imagen y el degradado acompañan al tema elegido */}
       <div className="relative overflow-hidden flex-shrink-0 h-52">
-        <img src="/hero-bg.png" alt="" className="w-full h-full object-cover object-center" draggable="false" />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.25), var(--fondo-base))' }} />
+        <img src={temaClaro ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
+        <div className="absolute inset-0" style={{ background: temaClaro
+          ? 'linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2), var(--fondo-base))'
+          : 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.25), var(--fondo-base))' }} />
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-          <h1 className="text-3xl font-bold tracking-tight drop-shadow-lg" style={{ color: '#fff' }}>Migración Xstore</h1>
-          <p className="mt-1 text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>Elegí en qué tienda estás</p>
+          <h1 className="text-3xl font-bold tracking-tight drop-shadow-lg" style={{ color: temaClaro ? '#1f2328' : '#fff' }}>Migración Xstore</h1>
+          <p className="mt-1 text-sm" style={{ color: temaClaro ? 'rgba(31,35,40,0.5)' : 'rgba(255,255,255,0.6)' }}>Elegí en qué tienda estás</p>
         </div>
       </div>
 
@@ -110,7 +114,12 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
         )}
 
         {tabActual === 'ajustes' && (
-          <PantallaAjustes onRecordatorios={onRecordatorios} promptInstalar={promptInstalar} onInstalar={instalarApp} />
+          <PantallaAjustes
+            onRecordatorios={onRecordatorios}
+            promptInstalar={promptInstalar}
+            onInstalar={instalarApp}
+            onCambioTema={() => setTemaClaro(localStorage.getItem('tema-visual') === 'clasico')}
+          />
         )}
       </div>
 
