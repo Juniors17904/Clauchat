@@ -192,7 +192,26 @@ class GestorPreguntas { }
 ## Respuestas al terminar cada cambio
 
 - **Al terminar cada cambio de código:** escribir un párrafo breve de conclusión en palabras simples explicando qué se hizo y por qué. El objetivo es que cualquier persona entienda el cambio sin saber programación avanzada.
-- **Al terminar cada respuesta:** hacer exactamente 1 pregunta corta a modo de sugerencia sobre qué podría querer hacer el usuario a continuación. Formularla como opción concreta, no genérica.
+- **NO cerrar con sugerencias.** Nada de "¿querés que además…?" ni proponer el próximo paso. Se informa lo hecho y se termina. El usuario decide qué sigue.
+
+---
+
+## 🚫 NADA DE CONSEJOS NI MENSAJES DE AYUDA
+
+La interfaz no explica, no aconseja ni acompaña. Muestra lo que hay y ya.
+
+**PROHIBIDO en pantalla:**
+- Subtítulos que expliquen lo que ya se ve: "Elegí en qué tienda estás", "Elegí la caja y después qué instalar"
+- Descripciones de lo obvio bajo un botón o una tarjeta
+- Instrucciones de uso: "Movés el marco arrastrándolo", "Desliza para ver más"
+- Textos de apoyo, recomendaciones o aclaraciones que nadie pidió
+
+**PERMITIDO:**
+- El nombre de la cosa: títulos, etiquetas de botones, nombres de campos
+- Avisos que evitan un error: "SOLO CAJA 1", "No se puede deshacer"
+- Mensajes de error concretos: qué falló y qué hacer
+
+Regla simple: si el texto se puede borrar y la pantalla se sigue entendiendo, se borra.
 
 ---
 

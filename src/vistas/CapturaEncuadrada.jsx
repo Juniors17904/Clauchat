@@ -141,9 +141,6 @@ export default function CapturaEncuadrada({ titulo, onTomar, onCerrar }) {
         />
       </div>
 
-      <p className="text-center text-[11px] pb-4" style={{ backgroundColor: 'rgba(0,0,0,0.85)', color: '#8b949e' }}>
-        Movés el marco arrastrándolo · lo agrandás desde la esquina
-      </p>
     </div>
   );
 }

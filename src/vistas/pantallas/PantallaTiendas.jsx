@@ -106,7 +106,6 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
           : 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.25), var(--fondo-base))' }} />
         <div className="absolute bottom-5 left-0 right-0 text-center px-6">
           <h1 className="text-3xl font-bold tracking-tight drop-shadow-lg" style={{ color: temaClaro ? '#1f2328' : '#fff' }}>Migración Xstore</h1>
-          <p className="mt-1 text-sm" style={{ color: temaClaro ? 'rgba(31,35,40,0.5)' : 'rgba(255,255,255,0.6)' }}>Elegí en qué tienda estás</p>
         </div>
       </div>
 

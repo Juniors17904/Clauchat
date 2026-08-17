@@ -196,7 +196,6 @@ export default function PantallaSoftware({ onVolver, tienda, caja = 1, embebido 
             {completados}/{total}
           </span>
         </div>
-        <p className="text-xs mb-2.5" style={{ color: 'var(--texto-tenue)' }}>Programas que se instalan después de configurar Xstore</p>
 
         <div className="border rounded-xl" style={{ borderColor: 'var(--borde)' }}>
           {PROGRAMAS_SOFTWARE.map((programa, i) => {

@@ -39,7 +39,6 @@ export default function PantallaHerramientas({ tienda, onVolver, onXstore, onSof
     {
       id: 'xstore',
       titulo: 'Instalación de Xstore',
-      descripcion: 'Guía paso a paso para instalar la imagen y configurar Xstore.',
       icono: '🖥️',
       total: totalXstore,
       hechos: (caja) => new GestorInstalacion(caja, tienda.id).totalCompletados,
@@ -48,7 +47,6 @@ export default function PantallaHerramientas({ tienda, onVolver, onXstore, onSof
     {
       id: 'software',
       titulo: 'Software y aplicaciones',
-      descripcion: 'Programas que se instalan después de configurar Xstore.',
       icono: '📦',
       total: totalSoftware,
       hechos: (caja) => new GestorSoftware(caja, tienda.id).totalCompletados,
@@ -67,7 +65,6 @@ export default function PantallaHerramientas({ tienda, onVolver, onXstore, onSof
         </button>
 
         <h1 className="text-2xl font-bold mb-1" style={{ color: tienda.color }}>{tienda.nombre}</h1>
-        <p className="text-sm mb-6" style={{ color: 'var(--texto-secundario)' }}>Elegí la caja y después qué instalar</p>
 
         {/* Una tarjeta por caja. Dentro, las dos herramientas */}
         <div className="grid grid-cols-2 gap-3">
@@ -95,7 +92,6 @@ export default function PantallaHerramientas({ tienda, onVolver, onXstore, onSof
                           {t.icono}
                         </div>
                         <h3 className="text-sm font-bold leading-snug mb-1.5" style={{ color: 'var(--texto-primario)' }}>{t.titulo}</h3>
-                        <p className="text-[11px] leading-snug mb-3" style={{ color: 'var(--texto-tenue)' }}>{t.descripcion}</p>
                         <div className="w-full mt-auto">
                           <span className="block text-xs font-mono mb-1.5" style={{ color: porcentaje === 100 ? 'var(--acento)' : 'var(--texto-tenue)' }}>{hechos}/{t.total}</span>
                           <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fondo-elevado)' }}>
