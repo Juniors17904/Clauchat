@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TIENDAS } from '../../datos/tiendas';
 import { GestorInstalacion } from '../../modelos/gestor_instalacion';
 import { GestorSoftware } from '../../modelos/gestor_software';
@@ -6,6 +6,7 @@ import { RegistroCajas } from '../../modelos/registro_cajas';
 import { PASOS_INSTALACION } from '../../datos/pasos_instalacion';
 import { PROGRAMAS_SOFTWARE } from '../../datos/programas_software';
 import PantallaAjustes from './PantallaAjustes';
+import { DetectorTiro } from '../../modelos/detector_tiro';
 
 const TABS = [
   {
@@ -35,6 +36,20 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
   const [promptInstalar, setPromptInstalar] = useState(null);
   // La portada tiene una imagen para el tema claro y otra para los oscuros
   const [temaClaro, setTemaClaro] = useState(localStorage.getItem('tema-visual') === 'clasico');
+  // Tirar hacia abajo desde arriba actualiza la app
+  const detector = useRef(new DetectorTiro());
+  const [tiro, setTiro] = useState(0);
+  const [actualizando, setActualizando] = useState(false);
+
+  const comenzarTiro = (e) => { detector.current.comenzar(e.touches[0].clientY); setTiro(0); };
+  const moverTiro = (e) => setTiro(detector.current.mover(e.touches[0].clientY));
+  const terminarTiro = () => {
+    if (detector.current.soltar()) {
+      setActualizando(true);
+      window.location.reload();
+    }
+    setTiro(0);
+  };
 
   useEffect(() => {
     const manejar = (e) => { e.preventDefault(); setPromptInstalar(e); };
@@ -60,7 +75,20 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
   const irATab = (id) => (bloqueada ? onAjustes?.() : setTabActual(id));
 
   return (
-    <div className="min-h-[100svh] flex flex-col select-none" style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}>
+    <div
+      className="min-h-[100svh] flex flex-col select-none"
+      style={{ backgroundColor: 'var(--fondo-base)', fontFamily: 'var(--fuente-sans)' }}
+      onTouchStart={comenzarTiro}
+      onTouchMove={moverTiro}
+      onTouchEnd={terminarTiro}
+    >
+      {(tiro > 8 || actualizando) && (
+        <div className="fixed top-3 left-0 right-0 flex justify-center z-40 pointer-events-none" style={{ opacity: actualizando ? 1 : detector.current.opacidad }}>
+          <p className="text-xs" style={{ color: 'var(--texto-tenue)' }}>
+            {actualizando ? '↻ Actualizando...' : detector.current.listo ? '↑ Suelta para actualizar' : '↓ Desliza para actualizar'}
+          </p>
+        </div>
+      )}
       {needRefresh && (
         <div className="fixed top-0 left-0 right-0 z-50 px-4 py-2 flex items-center justify-between" style={{ backgroundColor: 'var(--fondo-elevado)', borderBottom: '1px solid var(--acento)' }}>
           <p className="text-xs" style={{ color: 'var(--acento)' }}>Nueva versión disponible</p>
