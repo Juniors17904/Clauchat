@@ -3,8 +3,8 @@ import { PROGRAMAS_SOFTWARE } from '../datos/programas_software';
 
 // Imágenes de la app que no salen de los datos: portada, iconos de las áreas y de las bases
 const IMAGENES_INTERFAZ = [
-  '/hero-bg.png',
-  '/banner-claro.png',
+  '/portada-oscura.png',
+  '/portada-clara.png',
   '/icon-192.png',
   '/icon-512.png',
   '/iconos/bases-de-datos.png',

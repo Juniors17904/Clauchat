@@ -100,7 +100,7 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
 
       {/* Portada: la imagen y el degradado acompañan al tema elegido */}
       <div className="relative overflow-hidden flex-shrink-0 h-52">
-        <img src={temaClaro ? '/banner-claro.png' : '/hero-bg.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
+        <img src={temaClaro ? '/portada-clara.png' : '/portada-oscura.png'} alt="" className="w-full h-full object-cover object-center" draggable="false" />
         <div className="absolute inset-0" style={{ background: temaClaro
           ? 'linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2), var(--fondo-base))'
           : 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.25), var(--fondo-base))' }} />
