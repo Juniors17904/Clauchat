@@ -105,6 +105,21 @@ export default function PantallaTiendas({ onElegir, onRecordatorios, onAjustes, 
         <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: temaClaro
           ? 'linear-gradient(to bottom, rgba(255,255,255,0), var(--fondo-base))'
           : 'linear-gradient(to bottom, rgba(0,0,0,0), var(--fondo-base))' }} />
+        {promptInstalar && (
+          <button
+            onClick={instalarApp}
+            className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs backdrop-blur-sm"
+            style={temaClaro
+              ? { backgroundColor: 'rgba(255,255,255,0.55)', borderColor: 'rgba(0,0,0,0.15)', color: '#1f2328' }
+              : { backgroundColor: 'rgba(0,0,0,0.45)', borderColor: 'rgba(255,255,255,0.25)', color: '#fff' }}
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+            Instalar app
+          </button>
+        )}
         <div className="absolute bottom-1 left-0 right-0 text-center px-6">
           <h1 className="text-2xl font-bold tracking-tight drop-shadow-lg" style={{ color: temaClaro ? '#1f2328' : '#fff' }}>Migración Xstore</h1>
         </div>
