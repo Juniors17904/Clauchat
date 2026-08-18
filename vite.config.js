@@ -28,7 +28,7 @@ export default defineConfig({
       },
       manifest: {
         name: 'Migración Xstore',
-        short_name: 'Migración',
+        short_name: 'Migración Xstore',
         description: 'Guía de instalación de Xstore y software para las cajas de tienda',
         version: '0.3.0',
         id: '/',
